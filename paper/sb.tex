@@ -1,0 +1,128 @@
+\documentclass{article} % For LaTeX2e
+\usepackage{nips12submit_e,times}
+%\documentstyle[nips12submit_09,times,art10]{article} % For LaTeX 2.09
+
+\usepackage{amsmath,amssymb,amsthm,amsfonts,comment}
+\usepackage{graphicx}\graphicspath{{figures/}}
+\usepackage[small,labelfont=bf]{caption}
+\usepackage[square]{natbib}
+\usepackage{color}
+\usepackage{epstopdf}
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+%% our math environment
+\def\[#1\]{\begin{align}#1\end{align}}
+
+\newcommand{\defn}[1]{{\bf #1}}
+
+\newcommand{\defas}{:=}
+\newcommand{\given}{\mid}
+
+\newcommand{\Naturals}{\mathbb{N}}
+\newcommand{\Rationals}{\mathbb{Q}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\st}{\,:\,}
+\newcommand{\RInts}{\mathcal{I}_\Rationals}
+\newcommand{\BSets}{\mathcal{B}_\Reals}
+\newcommand{\grad}{\bigtriangledown}
+
+%% our math environment
+ 
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+%\newtheorem{definition}{Definition}
+
+\title{Learning optimal independence tests for Bayesian Networks}
+
+\author{
+\And
+Coauthor \\
+Affiliation \\
+Address \\
+\texttt{email} \\
+\AND
+Coauthor \\
+Affiliation \\
+Address \\
+\texttt{email} \\
+\And
+Coauthor \\
+Affiliation \\
+Address \\
+\texttt{email} \\
+\And
+Coauthor \\
+Affiliation \\
+Address \\
+\texttt{email} \\
+(if needed)\\
+}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+%\nipsfinalcopy % Uncomment for camera-ready version
+
+\begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+
+\section{Introduction}
+
+\section{Related work}
+
+\cite{margaritis2003learning}
+
+\section{Independence testing}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.55\linewidth]{img/independence_surface.eps}
+\caption{A}
+\end{figure}
+
+
+\subsection{Discrete variables formulation}
+
+\subsection{Continuous variables formulation}
+
+\section{Experiments}
+
+\subsection{Classification of Synthetic CPDs}
+
+\subsection{Classification of CPDs from Gene Expression}
+
+\subsection{Synthetic Bayesian networks}
+
+\subsection{Gene expression data}
+
+\section{Discussion}
+
+\begin{small}
+%\renewcommand\bibname{References}
+\bibliographystyle{abbrvnat}
+%\bibliographystyle{authordate1}
+%\bibliographystyle{amsnomr}
+\bibliography{bibliography}
+\end{small}
+
+%\appendix
+%\include{appendix}
+
+\end{document}
