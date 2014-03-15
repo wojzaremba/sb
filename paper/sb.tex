@@ -84,13 +84,46 @@ Address \\
 
 
 \section{Introduction}
+Learning Bayesian networks for general distributions is
+intractable task \cite{chickering1996learning}. However, in practise 
+for distributions appearing in real data, still we are able to 
+recover Bayesian network structure. This implies that real data
+distribution has some special properties, which simplify process
+of structure recovery. This process is almost always
+based on computation local statistics, and then 
+reasoning about global structure \cite{jaakkola2010learning, tsamardinos2006max}. 
+Local statistics describe
+complexity (e.g. number of parameters in case of BIC), and 
+level of independence between nodes (e.g. mutual information tests, 
+conditional independence tests). 
+We focus in this work on improvement of independence tests by 
+learning it for CPDs present in data.
+
+
+
+We consider parameterized family of independence tests. 
+Before inferring about structure of Bayesian network, we tune classifier 
+predict independence or dependence on CPDs present in data. 
+This way, we obtain highly sensitive independence test, which
+fires on dependence / independence phenomenas present in our data. 
+
 
 \section{Related work}
+<<<<<<< HEAD
 Existing independence tests:
 \begin{itemize}
 \item Pearson's $\chi$-squared.  The problem is the null hypothesis is independence, but independence is what we're trying to show.
 \item
 \end{itemize}
+=======
+
+LL (Log-likelihood) (1912-22)
+MDL/BIC (Minimum description length/Bayesian Information Criterion) (1978)
+AIC (Akaike Information Criterion) (1974)
+NML (Normalized Minimum Likelihood) (2008)
+MIT (Mutual Information Tests) (2006)
+
+>>>>>>> 4d2cdad4989a99fc2e0c2f968bf7d686054c4b22
 \cite{margaritis2003learning}
 
 \section{Independence testing}
