@@ -1,15 +1,18 @@
 bnet = mk_bnet4();
 K = length(bnet.dag);
+arity = get_arity(bnet);
 
-triples = gen_triples(K, 2);
+max_S = 2;
+triples = gen_triples(K,max_S);
 
-N = 1000;
+N = 10000;
 s = samples(bnet,N);
 
-for t = 1 : length(triples)
-    cpd = get_cpd(triples{t},bnet);
+options = struct('threshold', 0.1, 'arity', arity);
+score = zeros(2, 2);
+for t = 1 : length(triples)        
     indep = dsep(triples{t}(1), triples{t}(2), triples{t}(3:end), bnet.dag);
     emp = s(triples{t}, :);
-    emp_cpd = emp_to_cpd(emp);
-    
+    result = mutual_information_classifier(emp, options); 
+    score(indep + 1, result + 1) = score(indep + 1, result + 1) + 1;
 end

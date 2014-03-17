@@ -26,18 +26,6 @@ for t = 1:size(A,1)
     
     
 end
-    
-
-            
-%             emp_sub = emp(emp(1, :) == i, :, :);
-%             emp_sub = emp_sub(:, emp_sub(2, :) == j, :);
-%         
-%             emp_diff = (emp_sub - repmat(A(t, :), size(emp_sub, 1))) .^ 2;
-%             emp_diff = sum(emp_diff, 2);
-%             emp_diff = emp_diff ~= 0;
-%             CPD(i, j, t) = mean(emp_diff);
-%        end
-%    end
-
+printf(3, 'total = %d, N = %d\n', total, N);
 assert(total == N);
 end
