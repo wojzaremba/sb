@@ -1,5 +1,5 @@
-function CPD = gen_cpd_dist(bnet)
-
+function triples = gen_cpd_dist(bnet)
+% XXX : Change N to K.
 addpath(genpath('.'));
 N = length(bnet.dag);
 engine = var_elim_inf_engine(bnet);
@@ -9,19 +9,13 @@ engine = enter_evidence(engine, evidence);
 max_cond_size = min(3,N-2);
 CPD = zeros(2, 2, 0);
 
-arity = unique(bnet.node_sizes);
-fprintf('arity = %d',arity);
-if length(arity) > 1
-    error('All variables should have the same number of states');
-end
+arity = get_arity(bnet);
 
 print = true;
 
 for i = 1:N
-    for j = i+1:N
-        
+    for j = i+1:N        
         fprintf('i=%d, j=%d\n',i,j);
-
         for k = 0:max_cond_size
             set = [1:(i-1) (i+1):(j-1) (j+1):N];
             cond_sets = combinations(set, k);

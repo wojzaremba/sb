@@ -1,7 +1,7 @@
 function c = combinations(set,k)
 
 if k==0
-    c = [NaN];
+    c = [];
 elseif k<0
     error('k should be >= 0')
 else
