@@ -34,7 +34,7 @@
 \newtheorem{lem}[thm]{Lemma}
 %\newtheorem{definition}{Definition}
 
-\title{Learning optimal independence tests for Bayesian Networks}
+\title{Optimal independence tests for Bayesian Networks}
 
 \author{
 \And
@@ -100,31 +100,43 @@ We focus in this work on improvement of independence tests by
 learning it for CPDs present in data.
 
 
-
 We consider parameterized family of independence tests. 
 Before inferring about structure of Bayesian network, we tune classifier 
 predict independence or dependence on CPDs present in data. 
 This way, we obtain highly sensitive independence test, which
-fires on dependence / independence phenomenas present in our data. 
+fires on dependence or independence phenomenas present in our data. 
 
 
 \section{Related work}
-Existing independence tests:
-\begin{itemize}
-\item Pearson's $\chi$-squared.  The problem is the null hypothesis is independence, but independence is what we're trying to show.
-\item
-\end{itemize}
 
 There has been extensive research in area of scoring functions for
 Bayesian networks. This step is critical to recover no-complete graph structure.
-Without any scoring 
+Without any scoring function, log-likelihood term would force optimization
+to choose fully connected graph. There have been proposed few regularizations (scoring functions)
+to address this problem. One most widely used is Bayesian Information Criterion (BIC) \cite{schwarz1978estimating}.
+Variety of such scoring functions calculate dependency between nodes conditioned on
+potential parents \cite{de2006scoring}. Usual measures of dependency are
+based on mutual information, conditional independence test, or 
+are fully Bayesian. Fully Bayesian methods assume probability 
+distribution over CPDs of independent variables,
+and dependent variables.
 
 
-LL (Log-likelihood) (1912-22)
-MDL/BIC (Minimum description length/Bayesian Information Criterion) (1978)
-AIC (Akaike Information Criterion) (1974)
-NML (Normalized Minimum Likelihood) (2008)
-MIT (Mutual Information Tests) (2006)
+
+
+We should discuss:
+\begin{itemize}
+\item LL (Log-likelihood) (1912-22)
+\item MDL/BIC (Minimum description length/Bayesian Information Criterion) (1978)
+\item AIC (Akaike Information Criterion) (1974)
+\item NML (Normalized Minimum Likelihood) (2008)
+\item MIT (Mutual Information Tests) (2006)
+\end{itemize}
+
+Existing independence tests:
+\begin{itemize}
+\item Pearson's $\chi$-squared.  The problem is the null hypothesis is independence, but independence is what we're trying to show.
+\end{itemize}
 
 \cite{margaritis2003learning}
 
