@@ -1,5 +1,7 @@
 clear all;
 addpath(genpath('.'));
+global debug
+debug = 2;
 
 % utils
 disp('test_enumerate_assignments...');
@@ -15,4 +17,8 @@ test_empir_vs_cpds();
 disp('test_emp_to_cpd...');
 test_emp_to_cpd();
 
-disp('Passed all tests!');
+% classifiers
+disp('test_mutual_information_classifier...');
+test_mutual_information_classifier();
+
+disp('Passed all tests! Great job RACHEL and WOJCIECH!!!  Go work!');
