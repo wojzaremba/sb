@@ -1,4 +1,4 @@
-function indep = mutual_information_classifier(emp, options)
+function indep = correlation_classifier(emp, options)
 % indep = 1 means that variables described by emp are independent.
 % indep = 0 means that variables are dependent.
     indep = 1;
@@ -6,8 +6,9 @@ function indep = mutual_information_classifier(emp, options)
     threshold = options.threshold;
     emp_cpd = emp_cpd(:, :, :);
     
+    %XXX fix this
     for t = 1:size(emp_cpd, 3)
-        if (mutual_information(emp_cpd(:, :, t)) > threshold)
+        if (compute_correlation(emp() > threshold)
             indep = 0;
             return;
         end

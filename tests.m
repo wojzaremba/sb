@@ -21,4 +21,4 @@ test_emp_to_cpd();
 disp('test_mutual_information_classifier...');
 test_mutual_information_classifier();
 
-disp('Passed all tests! Great job RACHEL and WOJCIECH!!!  Go have a snack!');
+disp('Passed all tests! Great job RACHEL and WOJCIECH!!!  Go work!');

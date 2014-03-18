@@ -1,7 +1,6 @@
-function printf(varargin)
-  global debug;
-  if (debug >= 1)
-    fprintf(varargin{:});
-    return;
-  end
+function printf(debug_, str, varargin)
+    global debug
+    if (debug >= debug_)
+        fprintf(str, varargin{:});
+    end
 end
