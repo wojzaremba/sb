@@ -109,7 +109,12 @@ fires on dependence / independence phenomenas present in our data.
 
 
 \section{Related work}
-Use in Bayesian networks \cite{schafer2005empirical}
+Independence tests used in Bayesian networks
+\begin{itemize}
+\item \cite{schafer2005empirical} Here they learn a Gaussian Graphical Model (GGM) using estimates of the partial correlation matrix. 
+\item \cite{opgen2007correlation} Here they learn an approximate causal structure on gene expression based on full-order partial correlation (as an approximation to lower-order partial correlation that is called for theoretically for a Bayesian network).
+\item \cite{tsamardinos2006max} MMHC algorithm.  They use a test based on what is called the $G^2$ statistic (asymptotically distributed as $chi^2$) and they also talk about a couple other independence tests that we may want to look into.
+\end{itemize}
 
 Existing independence tests:
 \begin{itemize}
