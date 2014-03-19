@@ -5,6 +5,6 @@ if k==0
 elseif k<0
     error('k should be >= 0')
 else
-    c = combntns(set, k);
+    c = nchoosek(set, k);
 end
   
