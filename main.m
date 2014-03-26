@@ -2,6 +2,7 @@
 % XXXX  TODO ????
 % 1. Subtract mean from samples, as preprocessing step.
 % 2. Check if glueing would recover results of mutual information
+% 3. Optimize pAUC for sb_classifier- grid search over eta and alpha.
 % 5. Cache kernel matrices / inspect which part is slow. 
 % 6. Increase sample size.
 % 7. Check what happens when I combine gaussian kernel with linear (provide
@@ -14,30 +15,39 @@ clear all;
 global debug
 debug = 0;
 close all;
-bnet = mk_asia_large_arity(5);
+bnet = mk_asia_large_arity(2);
 K = length(bnet.dag);
 arity = get_arity(bnet);
 
 max_S = 2;
 triples = gen_triples(K, max_S);
 
-num_experiments = 30;
-num_samples = 300;
+num_experiments = 10;
+num_samples = 200;
 
-%range = 0:1e-2:1;
-range = [0:1e-3:2e-2 3e-2:1e-2:1];  
-short_range = [1, 2, 3];
-options = {struct('classifier', @kci_classifier, 'kernel', @linear_kernel, 'range', range, 'color', 'g' ), ...
-           struct('classifier', @kci_classifier, 'kernel', @gauss_kernel, 'range', range, 'color', 'b' )};%, ...
-       %    struct('classifier', @ci_classifier, 'kernel', @empty, 'range', range, 'color', 'r' )};%, ...
-       %    struct('classifier', @mi_classifier, 'kernel', @empty, 'range', 0:1e-3:log2(arity), 'color', 'y' )};
-       %, ... struct('classifier', @sb_classifier, 'kernel', @empty,
-       %'range',  short_range, 'color', 'k')};
+range = 0:1e-3:1;  
+full_options = {struct('classifier', @kci_classifier, 'kernel', @linear_kernel, 'range', range, 'color', 'g' ), ...
+           struct('classifier', @kci_classifier, 'kernel', @gauss_kernel, 'range', range, 'color', 'b' ), ...
+           struct('classifier', @ci_classifier, 'kernel', @empty, 'range', range, 'color', 'r' ), ...
+           struct('classifier', @mi_classifier, 'kernel', @empty, 'range', 0:1e-2:log2(arity), 'color', 'y' ), ...
+           struct('classifier', @sb_classifier, 'kernel', @empty,'range',0:5e-2:1, 'color', 'm')};
+           
+%            full_options = {struct('classifier', @kci_classifier, 'kernel', @linear_kernel, 'range', range, 'color', 'g' ), ...
+%            struct('classifier', @kci_classifier, 'kernel', @gauss_kernel, 'range', range, 'color', 'b' ), ...
+%            struct('classifier', @ci_classifier, 'kernel', @empty, 'range', range, 'color', 'r' ), ...
+%            struct('classifier', @mi_classifier, 'kernel', @empty, 'range', 0:1e-2:log2(arity), 'color', 'y','params',struct('check_counts',true) ), ...
+%            struct('classifier', @sb_classifier, 'kernel', @empty,'range',range, 'color', 'm','params',struct('check_counts',true))...
+%            struct('classifier', @sb_classifier, 'kernel', @empty,'range',range, 'color', 'c','params',struct('check_counts',false)};
+
+options = full_options;
+%options = cell(1);
+%options{1} = full_options{5};
+
 num_classifiers = length(options);
-name = cell(num_classifiers);
-TPR = cell(num_classifiers);
-FPR = cell(num_classifiers);
-w_acc = cell(num_classifiers);
+name = cell(1,num_classifiers);
+TPR = cell(1,num_classifiers);
+FPR = cell(1,num_classifiers);
+w_acc = cell(1,num_classifiers);
 
 % label each CPD as either independent (1) or dependent (0)
 indep = zeros(length(triples), 1);
@@ -54,7 +64,6 @@ for c = 1:num_classifiers
     name{c} = sprintf('%s, kernel = %s', func2str(o.classifier), func2str(o.kernel));
     name{c} = strrep(name{c}, '_', ' ');
     num_thresholds = length(o.range);
-    
     w_acc{c} = zeros(1,num_experiments);
     TPR{c} = zeros(num_experiments,num_thresholds);
     FPR{c} = zeros(num_experiments,num_thresholds);
@@ -65,10 +74,12 @@ for exp = 1:num_experiments
     
     fprintf('Experiment #%d, sampling from bayes net.\n',exp);
     s = samples(bnet, num_samples);
+    seconds = 0;
     for c = 1:num_classifiers
+        tic;
         o = options{c};
 
-        opt = struct('arity', arity, 'kernel', o.kernel,'range', o.range);
+        opt = struct('arity', arity, 'kernel', o.kernel,'range', o.range); %,'params',o.params);
         
         % allocate
         classes = zeros(size(o.range));
@@ -107,27 +118,41 @@ for exp = 1:num_experiments
         %         acc = (sum((rho{c} < r) .* indep) / sum(indep) + sum((rho{c} >= r) .* (1 - indep)) / sum(1 - indep)) / 2;
         %         w_acc(c) = max(w_acc(c), acc);
         %     end
-        fprintf('   Finished classifier %s, w_acc=%d.\n',name{c},w_acc{c}(exp));
+        seconds_exp = toc;
+        seconds = seconds + seconds_exp;
+        fprintf('   Finished classifier %s, w_acc=%d, time = %d seconds.\n',name{c},w_acc{c}(exp),seconds_exp);
     end
+    fprintf('Total time for experiment %d is %d\n',exp,seconds);
 
 end
 
-figure
-hold on
 
-for c = 1:num_classifiers
-    o = options{c};
-    tpr = mean(TPR{c});
-    tpr_err = std(TPR{c});
-    fpr = mean(FPR{c});
-    fpr_err = std(FPR{c});
-    %plot(fpr,tpr,o.color); %,'linewidth',2);
-    errorbarxy(fpr,tpr,fpr_err,tpr_err,{o.color,o.color,o.color});
+xlims = {};
+ylims = {};
+xlims{1} = [0 1];
+xlims{2} = [0 0.05];
+ylims{1} = [0 1];
+ylims{2} = [0 0.2];
+
+for fig = 1:length(xlims)
+    figure
     hold on
-    fprintf('Classifier %s, mean best w_acc = %f\n',name{c},mean(w_acc{c}));
+    plot(linspace(0,1),linspace(0,1),'k--');
+    for c = 1:num_classifiers
+        o = options{c};
+        tpr = mean(TPR{c});
+        tpr_err = std(TPR{c});
+        fpr = mean(FPR{c});
+        fpr_err = std(FPR{c});
+        h(c) = plot(fpr,tpr,[o.color '*-'],'linewidth',2);
+        errorbarxy(fpr,tpr,fpr_err,tpr_err,{o.color,o.color,o.color});
+        hold on
+        fprintf('Classifier %s, mean best w_acc = %f\n',name{c},mean(w_acc{c}));
+    end
+    legend(h,name);
+    xlabel('FPR');
+    ylabel('TPR');
+    title(sprintf('ROC on CPDs generated from linear asia network, arity=%d, N=%d',arity,num_samples),'fontsize',14);
+    xlim(xlims{fig});
+    ylim(ylims{fig});
 end
-
-legend(name);
-xlabel('FPR');
-ylabel('TPR');
-title(sprintf('ROC on CPDs generated from linear asia network, arity=%d, N=%d',arity,num_samples),'fontsize',14);

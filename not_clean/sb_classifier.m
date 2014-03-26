@@ -4,14 +4,19 @@ function classes = sb_classifier(emp, options)
 %
 % options.range is a set of threshold values
 
-    emp_cpd = emp_to_cpd(emp, options.arity);
-    emp_cpd = emp_cpd(:, :, :);
+arity = options.arity;
+A = enumerate_assignments(size(emp,1)-2,arity);
+eta = 0.01;
+rho = -Inf;
 
-    rho = -Inf;
-    for t = 1:size(emp_cpd, 3)
-        rho = max(rho, mutual_information(emp_cpd(:, :, t)));
+for t = 1:size(A,1)
+    cond_emp = condition_emp(emp,A(t,:));
+    counts = cond_emp_to_counts(cond_emp,arity);
+    rho = max(rho,compute_sb(counts,eta));
+    if (rho == 1)
+        break
     end
-    
-    printf(2, 'rho=%d\n',rho);
-    classes = threshold(options.range,rho);
 end
+
+printf(2, 'rho=%d\n',rho);
+classes = threshold(options.range,rho);

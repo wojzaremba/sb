@@ -8,24 +8,24 @@ total = 0;
 for t = 1:size(A,1)
 
     % condition on assignment A(t,:)
-    emp_sub = emp;
-    for s = 1:size(A,2)
-        emp_sub = emp_sub(:,emp_sub(2+s,:) == A(t,s));
-    end
-    emp_sub = emp_sub(1:2,:);
-    n = size(emp_sub,2);
-    total = total + n; % this should add up to N
+    cond_emp = condition_emp(emp,A(t,:));
+    n = size(cond_emp,2);
+    total = total + n;
     
-    % count 
+    % inefficient (because cond_emp_to_counts also loops through arity),
+    % but will work for now
+    counts = cond_emp_to_counts(cond_emp,arity);
+    assert(sum(counts(:)) == n);
     for i = 1:arity
         for j = 1:arity
-            count = length(find(~sum(emp_sub(1:2,:)~=repmat([i j]',1,size(emp_sub,2)),1)));
             idx = num2cell(cat(2,[i,j],A(t,:)));
-            CPD(idx{:}) = count/n;
+            CPD(idx{:}) = counts(i,j)/n;
         end
-    end 
-    
+    end
+   
+    printf(3,'finished assignment %d\n',t);
 end
 printf(3, 'total = %d, N = %d\n', total, N);
 assert(total == N);
 end
+
