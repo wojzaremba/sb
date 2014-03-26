@@ -21,8 +21,8 @@ arity = get_arity(bnet);
 max_S = 2;
 triples = gen_triples(K, max_S);
 
-N = 300;
-s = samples(bnet, N);
+num_samples = 300;
+s = samples(bnet, num_samples);
 
 range = 0:1e-3:1;
 short_range = [1, 2, 3];
@@ -101,4 +101,4 @@ end
 legend(name,'interpreter','none');
 xlabel('FPR');
 ylabel('TPR');
-title(sprintf('ROC for various classifiers on CPDs generated from linear asia network, arity=%d',arity),'fontsize',16);
+title(sprintf('ROC for various classifiers on CPDs generated from linear asia network, arity=%d, num_samples=%d',arity,num_samples),'fontsize',16);
