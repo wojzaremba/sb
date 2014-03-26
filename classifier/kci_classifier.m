@@ -1,6 +1,9 @@
-function rho = kci_classifier(emp, options)
-% indep = 1 / -1 means that variables described by emp are independent.
-% indep = 0 means that variables are dependent.
+function classes = kci_classifier(emp, options)
+% returns a binary vector the same length as options.range, with 1
+% signifying independence, and 0 dependence
+%
+% options.range is a set of threshold values
+ 
     T = size(emp, 2);
     if T <= 200  
         width = 1.2; 
@@ -18,4 +21,8 @@ function rho = kci_classifier(emp, options)
         kci_options = struct('kernel', @options.kernel, 'kernel_params', [theta, 1]);        
         rho = kci(emp(1, :)', emp(2, :)', emp(3:end, :)', kci_options);                
     end
+    
+    printf(2, 'rho=%d\n',rho);
+    classes = threshold(options.range,rho);
+    
 end
