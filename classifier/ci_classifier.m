@@ -11,5 +11,5 @@ function classes = ci_classifier(emp, options)
         rho = partialcorr(emp(1, :)', emp(2, :)', emp(3:end, :)');                
     end
     printf(2, 'rho=%d\n',rho);
-    classes = threshold(options.range,rho);
+    classes = threshold(options.range,abs(rho));
 end

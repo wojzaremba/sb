@@ -3,6 +3,6 @@ function classes = threshold(range,rho)
 % indicating that rho < range(i), 0 otherwise
 
 classes = zeros(size(range));
-classes(rho < range) = 1;
+classes(rho <= range) = 1;
 
 end
