@@ -1,4 +1,4 @@
-function bnet = mk_asia_large_arity()
+function bnet = mk_asia_large_arity(arity)
 
 randn('seed', 1);
 Smoking = 1;
@@ -11,7 +11,6 @@ Dys = 7;
 Xray = 8;
 
 n = 8;
-arity = 3;
 dag = zeros(n);
 dag(Smoking, [Bronchitis LungCancer]) = 1;
 dag(Bronchitis, Dys) = 1;
@@ -25,9 +24,9 @@ discrete_nodes = 1:n;
 bnet = mk_bnet(dag, node_sizes, 'discrete', discrete_nodes,'observed',[]);
 
 % true is 2, false is 1
-cpd = eye(arity, arity) + abs(randn(arity, arity)) / 3;
+cpd = eye(arity, arity) + abs(randn(arity, arity)) / (arity * 3);
 cpd = cpd / sum(cpd(:));
-cpd3 = abs(randn(arity, arity, arity)) / 3;
+cpd3 = abs(randn(arity, arity, arity)) / (arity * arity * 3);
 for i = 1:arity
     cpd3(i, i, i) = cpd3(i, i, i) + 1;
 end

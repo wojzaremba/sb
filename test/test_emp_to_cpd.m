@@ -1,5 +1,5 @@
 function test_emp_to_cpd()
-
+disp('test_emp_to_cpd...');
 bnet = mk_bnet4();
 K = length(bnet.dag);
 arity = get_arity(bnet);
