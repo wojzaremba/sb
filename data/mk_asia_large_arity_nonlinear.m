@@ -1,4 +1,4 @@
-function bnet = mk_asia_large_arity(arity)
+function bnet = mk_asia_large_arity_nonlinear(arity)
 
 randn('seed', 1);
 Smoking = 1;
@@ -30,7 +30,7 @@ cpd3 = abs(randn(arity, arity, arity)) / (arity * arity * 3);
 for i = 1:arity
     cpd3(i, i, i) = cpd3(i, i, i) + 1;
 end
-cpd3 = cpd3 / sum(cpd3(:));
+cpd3 = cpd3 / sum(cpd(:));
 ident = ones(1, arity) / arity;
 
 bnet.CPD{VisitToAsia} = tabular_CPD(bnet, VisitToAsia, ident);        

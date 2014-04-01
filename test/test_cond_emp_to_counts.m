@@ -1,4 +1,5 @@
 function test_cond_emp_to_counts()
+disp('test_cond_emp_to_counts...');
 
 arity = 3;
 emp = randi(arity,4,300);

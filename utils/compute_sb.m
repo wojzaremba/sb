@@ -1,9 +1,10 @@
-function rho = compute_sb(counts,eta) %,check_counts)
+function rho = compute_sb(counts,eta,alpha) 
 
-%if (check_counts)
+check_counts = true;
+
+if (check_counts)
     total = sum(counts(:));
     if (total > 50)
-        alpha = 1;
         E = sb_expectation(counts,alpha);
         S = sqrt(sb_variance(counts,alpha));
         phi = gamcdf(eta,(E/S)^2,(S^2)/E);
@@ -11,10 +12,9 @@ function rho = compute_sb(counts,eta) %,check_counts)
     else % force classification to be dependent
         rho = 1;
     end
-% else
-%     alpha = 1;
-%     E = sb_expectation(counts,alpha);
-%     S = sqrt(sb_variance(counts,alpha));
-%     phi = gamcdf(eta,(E/S)^2,(S^2)/E);
-%     rho = 1 - phi;
-% end
+else
+    E = sb_expectation(counts,alpha);
+    S = sqrt(sb_variance(counts,alpha));
+    phi = gamcdf(eta,(E/S)^2,(S^2)/E);
+    rho = 1 - phi;
+end

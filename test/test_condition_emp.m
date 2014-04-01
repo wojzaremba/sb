@@ -1,5 +1,5 @@
 function test_condition_emp()
-
+disp('test_condition_emp...');
 arity = 2;
 emp = randi(arity,4,100);
 A = enumerate_assignments(size(emp,1)-2,arity);

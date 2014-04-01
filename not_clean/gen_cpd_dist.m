@@ -1,4 +1,4 @@
-function triples = gen_cpd_dist(bnet)
+function [CPD,triples] = gen_cpd_dist(bnet)
 % XXX : Change N to K.
 addpath(genpath('.'));
 N = length(bnet.dag);
@@ -11,7 +11,7 @@ CPD = zeros(2, 2, 0);
 
 arity = get_arity(bnet);
 
-print = true;
+print = false;
 
 for i = 1:N
     for j = i+1:N        

@@ -15,7 +15,7 @@ MI = 0;
 for i = 1:k
     for j = 1:l
         if (P(i,j) ~= 0)
-            MI = MI + P(i,j)*log2(P(i,j)/(Px(i)*Py(j)));
+            MI = MI + P(i,j)*log(P(i,j)/(Px(i)*Py(j)));
         end
     end
 end

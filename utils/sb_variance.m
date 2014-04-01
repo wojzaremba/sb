@@ -8,7 +8,7 @@ function [varI] = sb_variance(D,prior)
 %n = sum(D(:));
 
 % incorporate prior information
-prior = 1;
+%prior = 1;
 D = D + prior*ones(k,l);
 n = sum(D(:));
 nn = n + 1; % either normalize by n or n+1, following either Hutter 2001 or 2004 paper, respectively

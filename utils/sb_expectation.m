@@ -7,7 +7,7 @@ function [expI] = sb_expectation(D,prior)
 [k,l] = size(D);
 
 % incorporate prior information
-prior = 1;
+%prior = 1;
 D = D + prior*ones(k,l);
 n = sum(D(:));
 

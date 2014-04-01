@@ -1,16 +1,3 @@
-
-% XXXX  TODO ????
-% 1. Subtract mean from samples, as preprocessing step.
-% 2. Check if glueing would recover results of mutual information
-% 3. Optimize pAUC for sb_classifier- grid search over eta and alpha.
-% 5. Cache kernel matrices / inspect which part is slow. 
-% 6. Increase sample size.
-% 7. Check what happens when I combine gaussian kernel with linear (provide
-% func to add kernels).
-% 8. Get ci and kci linear to give the same results.
-% 9. Explore manually which kernels work well. It's enough to have a paper
-% on a good kernel.
-
 clear all;
 global debug
 debug = 0;
@@ -27,14 +14,8 @@ num_samples = 200;
 
 step_size = 1e-4;
 range = 0:step_size:1;  
-full_options = {struct('classifier', @kci_classifier, 'kernel', @linear_kernel, 'range', range, 'color', 'g' ,'params',[]), ...
-           struct('classifier', @kci_classifier, 'kernel', @gauss_kernel, 'range', range, 'color', 'b','params',[] ), ...
-           struct('classifier', @ci_classifier, 'kernel', @empty, 'range', range, 'color', 'r','params',[] ), ...
-           struct('classifier', @mi_classifier, 'kernel', @empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[] ), ...
-           struct('classifier', @sb_classifier, 'kernel', @empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1))};
+options = struct('classifier', @sb_classifier, 'kernel', @empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1))};
 
-options = full_options;
-%options = full_options(1:3);
 
 
 num_classifiers = length(options);
@@ -122,34 +103,3 @@ for exp = 1:num_experiments
     fprintf('Total time for experiment %d is %d\n',exp,seconds);
 
 end
-
-% 
-% xlims = {};
-% ylims = {};
-% xlims{1} = [0 1];
-% xlims{2} = [0 0.05];
-% ylims{1} = [0 1];
-% ylims{2} = [0 0.2];
-% 
-% for fig = 1:length(xlims)
-%     figure
-%     hold on
-%     plot(linspace(0,1),linspace(0,1),'k--');
-%     for c = 1:num_classifiers
-%         o = options{c};
-%         tpr = mean(TPR{c});
-%         tpr_err = std(TPR{c});
-%         fpr = mean(FPR{c});
-%         fpr_err = std(FPR{c});
-%         h(c) = plot(fpr,tpr,[o.color '*-'],'linewidth',2);
-%         errorbarxy(fpr,tpr,fpr_err,tpr_err,{o.color,o.color,o.color});
-%         hold on
-%         fprintf('Classifier %s, mean best w_acc = %f\n',name{c},mean(w_acc{c}));
-%     end
-%     legend(h,name);
-%     xlabel('FPR');
-%     ylabel('TPR');
-%     title(sprintf('ROC on CPDs generated from linear asia network, arity=%d, N=%d',arity,num_samples),'fontsize',14);
-%     xlim(xlims{fig});
-%     ylim(ylims{fig});
-% end
