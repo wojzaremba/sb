@@ -9,7 +9,7 @@ A = enumerate_assignments(size(emp,1)-2,arity);
 eta = options.params.eta;
 alpha = options.params.alpha;
 
-rho = -Inf;
+rho = -Inf*ones(length(eta),length(alpha));
 
 for t = 1:size(A,1)
     cond_emp = condition_emp(emp,A(t,:));

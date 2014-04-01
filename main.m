@@ -15,25 +15,28 @@ clear all;
 global debug
 debug = 0;
 close all;
-bnet = mk_asia_large_arity(5);
+
+bnet = mk_asia_large_arity(2); %mk_bnet4();
 K = length(bnet.dag);
 arity = get_arity(bnet);
 
 max_S = 2;
 triples = gen_triples(K, max_S);
 
-num_experiments = 10;
-num_samples = 200;
+num_experiments = 4; %30;
+num_samples = 100; %200;
+step_size = 1e-3;
+range = 0:step_size:1;
+eta_range = log2(1:.01:1.2); %log2(1:.001:1.2);
+alpha_range = [0 10.^[-2:1]]%[0 10.^[-3:5]];
 
-step_size = 1e-4;
-range = 0:step_size:1;  
 full_options = {struct('classifier', @kci_classifier, 'kernel', @linear_kernel, 'range', range, 'color', 'g' ,'params',[]), ...
            struct('classifier', @kci_classifier, 'kernel', @gauss_kernel, 'range', range, 'color', 'b','params',[] ), ...
            struct('classifier', @ci_classifier, 'kernel', @empty, 'range', range, 'color', 'r','params',[] ), ...
            struct('classifier', @mi_classifier, 'kernel', @empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[] ), ...
-           struct('classifier', @sb_classifier, 'kernel', @empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1))};
+           struct('classifier', @sb_classifier, 'kernel', @empty,'range',range, 'color', 'm','params',struct('eta',eta_range,'alpha',alpha_range))};
 
-options = full_options;
+options = full_options(5);
 %options = full_options(1:3);
 
 
@@ -52,8 +55,14 @@ for t = 1 : length(triples)
     indep(t) = double(dsep(i, j, triples{t}(3:end), bnet.dag));
     edge(t) = (bnet.dag(i,j) || bnet.dag(j,i));
 end
+% only keep dependent distributions corresponding to an edge (along with
+% any conditioning sets)
+keep = (indep | edge');
+triples = triples(keep);
+indep = indep(keep);
+
 num_indep = length(find(indep));
-fprintf('Testing %d independent and %d dependent CPDs, arity=%d, edges=%d\n',num_indep,length(indep)-num_indep,arity,length(find(edge)));
+fprintf('Testing %d independent and %d dependent CPDs, arity=%d.\n',num_indep,length(indep)-num_indep,arity);
 
 
 % allocate
@@ -62,9 +71,18 @@ for c = 1:num_classifiers
     name{c} = sprintf('%s, kernel = %s', func2str(o.classifier), func2str(o.kernel));
     name{c} = strrep(name{c}, '_', ' ');
     num_thresholds = length(o.range);
-    w_acc{c} = zeros(1,num_experiments);
-    TPR{c} = zeros(num_experiments,num_thresholds);
-    FPR{c} = zeros(num_experiments,num_thresholds);
+    
+    param_size{c} = [];
+    if (isstruct(o.params))
+        fields = fieldnames(o.params);
+        for i = 1:length(fields)
+            param_size{c} = [param_size{c} length(o.params.(fields{i}))];
+        end
+    end
+    
+    %w_acc{c} = zeros([num_experiments param_size{c}] );
+    TPR{c} = zeros([num_experiments num_thresholds param_size{c}]);
+    FPR{c} = zeros([num_experiments num_thresholds param_size{c}]);
 end
 
 for exp = 1:num_experiments
@@ -74,14 +92,14 @@ for exp = 1:num_experiments
     seconds = 0;
     for c = 1:num_classifiers
         tic;
+        fprintf('  Testing %s...\n',name{c});
         o = options{c};
-
         opt = struct('arity', arity, 'kernel', o.kernel,'range', o.range,'params',o.params);
         
         % allocate
-        classes = zeros(size(o.range));
+        classes = zeros([length(o.range) param_size{c}]);
         num_thresholds = length(o.range);
-        scores = zeros(2,2,num_thresholds);
+        scores = zeros([2 2 num_thresholds param_size{c}]);
         
         % apply classifier
         for t = 1 : length(triples)
@@ -89,24 +107,26 @@ for exp = 1:num_experiments
             
             % evaluate classifier at all thresholds in range
             indep_emp = o.classifier(emp, opt);
+            indep_emp = reshape(indep_emp,[1 1 size(indep_emp)]);
             
-            % increment scores accordingly
-            for i = 1:length(indep_emp)
-                scores(1 + indep(t),indep_emp(i)+1,i) = scores(1 + indep(t),indep_emp(i)+1,i) + 1;
-            end
+            % increment scores accordingly (WARNING: HARD-CODED max num
+            % params to optimize as 2)
+            scores(1 + indep(t),1,:,:,:) = scores(1 + indep(t),1,:,:,:) + ~indep_emp;
+            scores(1 + indep(t),2,:,:,:) = scores(1 + indep(t),2,:,:,:) + indep_emp;
         end
         
+
         % evaluate
         for r = 1 : num_thresholds
-            P = scores(2, 1, r) + scores(2, 2, r);
-            N = scores(1, 1, r) + scores(1, 2, r);
-            TP = scores(2, 2, r);
-            TN = scores(1, 1, r);
+            P = scores(2, 1, r, :, :) + scores(2, 2, r, :, :);
+            N = scores(1, 1, r, :, :) + scores(1, 2, r, :, :);
+            TP = scores(2, 2, r, :, :);
+            TN = scores(1, 1, r, :, :);
             %       FN = scores(2, 1, r);
-            FP = scores(1, 2, r);
-            TPR{c}(exp,r) = TP/P; % = TP / (TP + FN)
-            FPR{c}(exp,r) =  FP/N; % = FP / (FP + TN);
-            w_acc{c}(exp) = max(w_acc{c}(exp),(TP / P + TN / N) / 2);
+            FP = scores(1, 2, r, :, :);
+            TPR{c}(exp, r, :, :) = squeeze(TP ./ P); % = TP ./ (TP + FN)
+            FPR{c}(exp, r, :, :) =  squeeze(FP ./ N); % = FP ./ (FP + TN);
+            %w_acc{c}(exp) = max(w_acc{c}(exp),(TP / P + TN / N) / 2);
         end
         
         % Assumes that we picked the best threshold.
@@ -117,7 +137,7 @@ for exp = 1:num_experiments
         %     end
         seconds_exp = toc;
         seconds = seconds + seconds_exp;
-        fprintf('   Finished classifier %s, w_acc=%d, time = %d seconds.\n',name{c},w_acc{c}(exp),seconds_exp);
+        fprintf('   Finished %s, time = %d seconds.\n',name{c},seconds_exp);
     end
     fprintf('Total time for experiment %d is %d\n',exp,seconds);
 

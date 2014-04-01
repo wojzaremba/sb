@@ -9,14 +9,12 @@ arity = get_arity(bnet);
 max_S = 2;
 triples = gen_triples(K, max_S);
 
-num_experiments = 10;
+num_experiments = 30;
 num_samples = 200;
 
 step_size = 1e-4;
 range = 0:step_size:1;  
-options = struct('classifier', @sb_classifier, 'kernel', @empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1))};
-
-
+options = {struct('classifier', @sb_classifier, 'kernel', @empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1))};
 
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
@@ -35,7 +33,6 @@ for t = 1 : length(triples)
 end
 num_indep = length(find(indep));
 fprintf('Testing %d independent and %d dependent CPDs, arity=%d, edges=%d\n',num_indep,length(indep)-num_indep,arity,length(find(edge)));
-
 
 % allocate
 for c = 1:num_classifiers

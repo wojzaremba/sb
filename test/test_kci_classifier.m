@@ -11,13 +11,13 @@ function test_kci_classifier()
     
     disp('  linear kernel...');
     opt = struct('arity', 2,'kernel',@linear_kernel,'range',[0.001,10]);
-    assert(isequal(kci_classifier(emp_indep, opt),[1 1]));
-    assert(isequal(kci_classifier(emp_dep, opt),[0 1]));
+    assert(isequal(kci_classifier(emp_indep, opt),[1; 1]));
+    assert(isequal(kci_classifier(emp_dep, opt),[0; 1]));
     
     disp('  gauss kernel...');
     opt.kernel = @gauss_kernel;
-    assert(isequal(kci_classifier(emp_indep, opt),[1 1]));
-    assert(isequal(kci_classifier(emp_dep, opt),[0 1]));
+    assert(isequal(kci_classifier(emp_indep, opt),[1; 1]));
+    assert(isequal(kci_classifier(emp_dep, opt),[0; 1]));
     
     
     

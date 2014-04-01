@@ -9,7 +9,7 @@ I = zeros(num_samples,1);
 
 for i = 1:num_samples
     P = reshape(theta(i,:),size(D));
-    I(i) = mutual_information_ln(P);
+    I(i) = mutual_information(P);
 end
  
 E = mean(I);
@@ -29,7 +29,7 @@ V = var(I);
 % 
 % y = linspace(0,1,20);
 % %fprintf('Warning: plotting mutual information of input counts.\n');
-% true_mi = mutual_information_ln(D ./ sum(D(:)));
+% true_mi = mutual_information(D ./ sum(D(:)));
 % gamma =  true_mi*ones(size(y));
 % 
 % line(gamma,y,'Color','r','LineWidth',2)

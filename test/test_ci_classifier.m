@@ -10,8 +10,8 @@ function test_ci_classifier()
     
     emp = [X;Y;Z];
     
-    assert(isequal(ci_classifier(emp(1:2,:), opt),[0 1]));
-    assert(isequal(ci_classifier(emp, opt),[1 1]));
+    assert(isequal(ci_classifier(emp(1:2,:), opt),[0; 1]));
+    assert(isequal(ci_classifier(emp, opt),[1; 1]));
     
 
     
