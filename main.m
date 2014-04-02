@@ -19,30 +19,27 @@ global debug
 debug = 0;
 close all;
 
-bnet = mk_asia_large_arity(3); %mk_bnet4();
+bnet = mk_asia_large_arity(2); %mk_bnet4();
 K = length(bnet.dag);
 arity = get_arity(bnet);
 
-max_S = 1;
+max_S = 2;
 triples = gen_triples(K, max_S);
 
 num_experiments = 30;
 num_samples = 200;
 step_size = 1e-3;
 range = 0:step_size:1;
-eta_range = log2(1:0.01:1.2);%log2(1:.001:1.1);
-alpha_range = [0 10.^(-3:0.2:3)];%[0 10.^(-3:0.2:3)];
+%eta_range = log2(1:0.01:1.2);%log2(1:.001:1.1);
+%alpha_range = [0 10.^(-3:0.2:3)];%[0 10.^(-3:0.2:3)];
 
 full_options = {struct('classifier', @kci_classifier, 'kernel', @linear_kernel, 'range', range, 'color', 'g' ,'params',[]), ...
            struct('classifier', @kci_classifier, 'kernel', @gauss_kernel, 'range', range, 'color', 'b','params',[] ), ...
-           struct('classifier', @ci_classifier, 'kernel', @empty, 'range', range, 'color', 'r','params',[] ), ...
+           struct('classifier', @pc_classifier, 'kernel', @empty, 'range', range, 'color', 'r','params',[] ), ...
            struct('classifier', @mi_classifier, 'kernel', @empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[] ), ...
-           struct('classifier', @sb_classifier, 'kernel', @empty,'range',range, 'color', 'm','params',struct('eta',eta_range,'alpha',alpha_range))};
+           struct('classifier', @sb_classifier, 'kernel', @empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1))};
 
-options = full_options(5);
-%options = full_options(1:3);
-
-
+options = full_options;
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
 TPR = cell(1,num_classifiers);
@@ -88,14 +85,15 @@ for c = 1:num_classifiers
     FPR{c} = zeros([num_experiments num_thresholds param_size{c}]);
 end
 
+total_time = 0;
 for exp = 1:num_experiments
     
     fprintf('Experiment #%d, sampling from bayes net.\n',exp);
     s = samples(bnet, num_samples);
-    seconds = 0;
+    time_exp = 0;
     for c = 1:num_classifiers
         tic;
-        fprintf('  Testing %s...\n',name{c});
+        %fprintf('  Testing %s...\n',name{c});
         o = options{c};
         opt = struct('arity', arity, 'kernel', o.kernel,'range', o.range,'params',o.params);
         
@@ -138,13 +136,16 @@ for exp = 1:num_experiments
         %         acc = (sum((rho{c} < r) .* indep) / sum(indep) + sum((rho{c} >= r) .* (1 - indep)) / sum(1 - indep)) / 2;
         %         w_acc(c) = max(w_acc(c), acc);
         %     end
-        seconds_exp = toc;
-        seconds = seconds + seconds_exp;
-        fprintf('   Finished %s, time = %d seconds.\n',name{c},seconds_exp);
+        time_classifier = toc;
+        time_exp = time_exp + time_classifier;
+        fprintf('   Finished %s, time = %d seconds.\n',name{c},time_classifier);
     end
-    fprintf('Total time for experiment %d is %d\n',exp,seconds);
+    total_time = total_time + time_exp;
+    fprintf('Time for experiment %d is %d\n',exp,time_exp);
 
 end
+
+fprintf('Total running time for all experiments is %d seconds.\n',total_time);
 
 % 
 % xlims = {};

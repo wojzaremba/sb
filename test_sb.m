@@ -21,10 +21,9 @@ test_sb_variance();
 test_compute_sb();
 
 
-
 % classifiers
 test_mi_classifier();
-test_ci_classifier();
+test_pc_classifier();
 test_kci_classifier();
 test_sb_classifier();
 

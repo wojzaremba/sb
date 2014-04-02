@@ -1,5 +1,6 @@
 %main;
-%load linear_asia_arity_3.mat
+clear all;
+load linear_asia_arity_3.mat
 
 % plot AUC surface
 figure
@@ -16,3 +17,11 @@ title(sprintf('pAUC (to 0.05) for sb classifier, linear asia network, arity = %d
 % plot ROC curve for max pAUC
 [eta_idx,alpha_idx] = ind2sub(size(AUC),find(AUC==max(AUC(:))));
 plot_roc_choose_range;
+
+
+clear all;
+
+% plot ROC curves for all classifiers, arity=2 (using eta = 0.01, alpha=1, now with confidence!)
+load all_classifiers_linear_2.mat
+plot_roc_choose_range_all_classifiers;
+

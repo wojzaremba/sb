@@ -1,6 +1,6 @@
-function test_ci_classifier()
+function test_pc_classifier()
 
-    disp('test_ci_classifier...');
+    disp('test_pc_classifier...');
     sample_size = 100000;
     opt = struct('range',[0.01,1.01]);
         
@@ -10,8 +10,8 @@ function test_ci_classifier()
     
     emp = [X;Y;Z];
     
-    assert(isequal(ci_classifier(emp(1:2,:), opt),[0; 1]));
-    assert(isequal(ci_classifier(emp, opt),[1; 1]));
+    assert(isequal(pc_classifier(emp(1:2,:), opt),[0; 1]));
+    assert(isequal(pc_classifier(emp, opt),[1; 1]));
     
 
     

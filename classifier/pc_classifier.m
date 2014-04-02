@@ -1,4 +1,4 @@
-function classes = ci_classifier(emp, options)
+function classes = pc_classifier(emp, options)
 % returns a binary vector the same length as options.range, with 1
 % signifying independence, and 0 dependence
 %
