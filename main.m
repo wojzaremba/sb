@@ -19,7 +19,7 @@ global debug
 debug = 0;
 close all;
 
-bnet = mk_asia_large_arity(2); %mk_bnet4();
+bnet = mk_asia_large_arity(3); %mk_bnet4();
 K = length(bnet.dag);
 arity = get_arity(bnet);
 
