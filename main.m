@@ -16,7 +16,7 @@ global debug
 debug = 0;
 close all;
 
-bnet = mk_asia_large_arity(2); %mk_bnet4();
+bnet = mk_asia_large_arity(3); %mk_bnet4();
 K = length(bnet.dag);
 arity = get_arity(bnet);
 
@@ -27,8 +27,8 @@ num_experiments = 30;
 num_samples = 200;
 step_size = 1e-3;
 range = 0:step_size:1;
-eta_range = log2(1:.001:1.1);
-alpha_range = [0 10.^(-3:0.2:3)];
+eta_range = log2(1:0.01:1.2);%log2(1:.001:1.1);
+alpha_range = [0 10.^(-3:0.2:3)];%[0 10.^(-3:0.2:3)];
 
 full_options = {struct('classifier', @kci_classifier, 'kernel', @linear_kernel, 'range', range, 'color', 'g' ,'params',[]), ...
            struct('classifier', @kci_classifier, 'kernel', @gauss_kernel, 'range', range, 'color', 'b','params',[] ), ...

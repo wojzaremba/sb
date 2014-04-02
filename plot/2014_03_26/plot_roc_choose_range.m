@@ -8,8 +8,8 @@ ylims{2} = [0 0.5];
 skips = {};
 %skips{1} = [50 100 1000 1000 1000];
 %skips{2} = [10 10 100 100 1000];
-skips{1} = 40;%[1000 1000 10]./10;
-skips{2} = 20; %[100 100 100]./10;
+skips{1} = 10;%[1000 1000 10]./10;
+skips{2} = 30; %[100 100 100]./10;
 % idx = cell(1,num_classifiers);
 % for c = 1:num_classifiers
 %     idx{c} = 1:skip(c):length(options{c}.range);
@@ -18,8 +18,10 @@ skips{2} = 20; %[100 100 100]./10;
 
 % from AUCfull_sb_linear_asia_arity2_N200, choosing corners of stable,
 % optimal range
-eta_idx = 12; %71; (12 <=> 0.016), (71 <=> 0.1)
-alpha_idx = 24; %2; (24 <=> 25), (2 <=> 0.001)
+% eta_idx = 12; %71; (12 <=> 0.016), (71 <=> 0.1)
+% alpha_idx = 24; %(24 <=> 25), (2 <=> 0.001)
+eta_idx = 2;
+alpha_idx = 18;
 
 myTPR = TPR{1}(:,:,eta_idx,alpha_idx); 
 myFPR = FPR{1}(:,:,eta_idx,alpha_idx);
@@ -53,7 +55,7 @@ for fig = 1:length(xlims)
     legend(h,name);
     xlabel('FPR');
     ylabel('TPR');
-    title(sprintf('ROC on CPDs generated from linear asia network, arity=%d, N=%d, eta=%.2f, alpha=%.2f',arity,num_samples,o.params.eta(eta_idx),o.params.alpha(alpha_idx)),'fontsize',12);
+    title(sprintf('ROC on CPDs generated from linear asia network, arity=%d, N=%d, eta=%.3f, alpha=%.3f',arity,num_samples,o.params.eta(eta_idx),o.params.alpha(alpha_idx)),'fontsize',12);
     xlim(xlims{fig});
     ylim(ylims{fig});
 end
