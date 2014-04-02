@@ -3,6 +3,7 @@
 % 1. Subtract mean from samples, as preprocessing step.
 % 2. Check if glueing would recover results of mutual information
 % 3. Optimize pAUC for sb_classifier- grid search over eta and alpha.
+% 4. writes tests for mk_bnet functions
 % 5. Cache kernel matrices / inspect which part is slow. 
 % 6. Increase sample size.
 % 7. Check what happens when I combine gaussian kernel with linear (provide
@@ -10,6 +11,8 @@
 % 8. Get ci and kci linear to give the same results.
 % 9. Explore manually which kernels work well. It's enough to have a paper
 % on a good kernel.
+% 10. Add check in BNT that rows of CPDs sum to 1
+
 
 clear all;
 global debug

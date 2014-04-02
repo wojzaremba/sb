@@ -5,7 +5,7 @@ function sample = sample_bnet(bnet, varargin)
 % sample{i} contains the value of the i'th node.
 % i.e., the result is an Nx1 cell array.
 % Nodes are sampled in the order given by bnet.order.
-%
+% 
 % Optional arguments:
 %
 % evidence - initial evidence; if evidence{i} is non-empty, node i won't be sampled.

@@ -24,18 +24,27 @@ discrete_nodes = 1:n;
 bnet = mk_bnet(dag, node_sizes, 'discrete', discrete_nodes,'observed',[]);
 
 % true is 2, false is 1
+% true is 2, false is 1
 cpd = eye(arity, arity) + abs(randn(arity, arity)) / (arity * 3);
-cpd = cpd / sum(cpd(:));
+for i = 1:arity
+    cpd(i,:) = cpd(i,:) / sum(cpd(i,:));
+end
+
 cpd3 = abs(randn(arity, arity, arity)) / (arity * arity * 3);
 for i = 1:arity
     cpd3(i, i, i) = cpd3(i, i, i) + 1;
 end
-cpd3 = cpd3 / sum(cpd3(:));
-ident = ones(1, arity) / arity;
+for i = 1:arity
+    for j = 1:arity
+        cpd3(i,j,:) = cpd3(i,j,:) / sum(cpd3(i,j,:));
+    end
+end
 
-bnet.CPD{VisitToAsia} = tabular_CPD(bnet, VisitToAsia, ident);        
+unif = ones(1, arity) / arity;
+
+bnet.CPD{VisitToAsia} = tabular_CPD(bnet, VisitToAsia, unif);        
 bnet.CPD{TB} = tabular_CPD(bnet, TB, cpd);                            
-bnet.CPD{Smoking} = tabular_CPD(bnet, Smoking, ident);                
+bnet.CPD{Smoking} = tabular_CPD(bnet, Smoking, unif);                
 bnet.CPD{LungCancer} = tabular_CPD(bnet, LungCancer, cpd');           
 bnet.CPD{Bronchitis} = tabular_CPD(bnet, Bronchitis, cpd);            
 bnet.CPD{Dys} = tabular_CPD(bnet, Dys, cpd3);             
