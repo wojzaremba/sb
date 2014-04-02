@@ -1,0 +1,9 @@
+All of these plots were generated from networks that we thought had roughly linear relationships between adjacent variables (i.e. joint distributions that were nearly diagonal), but it turns out there was a bug in the code where the CPDs were being normalized over the entire matrix at once, instead of for each setting to the parents.  This leads to joint distributions that are very different from diagonal or "linear".  e.g. an empirical distribution from (ASIA,TUB) sampled from the pre-bugfix network looked like:
+    0.2250    0.2657
+    0.0428    0.4665
+
+whereas after the fix it looked like:
+    0.4661    0.0322
+    0.0742    0.4275
+
+This was based on 10,000 samples.
