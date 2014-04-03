@@ -19,7 +19,7 @@ global debug
 debug = 0;
 close all;
 
-bnet = mk_asia_large_arity(2); %mk_bnet4();
+bnet = mk_asia_large_arity(5); %mk_bnet4();
 K = length(bnet.dag);
 arity = get_arity(bnet);
 
@@ -36,6 +36,7 @@ range = 0:step_size:1;
 full_options = {struct('classifier', @kci_classifier, 'kernel', @linear_kernel, 'range', range, 'color', 'g' ,'params',[]), ...
            struct('classifier', @kci_classifier, 'kernel', @gauss_kernel, 'range', range, 'color', 'b','params',[] ), ...
            struct('classifier', @pc_classifier, 'kernel', @empty, 'range', range, 'color', 'r','params',[] ), ...
+           struct('classifier', @cc_classifier, 'kernel', @empty, 'range', range, 'color', 'k','params',[] ), ...
            struct('classifier', @mi_classifier, 'kernel', @empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[] ), ...
            struct('classifier', @sb_classifier, 'kernel', @empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1))};
 
@@ -91,7 +92,7 @@ for exp = 1:num_experiments
     fprintf('Experiment #%d, sampling from bayes net.\n',exp);
     s = samples(bnet, num_samples);
     time_exp = 0;
-    for c = 1:num_classifiers
+    for c = 4%1:num_classifiers
         tic;
         %fprintf('  Testing %s...\n',name{c});
         o = options{c};

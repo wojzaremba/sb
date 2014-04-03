@@ -26,5 +26,6 @@ test_mi_classifier();
 test_pc_classifier();
 test_kci_classifier();
 test_sb_classifier();
+test_cc_classifier();
 
 disp('Passed all tests!');

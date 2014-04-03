@@ -1,7 +1,5 @@
 function bnet = mk_asia_large_arity_nonlinear(arity)
 
-error('NOT FINISHED, DONT USE!');
-
 randn('seed', 1);
 Smoking = 1;
 Bronchitis = 2;
@@ -27,8 +25,6 @@ bnet = mk_bnet(dag, node_sizes, 'discrete', discrete_nodes,'observed',[]);
 
 % true is 2, false is 1
 cpd = eye(arity, arity) + abs(randn(arity, arity)) / (arity * 3);
-
-
 % normalize each row of CPD, and then permute
 for i = 1:arity
     cpd(i,:) = cpd(i,:) / sum(cpd(i,:));
