@@ -14,7 +14,7 @@ CPD = emp_to_cpd(emp,arity);
 
 for i = 1:size(CPD,3)
     for j = 1:size(CPD,4)
-        assert( sum(sum(CPD(:,:,i,j))) == 1);
+        assert( norm(sum(sum(CPD(:,:,i,j))) - 1) < 1e-4);
     end
 end
 

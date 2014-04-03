@@ -14,6 +14,7 @@ test_condition_emp();
 test_cond_emp_to_counts();
 test_sample_N_from_dist();
 test_auc();
+test_dist1();
 
 % sb
 test_sb_expectation();

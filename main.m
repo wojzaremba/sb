@@ -14,7 +14,7 @@
 % 10. Add check in BNT that rows of CPDs sum to 1
 
 
-clear all;
+% clear all;
 global debug
 debug = 0;
 close all;
@@ -33,14 +33,20 @@ range = 0:step_size:1;
 %eta_range = log2(1:0.01:1.2);%log2(1:.001:1.1);
 %alpha_range = [0 10.^(-3:0.2:3)];%[0 10.^(-3:0.2:3)];
 
-full_options = {struct('classifier', @kci_classifier, 'kernel', @linear_kernel, 'range', range, 'color', 'g' ,'params',[]), ...
-           struct('classifier', @kci_classifier, 'kernel', @gauss_kernel, 'range', range, 'color', 'b','params',[] ), ...
-           struct('classifier', @pc_classifier, 'kernel', @empty, 'range', range, 'color', 'r','params',[] ), ...
-           struct('classifier', @cc_classifier, 'kernel', @empty, 'range', range, 'color', 'k','params',[] ), ...
-           struct('classifier', @mi_classifier, 'kernel', @empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[] ), ...
-           struct('classifier', @sb_classifier, 'kernel', @empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1))};
+empty = struct('name', 'none');
+L = LinearKernel();
+G = GaussKernel();
+% C1 = CombKernel({L, G}, {-0.1, 1});
+LA = LaplaceKernel();
+full_options = {struct('classifier', @kci_classifier, 'kernel', L, 'range', range, 'color', 'g' ,'params',[]), ...
+           struct('classifier', @kci_classifier, 'kernel', G, 'range', range, 'color', 'b','params',[] ), ...
+           struct('classifier', @kci_classifier, 'kernel', LA, 'range', range, 'color', 'm' ,'params',[]), ...
+           struct('classifier', @pc_classifier, 'kernel', empty, 'range', range, 'color', 'r','params',[] ), ...
+           struct('classifier', @cc_classifier, 'kernel', empty, 'range', range, 'color', 'k','params',[] ), ...
+           struct('classifier', @mi_classifier, 'kernel', empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[] ), ...
+           struct('classifier', @sb_classifier, 'kernel', empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1))};
 
-options = full_options;
+options = full_options(1:3);
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
 TPR = cell(1,num_classifiers);
@@ -49,6 +55,7 @@ w_acc = cell(1,num_classifiers);
 
 % label each CPD as either independent (1) or dependent (0)
 indep = zeros(length(triples), 1);
+edge = zeros(length(triples),1);
 fprintf('Computing ground truth indep.\n');
 for t = 1 : length(triples)
     i = triples{t}(1);
@@ -58,7 +65,7 @@ for t = 1 : length(triples)
 end
 % only keep dependent distributions corresponding to an edge (along with
 % any conditioning sets)
-keep = (indep | edge');
+keep = (indep | edge);
 triples = triples(keep);
 indep = indep(keep);
 
@@ -69,7 +76,7 @@ fprintf('Testing %d independent and %d dependent CPDs, arity=%d.\n',num_indep,le
 % allocate
 for c = 1:num_classifiers
     o = options{c};
-    name{c} = sprintf('%s, kernel = %s', func2str(o.classifier), func2str(o.kernel));
+    name{c} = sprintf('%s, kernel = %s', func2str(o.classifier), o.kernel.name);
     name{c} = strrep(name{c}, '_', ' ');
     num_thresholds = length(o.range);
     
@@ -92,7 +99,7 @@ for exp = 1:num_experiments
     fprintf('Experiment #%d, sampling from bayes net.\n',exp);
     s = samples(bnet, num_samples);
     time_exp = 0;
-    for c = 4%1:num_classifiers
+    for c = 1:num_classifiers
         tic;
         %fprintf('  Testing %s...\n',name{c});
         o = options{c};
@@ -115,8 +122,7 @@ for exp = 1:num_experiments
             % params to optimize as 2)
             scores(1 + indep(t),1,:,:,:) = scores(1 + indep(t),1,:,:,:) + ~indep_emp;
             scores(1 + indep(t),2,:,:,:) = scores(1 + indep(t),2,:,:,:) + indep_emp;
-        end
-        
+        end        
 
         % evaluate
         for r = 1 : num_thresholds
@@ -124,19 +130,10 @@ for exp = 1:num_experiments
             N = scores(1, 1, r, :, :) + scores(1, 2, r, :, :);
             TP = scores(2, 2, r, :, :);
             TN = scores(1, 1, r, :, :);
-            %       FN = scores(2, 1, r);
             FP = scores(1, 2, r, :, :);
             TPR{c}(exp, r, :, :) = squeeze(TP ./ P); % = TP ./ (TP + FN)
             FPR{c}(exp, r, :, :) =  squeeze(FP ./ N); % = FP ./ (FP + TN);
-            %w_acc{c}(exp) = max(w_acc{c}(exp),(TP / P + TN / N) / 2);
         end
-        
-        % Assumes that we picked the best threshold.
-        %     for i = 1:num_thresholds
-        %         r = o.range(i);
-        %         acc = (sum((rho{c} < r) .* indep) / sum(indep) + sum((rho{c} >= r) .* (1 - indep)) / sum(1 - indep)) / 2;
-        %         w_acc(c) = max(w_acc(c), acc);
-        %     end
         time_classifier = toc;
         time_exp = time_exp + time_classifier;
         fprintf('   Finished %s, time = %d seconds.\n',name{c},time_classifier);
@@ -148,33 +145,3 @@ end
 
 fprintf('Total running time for all experiments is %d seconds.\n',total_time);
 
-% 
-% xlims = {};
-% ylims = {};
-% xlims{1} = [0 1];
-% xlims{2} = [0 0.05];
-% ylims{1} = [0 1];
-% ylims{2} = [0 0.2];
-% 
-% for fig = 1:length(xlims)
-%     figure
-%     hold on
-%     plot(linspace(0,1),linspace(0,1),'k--');
-%     for c = 1:num_classifiers
-%         o = options{c};
-%         tpr = mean(TPR{c});
-%         tpr_err = std(TPR{c});
-%         fpr = mean(FPR{c});
-%         fpr_err = std(FPR{c});
-%         h(c) = plot(fpr,tpr,[o.color '*-'],'linewidth',2);
-%         errorbarxy(fpr,tpr,fpr_err,tpr_err,{o.color,o.color,o.color});
-%         hold on
-%         fprintf('Classifier %s, mean best w_acc = %f\n',name{c},mean(w_acc{c}));
-%     end
-%     legend(h,name);
-%     xlabel('FPR');
-%     ylabel('TPR');
-%     title(sprintf('ROC on CPDs generated from linear asia network, arity=%d, N=%d',arity,num_samples),'fontsize',14);
-%     xlim(xlims{fig});
-%     ylim(ylims{fig});
-% end

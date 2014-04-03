@@ -147,23 +147,44 @@ Existing independence tests:
 
 \cite{margaritis2003learning}
 
-\section{Independence testing}
+\section{Independence testing} TODO : Wojciech (give a pass to Arthur Gretton)
+Independence tests have to decide if random variables are independent.
+Samples of this random variables gives us indirect access to the conditional probability
+distribution (CPD), which decides on independence. However, samples itself
+provide only empirical estimate on conditional probability distribution. 
+Moreover, manifold \ref{fig:ind} of independent CPDs among all possible CPDs
+have a measure zero. 
+
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.55\linewidth]{img/independence_surface.eps}
-\caption{A}
+\caption{Manifold of 2-dimensional independent matrices.}
+\label{fig:ind}
 \end{figure}
 
+\subsection{Curse of conditioning}
 
-\subsection{Discrete variables formulation}
+\subsection{Partial correlation}
 
-\subsection{Continuous variables formulation}
+\subsection{Kernelized partial correlation}
 
 \section{Experiments}
 
 \subsection{Classification of Synthetic CPDs}
+We generated distributions from toy Bayesian networks.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.55\linewidth]{img/roc_full_random_arity5.eps}
+\caption{A}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.55\linewidth]{img/roc_partial_random_arity5.eps}
+\caption{A}
+\end{figure}
 \subsection{Classification of CPDs from Gene Expression}
 
 \subsection{Synthetic Bayesian networks}

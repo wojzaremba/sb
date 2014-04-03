@@ -1,3 +1,5 @@
+close all;
+clear h;
 xlims = {};
 ylims = {};
 xlims{1} = [0 1];
@@ -7,9 +9,11 @@ ylims{2} = [0 1];
 xmax = [1.0, 0.05];
 
 
-% skips = {};
-% skips{1} = [1 2 50 100 50 100];
-% skips{2} = [1 1 50 10 1 100];
+skips = {};
+% skips{1} = ones(1,4);
+% skips{2} = ones(1,4);
+skips{1} = [1 1 1];% 1];% 50 100];
+skips{2} = [1 1 1];% 1]; % 1 100];
 
 %skips{1} = [50 100 1000 1000 1000];
 %skips{2} = [10 10 100 100 1000];
@@ -56,11 +60,12 @@ for fig = 1:length(xlims)
         
         %h(c) = plot(fpr,tpr,[o.color '*-'],'linewidth',2);
         %errorbarxy(fpr,tpr,fpr_err,tpr_err,{o.color,o.color,o.color});
-        h(c) = plot(fpr,tpr,[o.color '*-']); %,'linewidth',2);
+        h(c) = plot(fpr,tpr,[o.color '*-']);%,'linewidth',2);
         hold on
         %fprintf('Classifier %s, mean best w_acc = %f\n',name{c},mean(w_acc{c}));
     end
-    h(num_classifiers + 1) = plot(linspace(0,1),linspace(0,1),'k--');%'linewidth',2);
+    h(num_classifiers + 1) = plot(linspace(0,1),linspace(0,1),'k--','linewidth',2);
+    hold on
     %name{num_classifiers + 1} = 'random';
     legend(h,[name 'random']);
     xlabel('FPR');

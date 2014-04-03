@@ -1,5 +1,7 @@
 function test_sb_expectation()
 disp('test_sb_expectation...');
+rand('seed', 1);
+randn('seed', 1);
 arity = 3;
 P = rand_dist_linear(arity);
 
@@ -14,7 +16,6 @@ end
 should_be_bounded = err.*(N.^2);
 assert(max(should_be_bounded) < 100);
 %plot(N,should_be_bounded);
-
 end
 
 
