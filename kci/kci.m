@@ -1,5 +1,6 @@
 function Sta = kci(x, y, z, options)
 lambda = 1E-3; 
+%lambda = 1e-10;
 T = length(y); % the sample size
 % % normalize the data
 % x = x - repmat(mean(x), T, 1);

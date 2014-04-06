@@ -2,12 +2,9 @@
 % XXXX  TODO ????
 % 1. Subtract mean from samples, as preprocessing step.
 % 2. Check if glueing would recover results of mutual information
-% 3. Optimize pAUC for sb_classifier- grid search over eta and alpha.
 % 4. writes tests for mk_bnet functions
 % 5. Cache kernel matrices / inspect which part is slow. 
 % 6. Increase sample size.
-% 7. Check what happens when I combine gaussian kernel with linear (provide
-% func to add kernels).
 % 8. Get ci and kci linear to give the same results.
 % 9. Explore manually which kernels work well. It's enough to have a paper
 % on a good kernel.
@@ -26,8 +23,8 @@ arity = get_arity(bnet);
 max_S = 2;
 triples = gen_triples(K, max_S);
 
-num_experiments = 30;
-num_samples = 200;
+num_experiments = 5;
+num_samples = 50;
 step_size = 1e-3;
 range = 0:step_size:1;
 %eta_range = log2(1:0.01:1.2);%log2(1:.001:1.1);
@@ -46,7 +43,7 @@ full_options = {struct('classifier', @kci_classifier, 'kernel', L, 'range', rang
            struct('classifier', @mi_classifier, 'kernel', empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[] ), ...
            struct('classifier', @sb_classifier, 'kernel', empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1))};
 
-options = full_options(1:3);
+options = full_options([1 4]);
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
 TPR = cell(1,num_classifiers);
