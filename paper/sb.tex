@@ -7,6 +7,7 @@
 \usepackage[small,labelfont=bf]{caption}
 \usepackage[square]{natbib}
 \usepackage{color}
+\usepackage{subfigure}
 \usepackage{epstopdf}
 \usepackage{subfig}
 \newlength{\subfigheight}
@@ -88,26 +89,35 @@ Address \\
 
 \section{Introduction}
 Learning Bayesian networks for general distributions is
-intractable task \cite{chickering1996learning}. However, in practise 
-for distributions appearing in real data, still we are able to 
+intractable task \cite{chickering1996learning}. However, often
+for real data distributions, still we are able to 
 recover Bayesian network structure. This implies that real data
 distribution has some special properties, which simplify process
-of structure recovery. This process is almost always
+of structure recovery. Such process is almost always
 based on computation local statistics, and then 
 reasoning about global structure \cite{jaakkola2010learning, tsamardinos2006max}. 
-Local statistics describe
-complexity (e.g. number of parameters in case of BIC), and 
-level of independence between nodes (e.g. mutual information tests, 
+
+
+Such local statistics can describe
+complexity of network (e.g. number of parameters in case of BIC\cite{schwarz1978estimating}), or
+can measure dependency of between nodes (e.g. mutual information tests, 
 conditional independence tests). 
-We focus in this work on improvement of independence tests by 
-learning it for CPDs present in data.
+We focus in this work on how to best measure dependency between nodes
+in empirical CPDs from Bayessian network. We are mainly interest
+in developing techniques applicable to discovery of structure
+in gene expression data. This implies that each random variable
+can belong to many classes (when expression is quantized), or have continuous
+values. Moreover, such datasets are always relatively small $\sim200$ samples.
+We focus our attention on addressing Bayesian network structure learning
+in aforementioned regime. 
 
 
-We consider parameterized family of independence tests. 
-Before inferring about structure of Bayesian network, we tune classifier 
-predict independence or dependence on CPDs present in data. 
-This way, we obtain highly sensitive independence test, which
-fires on dependence or independence phenomenas present in our data. 
+Our main contribution is in designing very efficient dependency test
+for Bayesian networks. It is kernelized partial correlation with
+kernels sensitive to linear dependency present in CPDs. We show
+that kernelized partial correlation with proper kernel in ``gene expression''
+regime is almost always better than any other previously considered
+dependency test. 
 
 
 \section{Related work}
@@ -119,10 +129,27 @@ Independence tests used in Bayesian networks
 \end{itemize}
 
 There has been extensive research in area of scoring functions for
-Bayesian networks. This step is critical to recover no-complete graph structure.
+Bayesian networks. This step is crucial to prevent algorithms from 
+recovering complete graph structure.
 Without any scoring function, log-likelihood term would force optimization
 to choose fully connected graph. There have been proposed few regularizations (scoring functions)
-to address this problem. One most widely used is Bayesian Information Criterion (BIC) \cite{schwarz1978estimating}.
+to address this problem. There are two general types of scoring functions 
+(1) based purely on model complexity, (2) combining model complexity with data evidences.
+
+
+
+To the first group belongs 
+one most widely used scoring functions, which 
+is Bayesian Information Criterion (BIC) \cite{schwarz1978estimating}.
+There are couple of others like Hannan–Quinn information criterion (HQC) \cite{hannan1979determination},
+or Bayesian model comparison (BMC). Major drawback of scoring functions based
+purely on model complexity is their constant power regardless of amount of data.
+Even if data speaks strongly about dependency, such scoring functions won't take
+it into account.
+
+
+
+
 Variety of such scoring functions calculate dependency between nodes conditioned on
 potential parents \cite{de2006scoring}. Usual measures of dependency are
 based on mutual information, conditional independence test, or 
@@ -214,6 +241,19 @@ We generated distributions from toy Bayesian networks.
 
 \caption{ROCs for joint distributions generated from asia network structure with each variable having arity 5, and each CPD with randomly sampled entries from abs(Gaussian).}
 \end{figure}
+
+%\subfigure{
+%  \includegraphics[width=0.45\linewidth]{img/roc_full_random_arity5.eps}
+%}
+%\subfigure{
+%\includegraphics[width=0.45\linewidth]{img/roc_partial_random_arity5.eps}
+%}
+%\caption{Precision-recall curves for various classifiers. Plots present
+%results for asia network, with nodes having 5 possible classes. Local CPDs
+%have been chosen to express linear relation. {\bf (Left)} Entire 
+%precision-recall curve, {\bf (Right)} Low recall fragment of precision-recall curve.}
+
+%\end{figure}
 
 \subsection{Classification of CPDs from Gene Expression}
 
