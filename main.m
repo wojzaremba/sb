@@ -24,7 +24,7 @@ max_S = 2;
 triples = gen_triples(K, max_S);
 
 num_experiments = 30;
-num_samples_range = [200 500 1000];
+num_samples_range = [200 400 600];
 num_N = length(num_samples_range);
 step_size = 1e-3;
 range = 0:step_size:1;
@@ -36,15 +36,17 @@ L = LinearKernel();
 G = GaussKernel();
 % C1 = CombKernel({L, G}, {-0.1, 1});
 LA = LaplaceKernel();
+P = PKernel();
 full_options = {struct('classifier', @kci_classifier, 'kernel', L, 'range', range, 'color', 'g' ,'params',[],'name','KCI, linear kernel'), ...
            struct('classifier', @kci_classifier, 'kernel', G, 'range', range, 'color', 'b','params',[],'name','KCI, gaussian kernel'), ...
            struct('classifier', @kci_classifier, 'kernel', LA, 'range', range, 'color', 'm' ,'params',[],'name','KCI, laplace kernel'), ...
+           struct('classifier', @kci_classifier, 'kernel', P, 'range', range, 'color', 'k' ,'params',[],'name','KCI, heavytail kernel'), ...
            struct('classifier', @pc_classifier, 'kernel', empty, 'range', range, 'color', 'r','params',[],'name','partial correlation'), ...
-           struct('classifier', @cc_classifier, 'kernel', empty, 'range', range, 'color', 'k','params',[],'name','conditional correlation'), ...
+           struct('classifier', @cc_classifier, 'kernel', empty, 'range', range, 'color', 'c','params',[],'name','conditional correlation'), ...
            struct('classifier', @mi_classifier, 'kernel', empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[],'name','conditional mutual information'), ...
            struct('classifier', @sb_classifier, 'kernel', empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1),'name','bayesian conditional mutual information')};
 
-options = full_options(1:6);
+options = full_options(1:7);
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
 TPR = cell(num_classifiers, num_N);
@@ -151,4 +153,5 @@ for N_idx = 1:length(num_samples_range)
 end
 
 fprintf('Total running time for all experiments is %d seconds.\n',total_time);
-
+mat_file_command = sprintf('save asia_random_arity_%d.mat',arity);
+eval(mat_file_command);
