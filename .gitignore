@@ -6,3 +6,4 @@
 *.log
 *.aux
 *.mat
+.DS_Store
