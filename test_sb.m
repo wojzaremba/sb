@@ -15,6 +15,7 @@ test_cond_emp_to_counts();
 test_sample_N_from_dist();
 test_auc();
 test_dist1();
+test_mk_random_cpd();
 
 % sb
 test_sb_expectation();
