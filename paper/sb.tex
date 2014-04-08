@@ -175,7 +175,24 @@ Existing independence tests:
 \cite{margaritis2003learning}
 
 \section{Independence testing} TODO : Wojciech (give a pass to Arthur Gretton)
-Independence tests have to decide if random variables are independent.
+Independence tests decides on independence of random variables. More formally,
+such a test is just a decision function $f$, which minimizes empirical loss.
+\begin{equation}
+  \mathbb{E}_{\mathcal{M}, y \in \{\text{indepedent}, \text{depedent}\}} L(f(\mathcal{M}), y)
+\end{equation}
+In above equation, $\mathcal{M}$ is empirical CPD, and $y$ is a label 
+indicating dependence or independence. Probability distribution over 
+$(\mathcal{M}, y)$ dictates classifier $f$. However, 
+set $(\mathcal{M}, \text{independent})$ is of measure zero when
+Eucleaden measure considered. 
+
+
+
+
+There are few reasons why this process is difficult. 
+
+
+
 Samples of this random variables gives us indirect access to the conditional probability
 distribution (CPD), which decides on independence. However, samples itself
 provide only empirical estimate on conditional probability distribution. 
