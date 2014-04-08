@@ -11,6 +11,7 @@ sb.pdf: $(PARTS) bibliography.bib
 	bibtex sb
 	pdflatex -shell-escape sb.tex
 	pdflatex -shell-escape sb.tex
+	open sb.pdf
 
 clean:
 	rm -f sb.log sb.blg sb.aux sb.bbl sb.pdf sb.4tc sb.xref sb.tmp sb.dvi sb.bbl 

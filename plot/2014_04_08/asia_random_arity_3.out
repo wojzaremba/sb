@@ -1,0 +1,829 @@
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2013 The MathWorks, Inc.
+                    R2013a (8.1.0.604) 64-bit (glnxa64)
+                             February 15, 2013
+
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> Computing ground truth indep...
+>> >> >> ...finished in 9.602100e-01 seconds.
+>> >> >> >> >> >> >> >> Testing 156 independent and 176 dependent CPDs, arity=3.
+>> >> >> >> >> >> >> STARTING N=200.
+Experiment #1, sampling from bayes net.
+   Finished KCI, linear kernel, time = 7.866628e+00 seconds.
+   Finished KCI, gaussian kernel, time = 1.051426e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.391129e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.257695e+01 seconds.
+   Finished partial correlation, time = 1.146137e+00 seconds.
+   Finished conditional correlation, time = 4.447950e-01 seconds.
+   Finished conditional mutual information, time = 3.279650e+00 seconds.
+Time for experiment 1, N=200 is 4.973971e+01
+Experiment #2, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.209206e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.468222e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.447734e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.311533e+01 seconds.
+   Finished partial correlation, time = 9.013670e-01 seconds.
+   Finished conditional correlation, time = 3.641660e-01 seconds.
+   Finished conditional mutual information, time = 3.175718e+00 seconds.
+Time for experiment 2, N=200 is 5.880821e+01
+Experiment #3, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.122896e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.407494e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.416069e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.289389e+01 seconds.
+   Finished partial correlation, time = 8.984270e-01 seconds.
+   Finished conditional correlation, time = 3.923310e-01 seconds.
+   Finished conditional mutual information, time = 3.217323e+00 seconds.
+Time for experiment 3, N=200 is 5.686657e+01
+Experiment #4, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.257640e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.402753e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.371744e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.285826e+01 seconds.
+   Finished partial correlation, time = 9.057800e-01 seconds.
+   Finished conditional correlation, time = 3.899690e-01 seconds.
+   Finished conditional mutual information, time = 3.213048e+00 seconds.
+Time for experiment 4, N=200 is 5.768843e+01
+Experiment #5, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.258281e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.537718e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.365616e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.265311e+01 seconds.
+   Finished partial correlation, time = 9.126390e-01 seconds.
+   Finished conditional correlation, time = 3.959570e-01 seconds.
+   Finished conditional mutual information, time = 3.226504e+00 seconds.
+Time for experiment 5, N=200 is 5.880435e+01
+Experiment #6, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.215680e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.494642e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.442255e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.253189e+01 seconds.
+   Finished partial correlation, time = 9.083850e-01 seconds.
+   Finished conditional correlation, time = 4.228950e-01 seconds.
+   Finished conditional mutual information, time = 3.183472e+00 seconds.
+Time for experiment 6, N=200 is 5.857242e+01
+Experiment #7, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.162351e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.448533e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.404159e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.338917e+01 seconds.
+   Finished partial correlation, time = 9.098450e-01 seconds.
+   Finished conditional correlation, time = 3.730600e-01 seconds.
+   Finished conditional mutual information, time = 3.254941e+00 seconds.
+Time for experiment 7, N=200 is 5.807744e+01
+Experiment #8, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.192598e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.393554e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.405274e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.262722e+01 seconds.
+   Finished partial correlation, time = 9.013410e-01 seconds.
+   Finished conditional correlation, time = 4.607190e-01 seconds.
+   Finished conditional mutual information, time = 3.240215e+00 seconds.
+Time for experiment 8, N=200 is 5.714376e+01
+Experiment #9, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.254479e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.563909e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.403278e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.241809e+01 seconds.
+   Finished partial correlation, time = 9.374510e-01 seconds.
+   Finished conditional correlation, time = 4.072060e-01 seconds.
+   Finished conditional mutual information, time = 3.272703e+00 seconds.
+Time for experiment 9, N=200 is 5.925211e+01
+Experiment #10, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.215743e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.948983e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.453308e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.210716e+01 seconds.
+   Finished partial correlation, time = 9.115200e-01 seconds.
+   Finished conditional correlation, time = 3.913820e-01 seconds.
+   Finished conditional mutual information, time = 3.180779e+00 seconds.
+Time for experiment 10, N=200 is 6.277117e+01
+Experiment #11, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.177333e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.428501e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.415021e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.353354e+01 seconds.
+   Finished partial correlation, time = 9.133570e-01 seconds.
+   Finished conditional correlation, time = 4.016750e-01 seconds.
+   Finished conditional mutual information, time = 3.297903e+00 seconds.
+Time for experiment 11, N=200 is 5.835503e+01
+Experiment #12, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.150870e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.419990e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.406259e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.261871e+01 seconds.
+   Finished partial correlation, time = 9.393130e-01 seconds.
+   Finished conditional correlation, time = 3.857180e-01 seconds.
+   Finished conditional mutual information, time = 3.301157e+00 seconds.
+Time for experiment 12, N=200 is 5.701609e+01
+Experiment #13, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.256492e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.453925e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.342353e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.265613e+01 seconds.
+   Finished partial correlation, time = 9.361050e-01 seconds.
+   Finished conditional correlation, time = 4.073950e-01 seconds.
+   Finished conditional mutual information, time = 3.260184e+00 seconds.
+Time for experiment 13, N=200 is 5.778751e+01
+Experiment #14, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.212009e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.556128e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.416353e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.177950e+01 seconds.
+   Finished partial correlation, time = 9.068360e-01 seconds.
+   Finished conditional correlation, time = 3.951990e-01 seconds.
+   Finished conditional mutual information, time = 3.179258e+00 seconds.
+Time for experiment 14, N=200 is 5.810570e+01
+Experiment #15, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.912641e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.491275e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.435360e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.334492e+01 seconds.
+   Finished partial correlation, time = 9.118510e-01 seconds.
+   Finished conditional correlation, time = 4.146200e-01 seconds.
+   Finished conditional mutual information, time = 3.171593e+00 seconds.
+Time for experiment 15, N=200 is 6.623575e+01
+Experiment #16, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.119547e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.461191e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.403200e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.301540e+01 seconds.
+   Finished partial correlation, time = 9.128830e-01 seconds.
+   Finished conditional correlation, time = 4.139200e-01 seconds.
+   Finished conditional mutual information, time = 3.239576e+00 seconds.
+Time for experiment 16, N=200 is 5.742115e+01
+Experiment #17, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.290359e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.413251e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.344237e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.267807e+01 seconds.
+   Finished partial correlation, time = 9.130240e-01 seconds.
+   Finished conditional correlation, time = 4.436680e-01 seconds.
+   Finished conditional mutual information, time = 3.202747e+00 seconds.
+Time for experiment 17, N=200 is 5.771597e+01
+Experiment #18, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.232084e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.548409e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.386153e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.223601e+01 seconds.
+   Finished partial correlation, time = 9.096050e-01 seconds.
+   Finished conditional correlation, time = 4.170000e-01 seconds.
+   Finished conditional mutual information, time = 3.205283e+00 seconds.
+Time for experiment 18, N=200 is 5.843436e+01
+Experiment #19, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.203387e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.472980e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.436238e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.297574e+01 seconds.
+   Finished partial correlation, time = 9.051040e-01 seconds.
+   Finished conditional correlation, time = 3.605880e-01 seconds.
+   Finished conditional mutual information, time = 3.171595e+00 seconds.
+Time for experiment 19, N=200 is 5.853907e+01
+Experiment #20, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.131362e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.444062e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.385635e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.333150e+01 seconds.
+   Finished partial correlation, time = 9.496350e-01 seconds.
+   Finished conditional correlation, time = 3.879300e-01 seconds.
+   Finished conditional mutual information, time = 3.282067e+00 seconds.
+Time for experiment 20, N=200 is 5.756173e+01
+Experiment #21, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.268355e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.410718e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.397554e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.265105e+01 seconds.
+   Finished partial correlation, time = 9.809700e-01 seconds.
+   Finished conditional correlation, time = 4.424550e-01 seconds.
+   Finished conditional mutual information, time = 3.660218e+00 seconds.
+Time for experiment 21, N=200 is 5.850096e+01
+Experiment #22, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.258624e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.517381e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.356130e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.234595e+01 seconds.
+   Finished partial correlation, time = 9.028400e-01 seconds.
+   Finished conditional correlation, time = 3.692350e-01 seconds.
+   Finished conditional mutual information, time = 3.199299e+00 seconds.
+Time for experiment 22, N=200 is 5.813868e+01
+Experiment #23, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.219676e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.495245e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.431520e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.205225e+01 seconds.
+   Finished partial correlation, time = 9.025540e-01 seconds.
+   Finished conditional correlation, time = 4.128720e-01 seconds.
+   Finished conditional mutual information, time = 3.167986e+00 seconds.
+Time for experiment 23, N=200 is 5.800007e+01
+Experiment #24, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.174271e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.491398e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.420919e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.301801e+01 seconds.
+   Finished partial correlation, time = 9.242650e-01 seconds.
+   Finished conditional correlation, time = 4.057210e-01 seconds.
+   Finished conditional mutual information, time = 3.266390e+00 seconds.
+Time for experiment 24, N=200 is 5.848027e+01
+Experiment #25, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.178391e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.422699e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.408591e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.303703e+01 seconds.
+   Finished partial correlation, time = 9.156940e-01 seconds.
+   Finished conditional correlation, time = 3.715040e-01 seconds.
+   Finished conditional mutual information, time = 3.243273e+00 seconds.
+Time for experiment 25, N=200 is 5.766431e+01
+Experiment #26, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.281142e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.474906e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.518305e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.772503e+01 seconds.
+   Finished partial correlation, time = 9.297690e-01 seconds.
+   Finished conditional correlation, time = 4.293960e-01 seconds.
+   Finished conditional mutual information, time = 3.493837e+00 seconds.
+Time for experiment 26, N=200 is 6.532157e+01
+Experiment #27, sampling from bayes net.
+   Finished KCI, linear kernel, time = 2.292057e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.858910e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.661792e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.315619e+01 seconds.
+   Finished partial correlation, time = 9.263960e-01 seconds.
+   Finished conditional correlation, time = 4.264030e-01 seconds.
+   Finished conditional mutual information, time = 3.529678e+00 seconds.
+Time for experiment 27, N=200 is 7.616626e+01
+Experiment #28, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.611896e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.775020e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.728578e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.627460e+01 seconds.
+   Finished partial correlation, time = 9.943480e-01 seconds.
+   Finished conditional correlation, time = 4.042940e-01 seconds.
+   Finished conditional mutual information, time = 3.458915e+00 seconds.
+Time for experiment 28, N=200 is 7.228709e+01
+Experiment #29, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.276259e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.675949e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.697409e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.581202e+01 seconds.
+   Finished partial correlation, time = 1.054865e+00 seconds.
+   Finished conditional correlation, time = 4.475850e-01 seconds.
+   Finished conditional mutual information, time = 3.637314e+00 seconds.
+Time for experiment 29, N=200 is 6.744795e+01
+Experiment #30, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.657078e+01 seconds.
+   Finished KCI, gaussian kernel, time = 1.500435e+01 seconds.
+   Finished KCI, laplace kernel, time = 1.522670e+01 seconds.
+   Finished KCI, heavytail kernel, time = 1.584244e+01 seconds.
+   Finished partial correlation, time = 1.018624e+00 seconds.
+   Finished conditional correlation, time = 4.431960e-01 seconds.
+   Finished conditional mutual information, time = 3.765869e+00 seconds.
+Time for experiment 30, N=200 is 6.787196e+01
+STARTING N=400.
+Experiment #1, sampling from bayes net.
+   Finished KCI, linear kernel, time = 4.369296e+01 seconds.
+   Finished KCI, gaussian kernel, time = 4.547066e+01 seconds.
+   Finished KCI, laplace kernel, time = 4.987136e+01 seconds.
+   Finished KCI, heavytail kernel, time = 4.204904e+01 seconds.
+   Finished partial correlation, time = 9.745620e-01 seconds.
+   Finished conditional correlation, time = 9.965380e-01 seconds.
+   Finished conditional mutual information, time = 3.594906e+00 seconds.
+Time for experiment 1, N=400 is 1.866500e+02
+Experiment #2, sampling from bayes net.
+   Finished KCI, linear kernel, time = 4.237090e+01 seconds.
+   Finished KCI, gaussian kernel, time = 4.689826e+01 seconds.
+   Finished KCI, laplace kernel, time = 4.514836e+01 seconds.
+   Finished KCI, heavytail kernel, time = 4.900319e+01 seconds.
+   Finished partial correlation, time = 9.327170e-01 seconds.
+   Finished conditional correlation, time = 8.381710e-01 seconds.
+   Finished conditional mutual information, time = 3.675182e+00 seconds.
+Time for experiment 2, N=400 is 1.888668e+02
+Experiment #3, sampling from bayes net.
+   Finished KCI, linear kernel, time = 4.213427e+01 seconds.
+   Finished KCI, gaussian kernel, time = 4.962248e+01 seconds.
+   Finished KCI, laplace kernel, time = 4.718780e+01 seconds.
+   Finished KCI, heavytail kernel, time = 4.612981e+01 seconds.
+   Finished partial correlation, time = 1.040243e+00 seconds.
+   Finished conditional correlation, time = 9.446060e-01 seconds.
+   Finished conditional mutual information, time = 3.712435e+00 seconds.
+Time for experiment 3, N=400 is 1.907716e+02
+Experiment #4, sampling from bayes net.
+   Finished KCI, linear kernel, time = 3.965028e+01 seconds.
+   Finished KCI, gaussian kernel, time = 5.736447e+01 seconds.
+   Finished KCI, laplace kernel, time = 4.812761e+01 seconds.
+   Finished KCI, heavytail kernel, time = 5.550543e+01 seconds.
+   Finished partial correlation, time = 1.109063e+00 seconds.
+   Finished conditional correlation, time = 9.157410e-01 seconds.
+   Finished conditional mutual information, time = 3.879353e+00 seconds.
+Time for experiment 4, N=400 is 2.065520e+02
+Experiment #5, sampling from bayes net.
+   Finished KCI, linear kernel, time = 4.230781e+01 seconds.
+   Finished KCI, gaussian kernel, time = 5.435146e+01 seconds.
+   Finished KCI, laplace kernel, time = 5.441845e+01 seconds.
+   Finished KCI, heavytail kernel, time = 4.911726e+01 seconds.
+   Finished partial correlation, time = 1.053611e+00 seconds.
+   Finished conditional correlation, time = 9.103360e-01 seconds.
+   Finished conditional mutual information, time = 3.678737e+00 seconds.
+Time for experiment 5, N=400 is 2.058377e+02
+Experiment #6, sampling from bayes net.
+   Finished KCI, linear kernel, time = 4.779421e+01 seconds.
+   Finished KCI, gaussian kernel, time = 4.905295e+01 seconds.
+   Finished KCI, laplace kernel, time = 5.012026e+01 seconds.
+   Finished KCI, heavytail kernel, time = 5.376314e+01 seconds.
+   Finished partial correlation, time = 9.632700e-01 seconds.
+   Finished conditional correlation, time = 8.504560e-01 seconds.
+   Finished conditional mutual information, time = 3.606161e+00 seconds.
+Time for experiment 6, N=400 is 2.061505e+02
+Experiment #7, sampling from bayes net.
+   Finished KCI, linear kernel, time = 4.863437e+01 seconds.
+   Finished KCI, gaussian kernel, time = 4.985453e+01 seconds.
+   Finished KCI, laplace kernel, time = 5.457546e+01 seconds.
+   Finished KCI, heavytail kernel, time = 4.985632e+01 seconds.
+   Finished partial correlation, time = 1.086875e+00 seconds.
+   Finished conditional correlation, time = 9.045780e-01 seconds.
+   Finished conditional mutual information, time = 3.730110e+00 seconds.
+Time for experiment 7, N=400 is 2.086423e+02
+Experiment #8, sampling from bayes net.
+   Finished KCI, linear kernel, time = 4.640906e+01 seconds.
+   Finished KCI, gaussian kernel, time = 5.521751e+01 seconds.
+   Finished KCI, laplace kernel, time = 4.540317e+01 seconds.
+   Finished KCI, heavytail kernel, time = 5.500134e+01 seconds.
+   Finished partial correlation, time = 1.124125e+00 seconds.
+   Finished conditional correlation, time = 1.025396e+00 seconds.
+   Finished conditional mutual information, time = 3.845242e+00 seconds.
+Time for experiment 8, N=400 is 2.080258e+02
+Experiment #9, sampling from bayes net.
+   Finished KCI, linear kernel, time = 4.657625e+01 seconds.
+   Finished KCI, gaussian kernel, time = 5.656468e+01 seconds.
+   Finished KCI, laplace kernel, time = 4.959484e+01 seconds.
+   Finished KCI, heavytail kernel, time = 4.992084e+01 seconds.
+   Finished partial correlation, time = 1.139833e+00 seconds.
+   Finished conditional correlation, time = 9.370300e-01 seconds.
+   Finished conditional mutual information, time = 3.777878e+00 seconds.
+Time for experiment 9, N=400 is 2.085113e+02
+Experiment #10, sampling from bayes net.
+   Finished KCI, linear kernel, time = 4.737530e+01 seconds.
+   Finished KCI, gaussian kernel, time = 5.586524e+01 seconds.
+   Finished KCI, laplace kernel, time = 4.812105e+01 seconds.
+   Finished KCI, heavytail kernel, time = 5.151433e+01 seconds.
+   Finished partial correlation, time = 1.055103e+00 seconds.
+   Finished conditional correlation, time = 1.024060e+00 seconds.
+   Finished conditional mutual information, time = 3.472304e+00 seconds.
+Time for experiment 10, N=400 is 2.084274e+02
+Experiment #11, sampling from bayes net.
+   Finished KCI, linear kernel, time = 4.794179e+01 seconds.
+   Finished KCI, gaussian kernel, time = 5.486820e+01 seconds.
+   Finished KCI, laplace kernel, time = 5.591496e+01 seconds.
+   Finished KCI, heavytail kernel, time = 4.452237e+01 seconds.
+   Finished partial correlation, time = 1.002451e+00 seconds.
+   Finished conditional correlation, time = 1.008101e+00 seconds.
+   Finished conditional mutual information, time = 3.674862e+00 seconds.
+Time for experiment 11, N=400 is 2.089327e+02
+Experiment #12, sampling from bayes net.
+   Finished KCI, linear kernel, time = 5.432718e+01 seconds.
+   Finished KCI, gaussian kernel, time = 6.272932e+01 seconds.
+   Finished KCI, laplace kernel, time = 5.548593e+01 seconds.
+   Finished KCI, heavytail kernel, time = 5.645132e+01 seconds.
+   Finished partial correlation, time = 1.137876e+00 seconds.
+   Finished conditional correlation, time = 1.116637e+00 seconds.
+   Finished conditional mutual information, time = 3.942551e+00 seconds.
+Time for experiment 12, N=400 is 2.351908e+02
+Experiment #13, sampling from bayes net.
+   Finished KCI, linear kernel, time = 5.291447e+01 seconds.
+   Finished KCI, gaussian kernel, time = 6.204875e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.551086e+01 seconds.
+   Finished KCI, heavytail kernel, time = 5.660585e+01 seconds.
+   Finished partial correlation, time = 1.015935e+00 seconds.
+   Finished conditional correlation, time = 1.011364e+00 seconds.
+   Finished conditional mutual information, time = 3.793917e+00 seconds.
+Time for experiment 13, N=400 is 2.429011e+02
+Experiment #14, sampling from bayes net.
+   Finished KCI, linear kernel, time = 5.190730e+01 seconds.
+   Finished KCI, gaussian kernel, time = 6.390894e+01 seconds.
+   Finished KCI, laplace kernel, time = 5.722157e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.114959e+01 seconds.
+   Finished partial correlation, time = 1.239869e+00 seconds.
+   Finished conditional correlation, time = 1.052959e+00 seconds.
+   Finished conditional mutual information, time = 3.976927e+00 seconds.
+Time for experiment 14, N=400 is 2.404571e+02
+Experiment #15, sampling from bayes net.
+   Finished KCI, linear kernel, time = 5.166512e+01 seconds.
+   Finished KCI, gaussian kernel, time = 6.192066e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.204311e+01 seconds.
+   Finished KCI, heavytail kernel, time = 5.851750e+01 seconds.
+   Finished partial correlation, time = 1.343563e+00 seconds.
+   Finished conditional correlation, time = 1.022434e+00 seconds.
+   Finished conditional mutual information, time = 3.840243e+00 seconds.
+Time for experiment 15, N=400 is 2.403526e+02
+Experiment #16, sampling from bayes net.
+   Finished KCI, linear kernel, time = 5.804002e+01 seconds.
+   Finished KCI, gaussian kernel, time = 7.333409e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.376192e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.873071e+01 seconds.
+   Finished partial correlation, time = 1.185291e+00 seconds.
+   Finished conditional correlation, time = 1.039180e+00 seconds.
+   Finished conditional mutual information, time = 3.679620e+00 seconds.
+Time for experiment 16, N=400 is 2.697708e+02
+Experiment #17, sampling from bayes net.
+   Finished KCI, linear kernel, time = 6.102497e+01 seconds.
+   Finished KCI, gaussian kernel, time = 7.000662e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.845564e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.568656e+01 seconds.
+   Finished partial correlation, time = 1.394981e+00 seconds.
+   Finished conditional correlation, time = 1.137332e+00 seconds.
+   Finished conditional mutual information, time = 4.026280e+00 seconds.
+Time for experiment 17, N=400 is 2.717324e+02
+Experiment #18, sampling from bayes net.
+   Finished KCI, linear kernel, time = 5.860983e+01 seconds.
+   Finished KCI, gaussian kernel, time = 6.798840e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.373646e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.956984e+01 seconds.
+   Finished partial correlation, time = 1.401388e+00 seconds.
+   Finished conditional correlation, time = 1.022838e+00 seconds.
+   Finished conditional mutual information, time = 3.968119e+00 seconds.
+Time for experiment 18, N=400 is 2.662969e+02
+Experiment #19, sampling from bayes net.
+   Finished KCI, linear kernel, time = 6.022881e+01 seconds.
+   Finished KCI, gaussian kernel, time = 6.770702e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.736449e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.307152e+01 seconds.
+   Finished partial correlation, time = 1.386239e+00 seconds.
+   Finished conditional correlation, time = 9.844550e-01 seconds.
+   Finished conditional mutual information, time = 4.022999e+00 seconds.
+Time for experiment 19, N=400 is 2.647655e+02
+Experiment #20, sampling from bayes net.
+   Finished KCI, linear kernel, time = 6.165773e+01 seconds.
+   Finished KCI, gaussian kernel, time = 6.578622e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.066363e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.736650e+01 seconds.
+   Finished partial correlation, time = 1.323822e+00 seconds.
+   Finished conditional correlation, time = 1.010950e+00 seconds.
+   Finished conditional mutual information, time = 3.909796e+00 seconds.
+Time for experiment 20, N=400 is 2.617186e+02
+Experiment #21, sampling from bayes net.
+   Finished KCI, linear kernel, time = 6.383311e+01 seconds.
+   Finished KCI, gaussian kernel, time = 6.767974e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.374503e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.326605e+01 seconds.
+   Finished partial correlation, time = 1.338687e+00 seconds.
+   Finished conditional correlation, time = 1.042140e+00 seconds.
+   Finished conditional mutual information, time = 3.887464e+00 seconds.
+Time for experiment 21, N=400 is 2.647922e+02
+Experiment #22, sampling from bayes net.
+   Finished KCI, linear kernel, time = 6.227251e+01 seconds.
+   Finished KCI, gaussian kernel, time = 7.067135e+01 seconds.
+   Finished KCI, laplace kernel, time = 5.729082e+01 seconds.
+   Finished KCI, heavytail kernel, time = 7.200093e+01 seconds.
+   Finished partial correlation, time = 1.328606e+00 seconds.
+   Finished conditional correlation, time = 1.054552e+00 seconds.
+   Finished conditional mutual information, time = 3.788259e+00 seconds.
+Time for experiment 22, N=400 is 2.684070e+02
+Experiment #23, sampling from bayes net.
+   Finished KCI, linear kernel, time = 6.543963e+01 seconds.
+   Finished KCI, gaussian kernel, time = 7.315406e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.088749e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.139630e+01 seconds.
+   Finished partial correlation, time = 1.284986e+00 seconds.
+   Finished conditional correlation, time = 1.025000e+00 seconds.
+   Finished conditional mutual information, time = 3.668562e+00 seconds.
+Time for experiment 23, N=400 is 2.668560e+02
+Experiment #24, sampling from bayes net.
+   Finished KCI, linear kernel, time = 5.933079e+01 seconds.
+   Finished KCI, gaussian kernel, time = 7.280301e+01 seconds.
+   Finished KCI, laplace kernel, time = 5.847951e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.450098e+01 seconds.
+   Finished partial correlation, time = 1.306201e+00 seconds.
+   Finished conditional correlation, time = 1.193536e+00 seconds.
+   Finished conditional mutual information, time = 3.877128e+00 seconds.
+Time for experiment 24, N=400 is 2.614912e+02
+Experiment #25, sampling from bayes net.
+   Finished KCI, linear kernel, time = 6.263349e+01 seconds.
+   Finished KCI, gaussian kernel, time = 7.014930e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.912847e+01 seconds.
+   Finished KCI, heavytail kernel, time = 5.804087e+01 seconds.
+   Finished partial correlation, time = 1.323520e+00 seconds.
+   Finished conditional correlation, time = 1.085879e+00 seconds.
+   Finished conditional mutual information, time = 3.829260e+00 seconds.
+Time for experiment 25, N=400 is 2.661908e+02
+Experiment #26, sampling from bayes net.
+   Finished KCI, linear kernel, time = 6.067475e+01 seconds.
+   Finished KCI, gaussian kernel, time = 7.202423e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.423871e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.296084e+01 seconds.
+   Finished partial correlation, time = 1.197509e+00 seconds.
+   Finished conditional correlation, time = 1.081219e+00 seconds.
+   Finished conditional mutual information, time = 3.959623e+00 seconds.
+Time for experiment 26, N=400 is 2.661369e+02
+Experiment #27, sampling from bayes net.
+   Finished KCI, linear kernel, time = 6.135118e+01 seconds.
+   Finished KCI, gaussian kernel, time = 7.027405e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.908942e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.046166e+01 seconds.
+   Finished partial correlation, time = 1.299917e+00 seconds.
+   Finished conditional correlation, time = 1.081570e+00 seconds.
+   Finished conditional mutual information, time = 3.832444e+00 seconds.
+Time for experiment 27, N=400 is 2.673902e+02
+Experiment #28, sampling from bayes net.
+   Finished KCI, linear kernel, time = 5.644094e+01 seconds.
+   Finished KCI, gaussian kernel, time = 7.187801e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.295056e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.868042e+01 seconds.
+   Finished partial correlation, time = 1.185135e+00 seconds.
+   Finished conditional correlation, time = 9.675890e-01 seconds.
+   Finished conditional mutual information, time = 3.606890e+00 seconds.
+Time for experiment 28, N=400 is 2.657096e+02
+Experiment #29, sampling from bayes net.
+   Finished KCI, linear kernel, time = 5.561957e+01 seconds.
+   Finished KCI, gaussian kernel, time = 7.132267e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.747825e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.543827e+01 seconds.
+   Finished partial correlation, time = 1.357719e+00 seconds.
+   Finished conditional correlation, time = 9.562700e-01 seconds.
+   Finished conditional mutual information, time = 4.025523e+00 seconds.
+Time for experiment 29, N=400 is 2.661983e+02
+Experiment #30, sampling from bayes net.
+   Finished KCI, linear kernel, time = 5.438397e+01 seconds.
+   Finished KCI, gaussian kernel, time = 6.989566e+01 seconds.
+   Finished KCI, laplace kernel, time = 6.182926e+01 seconds.
+   Finished KCI, heavytail kernel, time = 6.905279e+01 seconds.
+   Finished partial correlation, time = 1.306092e+00 seconds.
+   Finished conditional correlation, time = 1.162624e+00 seconds.
+   Finished conditional mutual information, time = 3.838412e+00 seconds.
+Time for experiment 30, N=400 is 2.614688e+02
+STARTING N=600.
+Experiment #1, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.239537e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.492257e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.546217e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.523224e+02 seconds.
+   Finished partial correlation, time = 1.369105e+00 seconds.
+   Finished conditional correlation, time = 1.304040e+00 seconds.
+   Finished conditional mutual information, time = 3.862742e+00 seconds.
+Time for experiment 1, N=600 is 5.866593e+02
+Experiment #2, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.227064e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.539129e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.481889e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.587993e+02 seconds.
+   Finished partial correlation, time = 1.403836e+00 seconds.
+   Finished conditional correlation, time = 1.241574e+00 seconds.
+   Finished conditional mutual information, time = 3.993999e+00 seconds.
+Time for experiment 2, N=600 is 5.902470e+02
+Experiment #3, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.272599e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.484827e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.713952e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.881253e+02 seconds.
+   Finished partial correlation, time = 1.763533e+00 seconds.
+   Finished conditional correlation, time = 1.327833e+00 seconds.
+   Finished conditional mutual information, time = 4.073347e+00 seconds.
+Time for experiment 3, N=600 is 6.424278e+02
+Experiment #4, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.362478e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.616909e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.569921e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.653788e+02 seconds.
+   Finished partial correlation, time = 1.461617e+00 seconds.
+   Finished conditional correlation, time = 1.196670e+00 seconds.
+   Finished conditional mutual information, time = 3.924517e+00 seconds.
+Time for experiment 4, N=600 is 6.268924e+02
+Experiment #5, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.406305e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.555050e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.649960e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.593402e+02 seconds.
+   Finished partial correlation, time = 1.404609e+00 seconds.
+   Finished conditional correlation, time = 1.398213e+00 seconds.
+   Finished conditional mutual information, time = 3.929277e+00 seconds.
+Time for experiment 5, N=600 is 6.272038e+02
+Experiment #6, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.378078e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.645421e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.669052e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.725827e+02 seconds.
+   Finished partial correlation, time = 1.639927e+00 seconds.
+   Finished conditional correlation, time = 1.334137e+00 seconds.
+   Finished conditional mutual information, time = 3.988442e+00 seconds.
+Time for experiment 6, N=600 is 6.488003e+02
+Experiment #7, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.489341e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.630362e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.760079e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.669127e+02 seconds.
+   Finished partial correlation, time = 1.454206e+00 seconds.
+   Finished conditional correlation, time = 1.248939e+00 seconds.
+   Finished conditional mutual information, time = 4.125694e+00 seconds.
+Time for experiment 7, N=600 is 6.617196e+02
+Experiment #8, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.442902e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.628111e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.704585e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.735539e+02 seconds.
+   Finished partial correlation, time = 1.425834e+00 seconds.
+   Finished conditional correlation, time = 1.193877e+00 seconds.
+   Finished conditional mutual information, time = 3.916238e+00 seconds.
+Time for experiment 8, N=600 is 6.576497e+02
+Experiment #9, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.490375e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.645127e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.836557e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.805076e+02 seconds.
+   Finished partial correlation, time = 1.712711e+00 seconds.
+   Finished conditional correlation, time = 1.366248e+00 seconds.
+   Finished conditional mutual information, time = 4.294125e+00 seconds.
+Time for experiment 9, N=600 is 6.850867e+02
+Experiment #10, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.557179e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.752759e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.807479e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.855960e+02 seconds.
+   Finished partial correlation, time = 1.579197e+00 seconds.
+   Finished conditional correlation, time = 1.322959e+00 seconds.
+   Finished conditional mutual information, time = 3.985174e+00 seconds.
+Time for experiment 10, N=600 is 7.042251e+02
+Experiment #11, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.567581e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.735615e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.857853e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.805112e+02 seconds.
+   Finished partial correlation, time = 1.711478e+00 seconds.
+   Finished conditional correlation, time = 1.392712e+00 seconds.
+   Finished conditional mutual information, time = 4.151716e+00 seconds.
+Time for experiment 11, N=600 is 7.038721e+02
+Experiment #12, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.478262e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.794421e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.798722e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.870950e+02 seconds.
+   Finished partial correlation, time = 1.650692e+00 seconds.
+   Finished conditional correlation, time = 1.301450e+00 seconds.
+   Finished conditional mutual information, time = 4.077632e+00 seconds.
+Time for experiment 12, N=600 is 7.012654e+02
+Experiment #13, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.564754e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.757166e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.868941e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.803227e+02 seconds.
+   Finished partial correlation, time = 1.494603e+00 seconds.
+   Finished conditional correlation, time = 1.208955e+00 seconds.
+   Finished conditional mutual information, time = 3.983974e+00 seconds.
+Time for experiment 13, N=600 is 7.060963e+02
+Experiment #14, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.467648e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.807516e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.797627e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.832573e+02 seconds.
+   Finished partial correlation, time = 1.357892e+00 seconds.
+   Finished conditional correlation, time = 1.191725e+00 seconds.
+   Finished conditional mutual information, time = 3.999624e+00 seconds.
+Time for experiment 14, N=600 is 6.970856e+02
+Experiment #15, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.547615e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.796801e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.881931e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.769724e+02 seconds.
+   Finished partial correlation, time = 1.647342e+00 seconds.
+   Finished conditional correlation, time = 1.356433e+00 seconds.
+   Finished conditional mutual information, time = 3.982130e+00 seconds.
+Time for experiment 15, N=600 is 7.065929e+02
+Experiment #16, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.489700e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.851818e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.804724e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.828279e+02 seconds.
+   Finished partial correlation, time = 1.566405e+00 seconds.
+   Finished conditional correlation, time = 1.211139e+00 seconds.
+   Finished conditional mutual information, time = 4.062251e+00 seconds.
+Time for experiment 16, N=600 is 7.042920e+02
+Experiment #17, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.535054e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.796645e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.878974e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.744352e+02 seconds.
+   Finished partial correlation, time = 1.643991e+00 seconds.
+   Finished conditional correlation, time = 1.214888e+00 seconds.
+   Finished conditional mutual information, time = 4.063695e+00 seconds.
+Time for experiment 17, N=600 is 7.024251e+02
+Experiment #18, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.499976e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.836024e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.791599e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.828186e+02 seconds.
+   Finished partial correlation, time = 1.600502e+00 seconds.
+   Finished conditional correlation, time = 1.216298e+00 seconds.
+   Finished conditional mutual information, time = 4.120187e+00 seconds.
+Time for experiment 18, N=600 is 7.025154e+02
+Experiment #19, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.595468e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.795492e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.829464e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.750029e+02 seconds.
+   Finished partial correlation, time = 1.632713e+00 seconds.
+   Finished conditional correlation, time = 1.335020e+00 seconds.
+   Finished conditional mutual information, time = 4.045334e+00 seconds.
+Time for experiment 19, N=600 is 7.040583e+02
+Experiment #20, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.536909e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.866577e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.784104e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.835521e+02 seconds.
+   Finished partial correlation, time = 1.521090e+00 seconds.
+   Finished conditional correlation, time = 1.289372e+00 seconds.
+   Finished conditional mutual information, time = 4.013018e+00 seconds.
+Time for experiment 20, N=600 is 7.091346e+02
+Experiment #21, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.627956e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.887633e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.904914e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.830219e+02 seconds.
+   Finished partial correlation, time = 1.687619e+00 seconds.
+   Finished conditional correlation, time = 1.299697e+00 seconds.
+   Finished conditional mutual information, time = 4.207304e+00 seconds.
+Time for experiment 21, N=600 is 7.322669e+02
+Experiment #22, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.590128e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.906723e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.871978e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.903534e+02 seconds.
+   Finished partial correlation, time = 1.779100e+00 seconds.
+   Finished conditional correlation, time = 1.247786e+00 seconds.
+   Finished conditional mutual information, time = 4.166088e+00 seconds.
+Time for experiment 22, N=600 is 7.344293e+02
+Experiment #23, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.651148e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.768459e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.821882e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.814144e+02 seconds.
+   Finished partial correlation, time = 1.695068e+00 seconds.
+   Finished conditional correlation, time = 1.348378e+00 seconds.
+   Finished conditional mutual information, time = 4.078498e+00 seconds.
+Time for experiment 23, N=600 is 7.126851e+02
+Experiment #24, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.547132e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.835150e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.767306e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.874117e+02 seconds.
+   Finished partial correlation, time = 1.618503e+00 seconds.
+   Finished conditional correlation, time = 1.372291e+00 seconds.
+   Finished conditional mutual information, time = 4.118936e+00 seconds.
+Time for experiment 24, N=600 is 7.094803e+02
+Experiment #25, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.601996e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.749402e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.808667e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.761191e+02 seconds.
+   Finished partial correlation, time = 1.623303e+00 seconds.
+   Finished conditional correlation, time = 1.348740e+00 seconds.
+   Finished conditional mutual information, time = 4.077220e+00 seconds.
+Time for experiment 25, N=600 is 6.991748e+02
+Experiment #26, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.484401e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.818299e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.728515e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.839683e+02 seconds.
+   Finished partial correlation, time = 1.678412e+00 seconds.
+   Finished conditional correlation, time = 1.243133e+00 seconds.
+   Finished conditional mutual information, time = 4.095307e+00 seconds.
+Time for experiment 26, N=600 is 6.941066e+02
+Experiment #27, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.523471e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.742889e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.841135e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.774058e+02 seconds.
+   Finished partial correlation, time = 1.602355e+00 seconds.
+   Finished conditional correlation, time = 1.258580e+00 seconds.
+   Finished conditional mutual information, time = 3.942088e+00 seconds.
+Time for experiment 27, N=600 is 6.949584e+02
+Experiment #28, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.466436e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.751948e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.790901e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.865359e+02 seconds.
+   Finished partial correlation, time = 1.537091e+00 seconds.
+   Finished conditional correlation, time = 1.319466e+00 seconds.
+   Finished conditional mutual information, time = 3.931347e+00 seconds.
+Time for experiment 28, N=600 is 6.942523e+02
+Experiment #29, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.550629e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.758135e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.870592e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.774504e+02 seconds.
+   Finished partial correlation, time = 1.783307e+00 seconds.
+   Finished conditional correlation, time = 1.329888e+00 seconds.
+   Finished conditional mutual information, time = 3.997785e+00 seconds.
+Time for experiment 29, N=600 is 7.024970e+02
+Experiment #30, sampling from bayes net.
+   Finished KCI, linear kernel, time = 1.575188e+02 seconds.
+   Finished KCI, gaussian kernel, time = 1.805473e+02 seconds.
+   Finished KCI, laplace kernel, time = 1.813913e+02 seconds.
+   Finished KCI, heavytail kernel, time = 1.830296e+02 seconds.
+   Finished partial correlation, time = 1.546425e+00 seconds.
+   Finished conditional correlation, time = 1.339700e+00 seconds.
+   Finished conditional mutual information, time = 4.089528e+00 seconds.
+Time for experiment 30, N=600 is 7.094626e+02
+>> >> Total running time for all experiments is 2.953153e+04 seconds.
+>> >> >> >> 

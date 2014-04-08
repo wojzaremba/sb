@@ -8,6 +8,9 @@
 \usepackage[square]{natbib}
 \usepackage{color}
 \usepackage{epstopdf}
+\usepackage{subfig}
+\newlength{\subfigheight}
+\setlength{\subfigheight}{1in}
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
 
 %% our math environment
@@ -176,15 +179,42 @@ We generated distributions from toy Bayesian networks.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.55\linewidth]{img/roc_full_random_arity5.eps}
-\caption{A}
+    \subfloat{{\includegraphics[height=\subfigheight]{img/just_legend.pdf} }}%
+    %\qquad
+    \subfloat{{\includegraphics[width=0.8\linewidth]{img/linear_arity_3.eps} }}%
+%\includegraphics[width=1.0\linewidth]{img/linear_arity_3.eps}
+\caption{ROCs for joint distributions generated from asia network structure with each variable having arity 3, and each CPD with randomly sampled entries from abs(Gaussian), with a constant added along the diagonal of the CPD tensor (adding linear structure).}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.55\linewidth]{img/roc_partial_random_arity5.eps}
-\caption{A}
+    \subfloat{{\includegraphics[height=\subfigheight]{img/just_legend.pdf} }}%
+    %\qquad
+    \subfloat{{\includegraphics[width=0.8\linewidth]{img/linear_arity_5.eps} }}%
+%\includegraphics[width=1.0\linewidth]{img/linear_arity_5.eps}
+\caption{ROCs for joint distributions generated from asia network structure with each variable having arity 5, and each CPD with randomly sampled entries from abs(Gaussian) with a constant added along the diagonal of the CPD tensor (adding linear structure).}
 \end{figure}
+
+\begin{figure}[h]
+\centering
+    \subfloat{{\includegraphics[height=\subfigheight]{img/just_legend.pdf} }}%
+    %\qquad
+    \subfloat{{\includegraphics[width=0.8\linewidth]{img/random_arity_3.eps} }}%
+%\includegraphics[width=1.0\linewidth]{img/random_arity_3.eps}
+\caption{ROCs for joint distributions generated from asia network structure with each variable having arity 3, and each CPD with randomly sampled entries from abs(Gaussian).}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+
+    \subfloat{{\includegraphics[height=\subfigheight]{img/just_legend.pdf} }}%
+    %\qquad
+    \subfloat{{\includegraphics[width=0.8\linewidth]{img/random_arity_5.eps} }}%
+%\includegraphics[width=1.0\linewidth]{img/random_arity_5.eps}
+
+\caption{ROCs for joint distributions generated from asia network structure with each variable having arity 5, and each CPD with randomly sampled entries from abs(Gaussian).}
+\end{figure}
+
 \subsection{Classification of CPDs from Gene Expression}
 
 \subsection{Synthetic Bayesian networks}
