@@ -1,4 +1,4 @@
-function plot_roc(N_idx,TPR,FPR,num_samples_range,arity,options)
+function plot_roc(N_idx,TPR,FPR,num_samples_range,arity,options,name)
 
 close all;
 clear h;
@@ -41,14 +41,14 @@ for fig = 1:length(xlims)
         fpr_err = fpr_err(idx);
         
         %errorbarxy(fpr,tpr,fpr_err,tpr_err,{o.color,o.color,o.color});
-        h(c) = errorbar(fpr,tpr,tpr_err,[o.color '*-']);
-        %h(c) = plot(fpr,tpr,[o.color '*-']);%,'linewidth',2);
+        %h(c) = errorbar(fpr,tpr,tpr_err,[o.color '*-']);
+        h(c) = plot(fpr,tpr,[o.color '*-']);%,'linewidth',2);
     end
     h(num_classifiers + 1) = plot(linspace(0,1),linspace(0,1),'k--','linewidth',2);
-    legend(h,[name 'random']);
+    %legend(h,[name 'random']);
     xlabel('FPR');
     ylabel('TPR');
-    title(sprintf('ROC on CPDs generated from asia network, arity=%d, N=%d',arity,N),'fontsize',12);
+    title(sprintf('arity=%d, N=%d',arity,N),'fontsize',12); %ROC on CPDs generated from asia network, 
     xlim(xlims{fig});
     ylim(ylims{fig});
 end
