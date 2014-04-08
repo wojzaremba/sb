@@ -10,6 +10,7 @@
 \usepackage{subfigure}
 \usepackage{epstopdf}
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
+\usepackage{multirow} 
 
 %% our math environment
 \def\[#1\]{\begin{align}#1\end{align}}
@@ -27,6 +28,8 @@
 \newcommand{\RInts}{\mathcal{I}_\Rationals}
 \newcommand{\BSets}{\mathcal{B}_\Reals}
 \newcommand{\grad}{\bigtriangledown}
+\definecolor{LimeGreen}{rgb}{0.1,0.9,0.1}
+\definecolor{Maroon}{rgb}{0.9,0.1,0.1}
 
 %% our math environment
  
@@ -174,44 +177,93 @@ Existing independence tests:
 
 \cite{margaritis2003learning}
 
-\section{Independence testing} TODO : Wojciech (give a pass to Arthur Gretton)
+\section{Independence testing} 
 Independence tests decides on independence of random variables. More formally,
-such a test is just a decision function $f$, which minimizes empirical loss.
+for a random variables $A, B$ given $C$, test decides on equality $P(A, B| C) = P(A | C) P(B | C)$. 
+Figure \ref{fig:ind} presents surface of $2$ dimensional independent 
+random variables $A, B$, and $C = \emptyset$. Independence choses if samples $a \in A, b \in B, c \in C$, 
+are coming from independence surface, or not. 
+This problem can be casted as a classification problem, and we define
+empirical loss for it as:
 \begin{equation}
-  \mathbb{E}_{\mathcal{M}, y \in \{\text{indepedent}, \text{depedent}\}} L(f(\mathcal{M}), y)
+  \mathbb{E}_{a \in A, b \in B, c \in C, y \in \{\text{indepedent}, \text{depedent}\}} L(f((a, b)|c, y)
 \end{equation}
-In above equation, $\mathcal{M}$ is empirical CPD, and $y$ is a label 
-indicating dependence or independence. Probability distribution over 
-$(\mathcal{M}, y)$ dictates classifier $f$. However, 
-set $(\mathcal{M}, \text{independent})$ is of measure zero when
-Eucleaden measure considered. 
+Our initial task is to find $f$, which well predicts independence given our prior
+knowledge on $A, B, C$. Such task is not easy as the manifold of independent
+random variables is highly non-linear. We review several approaches, and 
+settle on kernel independence tests, which gives superior performance on
+samples drawn from Bayesian networks.
 
 
-
-
-There are few reasons why this process is difficult. 
-
-
-
-Samples of this random variables gives us indirect access to the conditional probability
-distribution (CPD), which decides on independence. However, samples itself
-provide only empirical estimate on conditional probability distribution. 
-Moreover, manifold \ref{fig:ind} of independent CPDs among all possible CPDs
-have a measure zero. 
+There are few issues, which such test has to address 
+(1) account for prior over $A, B, C$ \ref{sec:prior}, (2) diminishing number of samples when
+counting occurrences \ref{sec:curse}. We discuss this issues
+in following sections.
 
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.55\linewidth]{img/independence_surface.eps}
-\caption{The manifold of independence for binary distributions. The simplex represents all possible joint distributions over two binary variables.  a, b, and c are three of the four entries in the joint distribution table, and the simplex is formed by the constraint that all entries must be positive and sum to one.  The manifold corresponds to the set (of measure zero) of independent distributions.}
+\caption{The manifold of independence for binary distributions. The simplex represents all possible joint distributions over two binary variables parametrized with their marginal distributions. The simplex is formed by the constraint that marginal distributions must be positive and sum to one.  The manifold corresponds to the set (of measure zero) of independent distributions.}
 \label{fig:ind}
 \end{figure}
 
-\subsection{Curse of conditioning}
+\subsection{Prior}\label{sec:prior}
+Set $(A, B, C, y=\text{independent})$ has measure zero for uniform
+distribution over CPDs of $A, B, C$. For such distribution
+best possible predictor $f$ would always predict ``dependence''. 
+This shows that a prior coming from any natural parametrization
+of CPDs would force $f$ to be constant. This indicate that, we should
+employ better prior. We are interest in non-parametric priors over $(A, B, C)$.
+Moreover, we would like our test to be consistent.
+
+
+In gene expression data, random variables (gene expressions) can 
+have arbitrary real values. Common practise is to quantize such values,
+and count number of values in every bucket. However, this removes 
+''smoothness`` prior over assignments. ``Smoothness'' prior means that
+nearby values of random variables have a similar meaning. We can easily see
+that common measure of dependency such as mutual information {\bf don't} have 
+this property. 
+\begin{align*}
+  I(A;B)=\sum_{a \in A}\sum_{b \in B} p(a, b)\log{\frac{p(a, b)}{p(a)p(b)}}=I(\sigma_A(A), \sigma_B(B))
+\end{align*}
+$\sigma_A$ is a permutation over values of $A$, and $\sigma_B$ is
+a permutation over values of $B$.
+
+
+
+Another prevalent measure of dependency is correlation. This measure
+has a notion of ``smoothness'' (it treats near by values similarly), but
+it is not consistent. Moreover, empirical experiments show that zero value
+of correlation often doesn't imply lack of dependency.
+
+
+\subsection{Curse of conditioning}\label{sec:curse}
 
 \subsection{Partial correlation}
 
 \subsection{Kernelized partial correlation}
+
+
+\begin{table}[t]
+\centering
+\tiny
+\begin{tabular}{rrrr}
+\hline
+Measure & Consistent & Smooth prior& Value based\\
+& & & conditioning\\
+\hline
+Mutual information & $\color{LimeGreen} \checkmark $ & $\color{Maroon}\times$ & $\color{Maroon}\times$ \\
+Correlation & $\color{Maroon}\times$  & $\color{LimeGreen} \checkmark $ & $\color{Maroon}\times$ \\
+Partial correlation & $\color{Maroon}\times$  & $\color{LimeGreen} \checkmark $ & $\color{LimeGreen}\checkmark$ \\
+KCI for characteristic kernel & $\color{LimeGreen}\checkmark$  & $\color{LimeGreen} \checkmark $ & $\color{LimeGreen}\checkmark$ \\
+\hline
+\end{tabular}
+\caption{Comparison of properties for various independence tests.}
+\label{eval}
+\end{table}
+
 
 \section{Experiments}
 
