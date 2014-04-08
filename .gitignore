@@ -1,9 +1,9 @@
-*.pdf
-*.swp
-*.m~
-*.bbl
-*.blg
-*.log
-*.aux
-*.mat
+*/*.pdf
+*/*.swp
+*/*.m~
+*/*.bbl
+*/*.blg
+*/*.log
+*/*.aux
+*/*.mat
 .DS_Store
