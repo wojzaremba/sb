@@ -14,6 +14,8 @@
 \setlength{\subfigheight}{1in}
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
 \usepackage{multirow} 
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 %% our math environment
 \def\[#1\]{\begin{align}#1\end{align}}
@@ -243,8 +245,26 @@ in Sections\ref{sec:corr} both have a smoothness properties.
 \subsection{Curse of conditioning}\label{sec:curse}
 
 \subsection{Partial correlation}\label{sec:corr}
+Partial correlation measures relation between two random variables $A, B$ given other $C$ (random 
+variables on which we would like to condition). Partial correlation regress $C$ on $A$ and $B$. 
+Procedure is to compute residuals $R_A, R_B$ of such regression and measures correlation between them. More formally:
+\begin{align*}
+  w_A &= \argmin_{w_A} ||a - w_A c||_{2} \\
+  w_B &= \argmin_{w_A} ||b - w_B c||_{2} \\
+  R_A &= a - w_A c \\
+  R_B &= b - w_B c
+\end{align*}
+$a, b, c$ are samples of random variables $A, B, C$. When $C = \emptyset$, then $R_A = a$, and $R_B = b$, which
+recovers correlation. Partial correlation is not able consistently decide
+on independence of random variables. However, it has two desirable properties: (1) smoothness \ref{sec:prior} and (2)
+acts on values instead of counts \ref{sec:curse}. Kernelized version of partial correlation for 
+characteristic kernel recovers consistency.
 
-\subsection{Kernelized partial correlation}
+
+Kernelized partial correlation (KCI) \cite{zhang2012kernel} is a kernelized version of aforementioned statistic. 
+For characteristic kernels (e.g. like Gaussian, or Laplace) it becomes consistent estimator of
+independence. Table\ref{tab:compar} compares statistical properties of available tests of independence.
+Experimental results show that indeed KCI has highest statistical for real data distributions.
 
 
 \begin{table}[t]
@@ -258,11 +278,13 @@ Measure & Consistent & Smooth prior& Value based\\
 Mutual information & $\color{LimeGreen} \checkmark $ & $\color{Maroon}\times$ & $\color{Maroon}\times$ \\
 Correlation & $\color{Maroon}\times$  & $\color{LimeGreen} \checkmark $ & $\color{Maroon}\times$ \\
 Partial correlation & $\color{Maroon}\times$  & $\color{LimeGreen} \checkmark $ & $\color{LimeGreen}\checkmark$ \\
+KCI for non-characteristic kernel & $\color{Maroon}\times$  & $\color{LimeGreen} \checkmark $ & $\color{LimeGreen}\checkmark$ \\
 KCI for characteristic kernel & $\color{LimeGreen}\checkmark$  & $\color{LimeGreen} \checkmark $ & $\color{LimeGreen}\checkmark$ \\
 \hline
 \end{tabular}
-\caption{Comparison of properties for various independence tests.}
-\label{eval}
+\caption{Comparison of properties for various independence tests. ``Smooth prior'' is describes in Section \ref{sec:prior}, 
+and ``value based'' is in Section \ref{sec:curse}.}
+\label{tab:compar}
 \end{table}
 
 
