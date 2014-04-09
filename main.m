@@ -16,7 +16,7 @@ global debug
 debug = 0;
 close all;
 
-bnet = mk_asia_random(5); %mk_bnet4();
+bnet = mk_asia_random(10); %mk_bnet4();
 K = length(bnet.dag);
 arity = get_arity(bnet);
 
@@ -46,7 +46,7 @@ full_options = {struct('classifier', @kci_classifier, 'kernel', L, 'range', rang
            struct('classifier', @mi_classifier, 'kernel', empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[],'name','conditional mutual information'), ...
            struct('classifier', @sb_classifier, 'kernel', empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1),'name','bayesian conditional mutual information')};
 
-options = full_options(1:7);
+options = full_options(1:4);
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
 TPR = cell(num_classifiers, num_N);
