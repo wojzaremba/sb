@@ -1,5 +1,6 @@
 */sb.pdf
 */*.swp
+*.m~
 */*.m~
 */*.bbl
 */*.blg
