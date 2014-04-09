@@ -13,6 +13,12 @@ sb.pdf: $(PARTS) bibliography.bib
 	pdflatex -shell-escape sb.tex
 	open sb.pdf
 
+pdfcrop:
+	pdfcrop img/linear_arity_3-eps-converted-to.pdf
+	pdfcrop img/linear_arity_5-eps-converted-to.pdf
+	pdfcrop img/random_arity_3-eps-converted-to.pdf
+	pdfcrop img/random_arity_5-eps-converted-to.pdf
+
 clean:
 	rm -f sb.log sb.blg sb.aux sb.bbl sb.pdf sb.4tc sb.xref sb.tmp sb.dvi sb.bbl 
 	rm -rf ~*

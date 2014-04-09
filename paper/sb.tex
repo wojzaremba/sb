@@ -124,13 +124,6 @@ dependency test.
 
 
 \section{Related work}
-Independence tests used in Bayesian networks
-\begin{itemize}
-\item \cite{schafer2005empirical} Here they learn a Gaussian Graphical Model (GGM) using estimates of the partial correlation matrix. 
-\item \cite{opgen2007correlation} Here they learn an approximate causal structure on gene expression based on full-order partial correlation (as an approximation to lower-order partial correlation that is called for theoretically for a Bayesian network).
-\item \cite{tsamardinos2006max} MMHC algorithm.  They use a test based on what is called the $G^2$ statistic (asymptotically distributed as $chi^2$) and they also talk about a couple other independence tests that we may want to look into.
-\end{itemize}
-
 There has been extensive research in area of scoring functions for
 Bayesian networks. This step is crucial to prevent algorithms from 
 recovering complete graph structure.
@@ -152,16 +145,13 @@ it into account.
 
 
 
-
+\begin{comment}
 Variety of such scoring functions calculate dependency between nodes conditioned on
 potential parents \cite{de2006scoring}. Usual measures of dependency are
 based on mutual information, conditional independence test, or 
 are fully Bayesian. Fully Bayesian methods assume probability 
 distribution over CPDs of independent variables,
 and dependent variables.
-
-
-
 
 We should discuss:
 \begin{itemize}
@@ -178,7 +168,15 @@ Existing independence tests:
 \item Pearson's $\chi$-squared.  The problem is the null hypothesis is independence, but independence is what we're trying to show.
 \end{itemize}
 
+Independence tests used in Bayesian networks
+\begin{itemize}
+\item \cite{schafer2005empirical} Here they learn a Gaussian Graphical Model (GGM) using estimates of the partial correlation matrix. 
+\item \cite{opgen2007correlation} Here they learn an approximate causal structure on gene expression based on full-order partial correlation (as an approximation to lower-order partial correlation that is called for theoretically for a Bayesian network).
+\item \cite{tsamardinos2006max} MMHC algorithm.  They use a test based on what is called the $G^2$ statistic (asymptotically distributed as $chi^2$) and they also talk about a couple other independence tests that we may want to look into.
+\end{itemize}
+
 \cite{margaritis2003learning}
+\end{comment}
 
 \section{Independence testing} 
 Independence tests decides on independence of random variables. More formally,
@@ -201,12 +199,12 @@ samples drawn from Bayesian networks.
 There are few issues, which such test has to address 
 (1) account for prior over $A, B, C$ \ref{sec:prior}, (2) diminishing number of samples when
 counting occurrences \ref{sec:curse}. We discuss this issues
-in following sections.
+in following sections. 
 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.55\linewidth]{img/independence_surface.eps}
+\includegraphics[width=0.35\linewidth]{img/independence_surface.eps}
 \caption{The manifold of independence for binary distributions. The simplex represents all possible joint distributions over two binary variables parametrized with their marginal distributions. The simplex is formed by the constraint that marginal distributions must be positive and sum to one.  The manifold corresponds to the set (of measure zero) of independent distributions.}
 \label{fig:ind}
 \end{figure}
@@ -239,12 +237,15 @@ a permutation over values of $B$.
 Another prevalent measure of dependency is correlation. This measure
 has a notion of ``smoothness'' (it treats near by values similarly), but
 it is not consistent. Moreover, empirical experiments show that zero value
-of correlation often doesn't imply lack of dependency.
+of correlation often doesn't imply lack of dependency. 
+
+Partial correlation, and its extension kernelized partial correlation (KCI), which are described 
+in Sections\ref{sec:corr} both have a smoothness properties.
 
 
 \subsection{Curse of conditioning}\label{sec:curse}
 
-\subsection{Partial correlation}
+\subsection{Partial correlation}\label{sec:corr}
 
 \subsection{Kernelized partial correlation}
 
@@ -270,63 +271,35 @@ KCI for characteristic kernel & $\color{LimeGreen}\checkmark$  & $\color{LimeGre
 
 \section{Experiments}
 
-\subsection{Classification of Synthetic CPDs}
-We generated distributions from toy Bayesian networks.
+
+\subsection{Synthetically generated data}
+We have first performed extensive experiments on ``asia'' network. We aimed to compare power of 
+independence tests.
 
 \begin{figure}[h]
 \centering
-    \subfloat{{\includegraphics[height=\subfigheight]{img/just_legend.pdf} }}%
-    %\qquad
-    \subfloat{{\includegraphics[width=0.8\linewidth]{img/linear_arity_3.eps} }}%
-%\includegraphics[width=1.0\linewidth]{img/linear_arity_3.eps}
-\caption{ROCs for joint distributions generated from asia network structure with each variable having arity 3, and each CPD with randomly sampled entries from abs(Gaussian), with a constant added along the diagonal of the CPD tensor (adding linear structure).}
+    \subfigure{
+      \includegraphics[width=0.45\linewidth]{img/linear_arity_3-eps-converted-to-crop.pdf} 
+    }
+    \quad
+    \subfigure{
+      \includegraphics[width=0.45\linewidth]{img/linear_arity_5-eps-converted-to-crop.pdf} 
+    }
+\caption{ROCs for joint distributions generated from asia network structure with each variable having {\bf (Left)} arity 3, {\bf (Right)} arity 5, and each CPD with randomly sampled entries from $|\mathcal{N}(0, 1)|$, with a constant added along the diagonal of the CPD tensor (adding linear structure).}
 \end{figure}
+
 
 \begin{figure}[h]
 \centering
-    \subfloat{{\includegraphics[height=\subfigheight]{img/just_legend.pdf} }}%
-    %\qquad
-    \subfloat{{\includegraphics[width=0.8\linewidth]{img/linear_arity_5.eps} }}%
-%\includegraphics[width=1.0\linewidth]{img/linear_arity_5.eps}
-\caption{ROCs for joint distributions generated from asia network structure with each variable having arity 5, and each CPD with randomly sampled entries from abs(Gaussian) with a constant added along the diagonal of the CPD tensor (adding linear structure).}
+    \subfigure{
+      \includegraphics[width=0.45\linewidth]{img/random_arity_3-eps-converted-to-crop.pdf} 
+    }
+    \quad
+    \subfigure{
+      \includegraphics[width=0.45\linewidth]{img/random_arity_5-eps-converted-to-crop.pdf} 
+    }
+\caption{ROCs for joint distributions generated from asia network structure with each variable having {\bf (Left)} arity 3, {\bf (Right)} arity 5, and each CPD with randomly sampled entries from $|\mathcal{N}(0, 1)|$.}
 \end{figure}
-
-\begin{figure}[h]
-\centering
-    \subfloat{{\includegraphics[height=\subfigheight]{img/just_legend.pdf} }}%
-    %\qquad
-    \subfloat{{\includegraphics[width=0.8\linewidth]{img/random_arity_3.eps} }}%
-%\includegraphics[width=1.0\linewidth]{img/random_arity_3.eps}
-\caption{ROCs for joint distributions generated from asia network structure with each variable having arity 3, and each CPD with randomly sampled entries from abs(Gaussian).}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-
-    \subfloat{{\includegraphics[height=\subfigheight]{img/just_legend.pdf} }}%
-    %\qquad
-    \subfloat{{\includegraphics[width=0.8\linewidth]{img/random_arity_5.eps} }}%
-%\includegraphics[width=1.0\linewidth]{img/random_arity_5.eps}
-
-\caption{ROCs for joint distributions generated from asia network structure with each variable having arity 5, and each CPD with randomly sampled entries from abs(Gaussian).}
-\end{figure}
-
-%\subfigure{
-%  \includegraphics[width=0.45\linewidth]{img/roc_full_random_arity5.eps}
-%}
-%\subfigure{
-%\includegraphics[width=0.45\linewidth]{img/roc_partial_random_arity5.eps}
-%}
-%\caption{Precision-recall curves for various classifiers. Plots present
-%results for asia network, with nodes having 5 possible classes. Local CPDs
-%have been chosen to express linear relation. {\bf (Left)} Entire 
-%precision-recall curve, {\bf (Right)} Low recall fragment of precision-recall curve.}
-
-%\end{figure}
-
-\subsection{Classification of CPDs from Gene Expression}
-
-\subsection{Synthetic Bayesian networks}
 
 \subsection{Gene expression data}
 
