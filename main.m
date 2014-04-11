@@ -16,15 +16,16 @@ global debug
 debug = 0;
 close all;
 
-bnet = mk_asia_random(10); %mk_bnet4();
+% bnet = mk_asia_random(10); %mk_bnet4();
+bnet = mk_asia_linear(10); %mk_bnet4();
 K = length(bnet.dag);
 arity = get_arity(bnet);
 
 max_S = 2;
 triples = gen_triples(K, max_S);
 
-num_experiments = 30;
-num_samples_range = [200 400 600];
+num_experiments = 10;
+num_samples_range = 200; %[200 400 600];
 num_N = length(num_samples_range);
 step_size = 1e-3;
 range = 0:step_size:1;
@@ -37,16 +38,19 @@ G = GaussKernel();
 % C1 = CombKernel({L, G}, {-0.1, 1});
 LA = LaplaceKernel();
 P = PKernel();
+Ind = IndKernel();
 full_options = {struct('classifier', @kci_classifier, 'kernel', L, 'range', range, 'color', 'g' ,'params',[],'name','KCI, linear kernel'), ...
            struct('classifier', @kci_classifier, 'kernel', G, 'range', range, 'color', 'b','params',[],'name','KCI, gaussian kernel'), ...
            struct('classifier', @kci_classifier, 'kernel', LA, 'range', range, 'color', 'm' ,'params',[],'name','KCI, laplace kernel'), ...
-           struct('classifier', @kci_classifier, 'kernel', P, 'range', range, 'color', 'k' ,'params',[],'name','KCI, heavytail kernel'), ...
+           struct('classifier', @kci_classifier, 'kernel', Ind, 'range', range, 'color', 'r' ,'params',[],'name','KCI, indicator kernel'), ...
+           struct('classifier', @kci_classifier, 'kernel', P, 'range', range, 'color', 'g' ,'params',[],'name','KCI, heavytail kernel with norm'), ...
+           struct('classifier', @kci_classifier, 'kernel', P, 'range', range, 'color', 'k' ,'params',[],'name','KCI, heavytail kernel no norm'), ...
            struct('classifier', @pc_classifier, 'kernel', empty, 'range', range, 'color', 'r','params',[],'name','partial correlation'), ...
            struct('classifier', @cc_classifier, 'kernel', empty, 'range', range, 'color', 'c','params',[],'name','conditional correlation'), ...
            struct('classifier', @mi_classifier, 'kernel', empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[],'name','conditional mutual information'), ...
            struct('classifier', @sb_classifier, 'kernel', empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1),'name','bayesian conditional mutual information')};
 
-options = full_options(1:4);
+options = full_options([2 4:6]);
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
 TPR = cell(num_classifiers, num_N);
@@ -105,6 +109,8 @@ for N_idx = 1:length(num_samples_range)
         
         fprintf('Experiment #%d, sampling from bayes net.\n',exp);
         s = samples(bnet, num_samples);
+        
+        
         time_exp = 0;
         for c = 1:num_classifiers
             tic;
@@ -138,8 +144,11 @@ for N_idx = 1:length(num_samples_range)
                 TP = scores(2, 2, r, :, :);
                 TN = scores(1, 1, r, :, :);
                 FP = scores(1, 2, r, :, :);
-                TPR{c, N_idx}(exp, r, :, :) = squeeze(TP ./ P); % = TP ./ (TP + FN)
-                FPR{c, N_idx}(exp, r, :, :) =  squeeze(FP ./ N); % = FP ./ (FP + TN);
+%                 TPR{c, N_idx}(exp, r, :, :) = squeeze(TP ./ P); % = TP ./ (TP + FN)
+%                 FPR{c, N_idx}(exp, r, :, :) =  squeeze(FP ./ N); % = FP ./ (FP + TN
+                tpr 
+                TPR{c, N_idx} = cat(1,TPR{c, N_idx},squeeze(TP ./ P));
+                FPR{c, N_idx} = cat(1,FPR{c, N_idx},squeeze(FP ./ N));
             end
             time_classifier = toc;
             time_exp = time_exp + time_classifier;
@@ -147,11 +156,15 @@ for N_idx = 1:length(num_samples_range)
         end
         total_time_N = total_time_N + time_exp;
         fprintf('Time for experiment %d, N=%d is %d\n',exp,num_samples,time_exp);
-        
+        clf
+        plot_roc_multi
+        hold on
+        return
     end
     total_time = total_time + total_time_N;
 end
 
-fprintf('Total running time for all experiments is %d seconds.\n',total_time);
-mat_file_command = sprintf('save asia_random_arity_%d.mat',arity);
-eval(mat_file_command);
+
+% fprintf('Total running time for all experiments is %d seconds.\n',total_time);
+% mat_file_command = sprintf('save asia_random_arity_%d.mat',arity);
+% eval(mat_file_command);

@@ -3,17 +3,21 @@ lambda = 1E-3;
 %lambda = 1e-10;
 T = length(y); % the sample size
 % % normalize the data
-% x = x - repmat(mean(x), T, 1);
-% x = x * diag(1./std(x));
-% y = y - repmat(mean(y), T, 1);
-% y = y * diag(1./std(y));
+% if (options.normalize)
+%     x = x - repmat(mean(x), T, 1);
+%     x = x * diag(1./std(x));
+%     y = y - repmat(mean(y), T, 1);
+%     y = y * diag(1./std(y));
+% end
 H =  eye(T) - ones(T, T) / T; % for centering of the data in feature space
 Ky = options.kernel.k(y, y);
 Ky = H * Ky * H; 
 
 if (exist('z', 'var') && (~isempty(z)))
-    z = z - repmat(mean(z), T, 1);
-    z = z * diag(1./std(z));
+%     if (options.normalize)
+%         z = z - repmat(mean(z), T, 1);
+%         z = z * diag(1./std(z));
+%     end
 
     Kx = options.kernel.k([x z/2], [x z/2]); 
     Kx = H * Kx * H;

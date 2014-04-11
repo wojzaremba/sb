@@ -1,7 +1,7 @@
 clear all;
 addpath(genpath('.'));
 global debug
-debug = 2;
+debug = 0;
 
 % utils
 test_enumerate_assignments();
@@ -16,6 +16,7 @@ test_sample_N_from_dist();
 test_auc();
 test_dist1();
 test_mk_random_cpd();
+test_normalize_discrete();
 
 % sb
 test_sb_expectation();
