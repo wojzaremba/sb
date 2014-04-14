@@ -25,8 +25,8 @@ K = length(bnet.dag);
 max_S = 2;
 triples = gen_triples(K, max_S);
 
-num_experiments = 30;
-num_samples_range = [200 2000]; %[200 400 600];
+num_experiments = 3;
+num_samples_range = [40 50]; %[50 200 1000];
 num_N = length(num_samples_range);
 step_size = 1e-3;
 range = 0:step_size:1;
@@ -100,20 +100,25 @@ for c = 1:num_classifiers
 end
 
 total_time = 0;
-for N_idx = 1:length(num_samples_range)
-    num_samples = num_samples_range(N_idx);
-    fprintf('STARTING N=%d.\n',num_samples);
-    total_time_N = 0;
-    for exp = 1:num_experiments
+%time_N = zeros(num_N,1);
+
+for exp = 1:num_experiments
+    time_N = zeros(num_N,1);
+    time_exp = 0;
+
+    for N_idx = 1:num_N
+
         
-        fprintf('Experiment #%d, sampling from bayes net.\n',exp);
+        num_samples = num_samples_range(N_idx);
+        fprintf('STARTING N=%d.\n',num_samples);
+        
+        fprintf('Experiment #%d, N=%d, sampling from bayes net.\n',exp,num_samples);
         s = samples(bnet, num_samples);
         if (~discrete)
             s = discretize(s,arity);
         end
         s_norm = normalize_data(s);
         
-        time_exp = 0;
         for c = 1:num_classifiers
             tic;
             %fprintf('  Testing %s...\n',name{c});
@@ -152,11 +157,11 @@ for N_idx = 1:length(num_samples_range)
             FPR{c, N_idx}(exp, :, :, :) =  squeeze(FP ./ N);
 
             time_classifier = toc;
-            time_exp = time_exp + time_classifier;
+            time_N(N_idx) = time_N(N_idx) + time_classifier;
             fprintf('   Finished %s, time = %d seconds.\n',name{c},time_classifier);
         end
-        total_time_N = total_time_N + time_exp;
-        fprintf('Time for experiment %d, N=%d is %d\n',exp,num_samples,time_exp);
+  
+        fprintf('Time for experiment %d, N=%d is %d\n',exp,num_samples,time_N(N_idx));
     end
     
     clf
@@ -164,10 +169,12 @@ for N_idx = 1:length(num_samples_range)
     hold on
     pause(1)
     
-    total_time = total_time + total_time_N;
+    time_exp = time_exp + sum(time_N);
+    fprintf('Total time for experiment %d is %d\n',exp,time_exp);
+    total_time = total_time + time_exp;
 end
 
 
-% fprintf('Total running time for all experiments is %d seconds.\n',total_time);
-% mat_file_command = sprintf('save asia_random_arity_%d.mat',arity);
-% eval(mat_file_command);
+fprintf('Total running time for all experiments is %d seconds.\n',total_time);
+mat_file_command = sprintf('save asia_linear_ggm_arity_%d.mat',arity);
+eval(mat_file_command);

@@ -1,5 +1,5 @@
-f = figure;
-set(f, 'units', 'inches', 'position', [10 10 25 16])
+%f = figure;
+%set(gcf, 'units', 'inches', 'position', [10 10 25 16])
 
 skips = cell(2,1);
 skips{1} = ones(num_classifiers,1);
@@ -19,7 +19,7 @@ for N_idx = 1:length(num_samples_range)
             ts = ['ROC small FPR, ' ts];
             xlims = [0 0.05];
         end
-        plot_roc(N_idx,TPR,FPR,num_samples_range,arity,options,name,skip);
+        plot_roc(N_idx,TPR,FPR,options,name,skip);
         xlim(xlims);
         title(ts,'fontsize',12);
     end

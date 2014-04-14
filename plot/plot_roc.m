@@ -1,4 +1,4 @@
-function h = plot_roc(N_idx,TPR,FPR,num_samples_range,arity,options,name,skip)
+function h = plot_roc(N_idx,TPR,FPR,options,name,skip)
 
 %close all;
 clear h;
