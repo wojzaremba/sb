@@ -22,5 +22,5 @@ function err = sb_variance_N(P,N)
     V = sb_variance(D,0);
     V_MC = mi_posterior_monte_carlo(D,MC_num_samples);
     err = abs(V - V_MC);
-    fprintf('   finished N = %d, err = %d\n',N, err);
+    printf(2,'   finished N = %d, err = %d\n',N, err);
 end

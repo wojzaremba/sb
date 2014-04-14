@@ -6,9 +6,4 @@ function cpd = mk_random_cpd(arity,dim)
 % sum(cpd(i,:)) = 1 for each i in 1,..,5.
 
 cpd = abs(randn(arity*ones(1,dim)));
-A = enumerate_assignments(dim-1,arity);
-
-for t = 1:size(A,1)
-    idx = num2cell(A(t,:));
-    cpd(idx{:},:) = cpd(idx{:},:) / sum(cpd(idx{:},:)) ;
-end
+cpd = normalize_cpd(cpd);

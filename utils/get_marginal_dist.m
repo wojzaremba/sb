@@ -1,4 +1,4 @@
-function CPD = get_cpd(triple,bnet)
+function D = get_marginal_dist(triple,bnet)
 
 % get bnet params
 K = length(bnet.dag);
@@ -12,11 +12,11 @@ S = triple(3:end);
 % set up inference engine
 engine = var_elim_inf_engine(bnet);
 
-% Dynamically allocate CPD.
+% Dynamically allocate marginal distribution
 if isnan(S)
-    CPD = zeros(arity,arity);
+    D = zeros(arity,arity);
 else
-    CPD = allocate_tensor(arity,2+length(S));
+    D = allocate_tensor(arity,2+length(S));
 end
 
 A = enumerate_assignments(length(S),arity);
@@ -31,5 +31,5 @@ for t = 1:size(A, 1)
     
     engine = enter_evidence(engine, evidence);
     m = marginal_nodes(engine, [X Y]);
-    CPD(:, :, t) = m.T;
+    D(:, :, t) = m.T;
 end

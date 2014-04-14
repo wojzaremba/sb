@@ -1,6 +1,6 @@
-function CPD = emp_to_cpd(emp,arity)
+function D = emp_to_dist(emp,arity)
 
-CPD = allocate_tensor(arity,size(emp,1));
+D = allocate_tensor(arity,size(emp,1));
 A = enumerate_assignments(size(emp,1)-2,arity);
 N = size(emp,2);
 total = 0;
@@ -19,7 +19,7 @@ for t = 1:size(A,1)
     for i = 1:arity
         for j = 1:arity
             idx = num2cell(cat(2,[i,j],A(t,:)));
-            CPD(idx{:}) = counts(i,j)/n;
+            D(idx{:}) = counts(i,j)/n;
         end
     end
    

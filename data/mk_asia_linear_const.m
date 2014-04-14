@@ -26,7 +26,7 @@ bnet = mk_bnet(dag, node_sizes, 'discrete', discrete_nodes,'observed',[]);
 % true is 2, false is 1
 cpd = eye(arity, arity) + abs(randn(arity, arity)) / (arity * 3);
 for i = 1:arity
-    cpd(i,i) = cpd(i,i) + 1;
+    cpd(i,i) = cpd(i,i) + arity;
     cpd(i,:) = cpd(i,:) / sum(cpd(i,:));
 end
 

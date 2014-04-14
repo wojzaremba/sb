@@ -1,5 +1,5 @@
-function test_empir_vs_cpds()
-    disp('test_empir_vs_cpds...');
+function test_empir_vs_dists()
+    disp('test_empir_vs_dists...');
     bnet = mk_bnet4();
     K = length(bnet.dag);
     arity = get_arity(bnet);
@@ -11,9 +11,9 @@ function test_empir_vs_cpds()
     s = samples(bnet,N);
 
     for t = 1 : length(triples)
-        cpd = get_cpd(triples{t},bnet);
+        D = get_marginal_dist(triples{t},bnet);
         emp = s(triples{t}, :);
-        emp_cpd = emp_to_cpd(emp,arity);
-        assert(norm(cpd(:) - emp_cpd(:)) < 0.1);
+        emp_dist = emp_to_dist(emp,arity);
+        assert(norm(D(:) - emp_dist(:)) < 0.1);
     end
 end

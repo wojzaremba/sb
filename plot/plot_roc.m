@@ -28,22 +28,22 @@ for fig = 1
         idx = 1:skip(c):length(options{c}.range);
         idx(end+1) = length(options{c}.range);
         
-        tpr = mean(TPR{c,N_idx});
-        fpr = mean(FPR{c,N_idx});
+        tpr = mean(TPR{c,N_idx},1);
+        fpr = mean(FPR{c,N_idx},1);
         
         tpr = tpr(idx);
-        tpr_err = std(TPR{c});
+        tpr_err = std(TPR{c},[],1);
         tpr_err = tpr_err(idx);
         
         fpr = fpr(idx);
-        fpr_err = std(FPR{c});
+        fpr_err = std(FPR{c},[],1);
         fpr_err = fpr_err(idx);
         
         %errorbarxy(fpr,tpr,fpr_err,tpr_err,{o.color,o.color,o.color});
         %h(c) = errorbar(fpr,tpr,tpr_err,[o.color '*-'],'linewidth',2);
         h(c) = plot(fpr,tpr,[o.color '.-']);%,'linewidth',2);
     end
-    h(num_classifiers + 1) = plot(linspace(0,1),linspace(0,1),'k--','linewidth',2);
+    h(num_classifiers + 1) = plot(linspace(0,1),linspace(0,1),'k--'); %,'linewidth',2);
     legend(h,[name 'random']);
     xlabel('FPR');
     ylabel('TPR');
