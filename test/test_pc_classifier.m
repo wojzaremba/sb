@@ -1,7 +1,10 @@
 function test_pc_classifier()
 
     disp('test_pc_classifier...');
-    sample_size = 100000;
+    rand('seed',1);
+    randn('seed',1);
+    
+    sample_size = 10000;
     opt = struct('range',[0.01,1.01]);
         
     Z = randi(5,1,sample_size);
@@ -9,9 +12,8 @@ function test_pc_classifier()
     Y = 0.2.*Z + randn(1,sample_size);
     
     emp = [X;Y;Z];
-    
-    assert(isequal(pc_classifier(emp(1:2,:), opt),[0; 1]));
-    assert(isequal(pc_classifier(emp, opt),[1; 1]));
+    assert(abs(pc_classifier(emp(1:2,:),opt)-.0411)<1e-3);
+    assert(abs(pc_classifier(emp, opt)-.0023)<1e-3);
     
 
     

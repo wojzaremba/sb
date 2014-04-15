@@ -1,4 +1,4 @@
-function classes = mi_classifier(emp, options)
+function rho = mi_classifier(emp, options)
 % returns a binary vector the same length as options.range, with 1
 % signifying independence, and 0 dependence
 %
@@ -12,6 +12,6 @@ function classes = mi_classifier(emp, options)
         rho = max(rho, mutual_information(emp_dist(:, :, t)));
     end
     
-    printf(2, 'rho=%d\n',rho);
-    classes = threshold(options.range,rho);
+%     printf(2, 'rho=%d\n',rho);
+%     classes = threshold(options.range,rho);
 end

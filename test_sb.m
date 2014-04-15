@@ -12,6 +12,7 @@ test_get_marginal_dist();
 test_emp_to_dist();
 test_condition_emp();
 test_cond_emp_to_counts();
+test_empir_vs_dists();
 test_sample_N_from_dist();
 test_auc();
 test_dist1();

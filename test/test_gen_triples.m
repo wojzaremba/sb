@@ -1,6 +1,7 @@
 function test_gen_triples()
 disp('test_gen_triples...');
-triples = gen_triples(4,1);
-assert(length(triples)==18);
-assert(isequal(triples{1},[1 2]));
-assert(isequal(triples{18},[3 4 2]));
+triples = gen_triples(4,2);
+assert(length(triples)==6);
+assert(length(triples{1}.cond_set) == 4);
+assert(isequal(triples{1}.cond_set{4},[3 4]));
+assert(isequal(triples{6}.cond_set{3},[2]));

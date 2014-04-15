@@ -1,4 +1,4 @@
-function classes = sb_classifier(emp, options)
+function rho = sb_classifier(emp, options)
 % returns a binary vector the same length as options.range, with 1
 % signifying independence, and 0 dependence
 %
@@ -20,5 +20,5 @@ for t = 1:size(A,1)
     end
 end
 
-printf(2, 'rho=%d\n',rho);
-classes = threshold(options.range,rho);
+% printf(2, 'rho=%d\n',rho);
+% classes = threshold(options.range,rho);

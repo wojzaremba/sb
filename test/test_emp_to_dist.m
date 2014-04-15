@@ -8,7 +8,7 @@ triples = gen_triples(K, 2);
 
 N = 1000;
 s = samples(bnet,N);
-emp = s(triples{24}, :);
+emp = s(triples{end}.cond_set{end}, :);
 
 D = emp_to_dist(emp,arity);
 
