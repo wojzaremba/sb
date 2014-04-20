@@ -28,7 +28,7 @@ test_sb_variance();
 test_compute_sb();
 
 % data
-test_mk_asia_ggm();
+test_mk_asia_linear_gauss();
 
 
 % classifiers

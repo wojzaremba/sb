@@ -1,8 +1,5 @@
 function rho = mi_classifier(emp, options)
-% returns a binary vector the same length as options.range, with 1
-% signifying independence, and 0 dependence
-%
-% options.range is a set of threshold values
+% returns maximum mutual information over all assignments to conditioning set 
 
     emp_dist = emp_to_dist(emp, options.arity);
     emp_dist = emp_dist(:, :, :);
@@ -10,8 +7,7 @@ function rho = mi_classifier(emp, options)
     rho = -Inf;
     for t = 1:size(emp_dist, 3)
         rho = max(rho, mutual_information(emp_dist(:, :, t)));
+        printf(2, 'rho=%d\n',rho);
     end
-    
-%     printf(2, 'rho=%d\n',rho);
-%     classes = threshold(options.range,rho);
+
 end

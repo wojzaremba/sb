@@ -9,7 +9,7 @@ classdef GaussKernel < Kernel
         end
             
         function ret = k(obj, x, y)
-            T = size(x, 2);
+            T = size(x, 1);
             if T <= 200  
                 width = 1.2; 
             elseif T < 1200
@@ -24,7 +24,6 @@ classdef GaussKernel < Kernel
 %             end                        
             wi2 = theta / 2;
             ret = exp(-n2*wi2);
-%             fprintf('GaussKernel %f\n', ret(2));
         end
         
     end

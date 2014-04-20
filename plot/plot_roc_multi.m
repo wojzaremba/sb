@@ -1,5 +1,5 @@
-f = figure;
-set(gcf, 'units', 'inches', 'position', [10 10 25 16])
+%f = figure;
+%set(gcf, 'units', 'inches', 'position', [10 10 25 16])
 
 skips = cell(2,1);
 skips{1} = ones(num_classifiers,1);

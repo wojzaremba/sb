@@ -7,7 +7,6 @@ samples_size = 1000;
 emp_indep = [randi(2, 1, samples_size); randi(2, 1, samples_size)];
 opt = struct('arity', 2,'params',struct('eta',0.01,'alpha',1));
 
-sb_classifier(emp_indep, opt)
 assert(abs(sb_classifier(emp_indep, opt))<1e-5);
 
 emp_dep = [randi(3, 1, samples_size); randi(2, 1, samples_size)];

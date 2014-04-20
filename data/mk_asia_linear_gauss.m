@@ -1,4 +1,6 @@
-function bnet = mk_asia_ggm(covariance)
+function bnet = mk_asia_linear_gauss(covariance)
+
+randn('seed', 1);
 
 Smoking = 1;
 Bronchitis = 2;
@@ -20,8 +22,6 @@ dag(TBorCancer, [Dys Xray]) = 1;
 
 node_sizes = ones(1,n);
 bnet = mk_bnet(dag, node_sizes,'observed',[],'discrete', []);
-
-%covariance = 0.1;
 
 bnet.CPD{VisitToAsia} = gaussian_CPD(bnet, VisitToAsia, 'mean',0,'cov',covariance);        
 bnet.CPD{TB} = gaussian_CPD(bnet, TB, 'mean',0,'cov',covariance,'weights',1);                            

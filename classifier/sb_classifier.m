@@ -1,8 +1,7 @@
 function rho = sb_classifier(emp, options)
-% returns a binary vector the same length as options.range, with 1
-% signifying independence, and 0 dependence
-%
-% options.range is a set of threshold values
+% returns max sparsity boost score over all possible values to the
+% conditioning set.  The max sb score (this is before taking -log) is the
+% most dependent, hence conservative)
 
 arity = options.arity;
 A = enumerate_assignments(size(emp,1)-2,arity);
