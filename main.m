@@ -173,5 +173,5 @@ end
 
 
 fprintf('Total running time for all experiments is %d seconds.\n',total_time);
-% mat_file_command = sprintf('save asia_linear_ggm_arity_%d.mat',arity);
-% eval(mat_file_command);
+mat_file_command = sprintf('save child_%s_arity%d_N%d.mat',cpd_type,arity,num_samples);
+eval(mat_file_command);
