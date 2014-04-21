@@ -1,4 +1,4 @@
-function bnet = mk_asia_large_arity_nonlinear(arity)
+function bnet = mk_asia_large_arity(arity)
 
 randn('seed', 1);
 Smoking = 1;
@@ -25,21 +25,18 @@ bnet = mk_bnet(dag, node_sizes, 'discrete', discrete_nodes,'observed',[]);
 
 % true is 2, false is 1
 cpd = eye(arity, arity) + abs(randn(arity, arity)) / (arity * 3);
-% normalize each row of CPD, and then permute
 for i = 1:arity
+    cpd(i,i) = cpd(i,i) + 1;
     cpd(i,:) = cpd(i,:) / sum(cpd(i,:));
-    cpd(i,:) = cpd(i,randperm(arity));
 end
 
 cpd3 = abs(randn(arity, arity, arity)) / (arity * arity * 3);
 for i = 1:arity
-    cpd3(i, i, i) = cpd3(i, i, i) + 1;
+    cpd3(i, i, i) = cpd3(i, i, i) + arity;
 end
-% normalize each row of CPD, and then permute
 for i = 1:arity
     for j = 1:arity
         cpd3(i,j,:) = cpd3(i,j,:) / sum(cpd3(i,j,:));
-        cpd3(i,j,:) = cpd3(i,j,randperm(arity));
     end
 end
 
