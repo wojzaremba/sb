@@ -1,8 +1,8 @@
-function rho = sb_classifier(emp, options)
+function rho = sb_classifier(emp, trip, options)
 % returns max sparsity boost score over all possible values to the
 % conditioning set.  The max sb score (this is before taking -log) is the
 % most dependent, hence conservative)
-
+emp = emp(trip,:);
 arity = options.arity;
 A = enumerate_assignments(size(emp,1)-2,arity);
 eta = options.params.eta;

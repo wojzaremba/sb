@@ -1,37 +1,37 @@
 
 % XXXX  TODO ????
-% 1. LINEAR KERNEL - TAKE ABSOLUTE VALUE?? Hm why is kci_classifier with
-% Linear Kernel returning a positive value when corr is very negative?
-% 2. Why is cc_classifier returning the same values for all conditioning
-% sets? Oh it's because if I have less than 20 samples, I just set rho = 1.
-% 3. Why does GaussKernel and LinearKernel give the same numbers in
-% test_kci_classifier? (in certain cases)
+% 1. Create tests for conditioned classifiers.
+% 2. What is the difference between conditional correlation and partial
+% correlation in the binary case?
+% 3. Why do GaussKernel, LinearKernel and IndicatorKernel give the same numbers for binary
+% data? (without conditioning)?  They are just computing partial
+% correlation.  This does not hold for ternary data.  Should also check if
+% its true if I condition.
 % 4. writes tests for mk_bnet functions
 % 5. Cache kernel matrices / inspect which part is slow. 
 % 6. Check if glueing would recover results of mutual information
-% 8. Get ci and kci linear to give the same results.
 % 9. Explore manually which kernels work well. It's enough to have a paper
 % on a good kernel.
 % 10. If a BN tells me about the correlation structure in the data, is there a way to use this to directly compute a data transformation in which the data are no longer correlated?  Is this what I want for a drug-repurposing metric? 
 
-clear all;
+% clear all;
 global debug
-debug = 2;
+debug = 0;
 close all;
 
 cpd_type = 'linear'; %%%
 discrete = false; %%%
-bnet = mk_asia_ggm(0.05); %%%
+bnet = mk_child_linear_gauss(0.5); %%%
 arity = get_arity(bnet);
 if (~discrete)
     disp('not discrete, setting arity separately');
-    arity = 3; %%%
+    arity = 2; %%%
 end
 K = length(bnet.dag);
 max_S = 2;
 
-num_experiments = 30;
-num_samples_range = [50 200 1000];
+num_experiments = 3;%20;
+num_samples_range = [50];% 200 500];
 num_N = length(num_samples_range);
 step_size = 1e-3;
 range = 0:step_size:1;
@@ -45,44 +45,40 @@ G = GaussKernel();
 LA = LaplaceKernel();
 P = PKernel();
 Ind = IndKernel();
-full_options = {struct('classifier', @kci_classifier, 'kernel', L,'range', range, 'color', 'g' ,'params',[],'normalize',true,'name','KCI, linear kernel'), ...
-           struct('classifier', @kci_classifier, 'kernel', G, 'range', range, 'color', 'b','params',[],'normalize',true,'name','KCI, gaussian kernel'), ...
-           struct('classifier', @kci_classifier, 'kernel', LA, 'range', range, 'color', 'm' ,'params',[],'normalize',true,'name','KCI, laplace kernel'), ...
-           struct('classifier', @kci_classifier, 'kernel', Ind, 'range', range, 'color', 'r' ,'params',[],'normalize',true,'name','KCI, indicator kernel'), ...
-           struct('classifier', @kci_classifier, 'kernel', P, 'range', range, 'color', 'k' ,'params',[],'normalize',true,'name','KCI, heavytail kernel'), ...
-           struct('classifier', @pc_classifier, 'kernel', empty, 'range', range, 'color', 'r','params',[],'normalize',true,'name','partial correlation'), ...
-           struct('classifier', @cc_classifier, 'kernel', empty, 'range', range, 'color', 'c','params',[],'normalize',false,'name','conditional correlation'), ...
-           struct('classifier', @mi_classifier, 'kernel', empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[],'normalize',false,'name','conditional mutual information'), ...
-           struct('classifier', @sb_classifier, 'kernel', empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1.0),'normalize',false,'name','bayesian conditional mutual information')};
+full_options = {struct('classifier', @kci_classifier, 'prealloc', @kci_prealloc, 'kernel', L,'range', range, 'color', 'g' ,'params',[],'normalize',true,'name','KCI, linear kernel'), ...
+           struct('classifier', @kci_classifier, 'prealloc', @kci_prealloc, 'kernel', G, 'range', range, 'color', 'b','params',[],'normalize',true,'name','KCI, gaussian kernel'), ...
+           struct('classifier', @kci_classifier, 'prealloc', @kci_prealloc, 'kernel', LA, 'range', range, 'color', 'm' ,'params',[],'normalize',true,'name','KCI, laplace kernel'), ...
+           struct('classifier', @kci_classifier, 'prealloc', @kci_prealloc, 'kernel', Ind, 'range', range, 'color', 'r' ,'params',[],'normalize',true,'name','KCI, indicator kernel'), ...
+           struct('classifier', @kci_classifier, 'prealloc', @kci_prealloc, 'kernel', P, 'range', range, 'color', 'k' ,'params',[],'normalize',true,'name','KCI, heavytail kernel'), ...
+           struct('classifier', @cc_classifier, 'prealloc', empty, 'kernel', empty, 'range', range, 'color', 'c','params',[],'normalize',false,'name','conditional correlation'), ...
+           struct('classifier', @mi_classifier, 'prealloc', empty, 'kernel', empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[],'normalize',false,'name','conditional MI'), ...
+           struct('classifier', @sb_classifier, 'prealloc', empty, 'kernel', empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1.0),'normalize',false,'name','bayesian conditional MI')};
+       
+                  %struct('classifier', @pc_classifier, 'kernel', empty,
+                  %'range', range, 'color',
+                  %'r','params',[],'normalize',true,'name','partial
+                  %correlation'), ...
 
-%options = full_options([1 2 4:8]);
-options = full_options(7:8);%[2 6:9]
+options = full_options([1 2 4 6 7 8]);
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
 TPR = cell(num_classifiers, num_N);
 FPR = cell(num_classifiers, num_N);
 
-% label each CPD as either independent (1) or dependent (0)
+% label each pair of variables according to whether there is an edge
+% between them
 triples = gen_triples(K, max_S);
-%indep = zeros(length(triples), 1);
 no_edge = zeros(length(triples),1);
 fprintf('Computing ground truth existence of edges...\n');
 tic;
 for t = 1 : length(triples)
     i = triples{t}.i;
     j = triples{t}.j;
-    %indep(t) = double(dsep(i, j, triples{t}(3:end), bnet.dag));
     no_edge(t) = ~(bnet.dag(i,j) || bnet.dag(j,i));
 end
 fprintf('...finished in %d seconds.\n',toc);
-% only keep dependent distributions corresponding to an edge (along with
-% any conditioning sets)
-%keep = (indep | edge);
-%triples = triples(keep);
-%indep = indep(keep);
 num_edge = length(no_edge) - length(find(no_edge));
 fprintf('Testing %d no-edge and %d edge distributions, arity=%d.\n',length(find(no_edge)),num_edge,arity);
-
 
 % allocate
 for c = 1:num_classifiers
@@ -107,13 +103,13 @@ for exp = 1:num_experiments
     time_exp = 0;
 
     for N_idx = 1:num_N
-
         
         num_samples = num_samples_range(N_idx);
         fprintf('STARTING N=%d.\n',num_samples);
         
-        fprintf('Experiment #%d, N=%d, sampling from bayes net.\n',exp,num_samples);
+        fprintf('Experiment #%d, N=%d, sampling from bayes net...\n',exp,num_samples);
         s = samples(bnet, num_samples);
+        fprintf('... done.\n');
         if (~discrete)
             s = discretize(s,arity);
         end
@@ -129,18 +125,18 @@ for exp = 1:num_experiments
             num_thresholds = length(o.range);
             scores = zeros([2 2 num_thresholds param_size{c}]);
             
+            if o.normalize
+                emp = s_norm;
+            else
+                emp = s;
+            end            
+            
             % apply classifier
+            prealloc = o.prealloc(emp, opt);
             for t = 1 : length(triples)
-                if o.normalize
-                    %emp = s_norm(triples{t}, :);
-                    emp = s_norm;
-                else
-                    %emp = s(triples{t},:);
-                    emp = s;
-                end
                 
                 % evaluate classifier at all thresholds in range
-                indep_emp = classifier_wrapper(emp, triples{t}, o.classifier, opt); %o.classifier(emp, opt);
+                indep_emp = classifier_wrapper(emp, triples{t}, o.classifier, prealloc, opt); %o.classifier(emp, opt);
                 indep_emp = reshape(indep_emp,[1 1 size(indep_emp)]);
                 
                 % increment scores accordingly (WARNING: HARD-CODED max num

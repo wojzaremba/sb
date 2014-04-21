@@ -1,4 +1,4 @@
-function classes = classifier_wrapper(emp, triple, f, opt)
+function classes = classifier_wrapper(emp, triple, f, prealloc, opt)
 % CLASSIFIER_WRAPPER calls the classifier f, once for each conditioning set
 % listed in triples.cond_set.  Chooses the rho corresponding to the
 % strongest evidence for independence among all conditioning sets tested.
@@ -20,8 +20,7 @@ printf(2,'i,j = %d,%d\n',triple.i,triple.j);
 
 for c = 1:length(triple.cond_set)
     trip = [triple.i,triple.j,triple.cond_set{c}];
-    emp_c = emp(trip,:);
-    rho = min(rho,f(emp_c,opt));
+    rho = min(rho,f(emp, trip, prealloc, opt));
     printf(2,'%d, %d\n',length(triple.cond_set{c}),rho);
 end
 printf(2,'\n');
