@@ -1,5 +1,6 @@
 
 % XXXX  TODO ????
+% 1. Create tests for conditioned classifiers.
 % 2. What is the difference between conditional correlation and partial
 % correlation in the binary case?
 % 3. Why do GaussKernel, LinearKernel and IndicatorKernel give the same numbers for binary
@@ -13,7 +14,7 @@
 % on a good kernel.
 % 10. If a BN tells me about the correlation structure in the data, is there a way to use this to directly compute a data transformation in which the data are no longer correlated?  Is this what I want for a drug-repurposing metric? 
 
-clear all;
+% clear all;
 global debug
 debug = 0;
 close all;
@@ -29,8 +30,8 @@ end
 K = length(bnet.dag);
 max_S = 2;
 
-num_experiments = 20;
-num_samples_range = [50 200 500];
+num_experiments = 3;%20;
+num_samples_range = [50];% 200 500];
 num_N = length(num_samples_range);
 step_size = 1e-3;
 range = 0:step_size:1;
@@ -44,14 +45,14 @@ G = GaussKernel();
 LA = LaplaceKernel();
 P = PKernel();
 Ind = IndKernel();
-full_options = {struct('classifier', @kci_classifier, 'kernel', L,'range', range, 'color', 'g' ,'params',[],'normalize',true,'name','KCI, linear kernel'), ...
-           struct('classifier', @kci_classifier, 'kernel', G, 'range', range, 'color', 'b','params',[],'normalize',true,'name','KCI, gaussian kernel'), ...
-           struct('classifier', @kci_classifier, 'kernel', LA, 'range', range, 'color', 'm' ,'params',[],'normalize',true,'name','KCI, laplace kernel'), ...
-           struct('classifier', @kci_classifier, 'kernel', Ind, 'range', range, 'color', 'r' ,'params',[],'normalize',true,'name','KCI, indicator kernel'), ...
-           struct('classifier', @kci_classifier, 'kernel', P, 'range', range, 'color', 'k' ,'params',[],'normalize',true,'name','KCI, heavytail kernel'), ...
-           struct('classifier', @cc_classifier, 'kernel', empty, 'range', range, 'color', 'c','params',[],'normalize',false,'name','conditional correlation'), ...
-           struct('classifier', @mi_classifier, 'kernel', empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[],'normalize',false,'name','conditional MI'), ...
-           struct('classifier', @sb_classifier, 'kernel', empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1.0),'normalize',false,'name','bayesian conditional MI')};
+full_options = {struct('classifier', @kci_classifier, 'prealloc', @kci_prealloc, 'kernel', L,'range', range, 'color', 'g' ,'params',[],'normalize',true,'name','KCI, linear kernel'), ...
+           struct('classifier', @kci_classifier, 'prealloc', @kci_prealloc, 'kernel', G, 'range', range, 'color', 'b','params',[],'normalize',true,'name','KCI, gaussian kernel'), ...
+           struct('classifier', @kci_classifier, 'prealloc', @kci_prealloc, 'kernel', LA, 'range', range, 'color', 'm' ,'params',[],'normalize',true,'name','KCI, laplace kernel'), ...
+           struct('classifier', @kci_classifier, 'prealloc', @kci_prealloc, 'kernel', Ind, 'range', range, 'color', 'r' ,'params',[],'normalize',true,'name','KCI, indicator kernel'), ...
+           struct('classifier', @kci_classifier, 'prealloc', @kci_prealloc, 'kernel', P, 'range', range, 'color', 'k' ,'params',[],'normalize',true,'name','KCI, heavytail kernel'), ...
+           struct('classifier', @cc_classifier, 'prealloc', empty, 'kernel', empty, 'range', range, 'color', 'c','params',[],'normalize',false,'name','conditional correlation'), ...
+           struct('classifier', @mi_classifier, 'prealloc', empty, 'kernel', empty, 'range', 0:step_size:log2(arity), 'color', 'y','params',[],'normalize',false,'name','conditional MI'), ...
+           struct('classifier', @sb_classifier, 'prealloc', empty, 'kernel', empty,'range',range, 'color', 'm','params',struct('eta',0.01,'alpha',1.0),'normalize',false,'name','bayesian conditional MI')};
        
                   %struct('classifier', @pc_classifier, 'kernel', empty,
                   %'range', range, 'color',
@@ -102,7 +103,6 @@ for exp = 1:num_experiments
     time_exp = 0;
 
     for N_idx = 1:num_N
-
         
         num_samples = num_samples_range(N_idx);
         fprintf('STARTING N=%d.\n',num_samples);
@@ -125,18 +125,18 @@ for exp = 1:num_experiments
             num_thresholds = length(o.range);
             scores = zeros([2 2 num_thresholds param_size{c}]);
             
+            if o.normalize
+                emp = s_norm;
+            else
+                emp = s;
+            end            
+            
             % apply classifier
+            prealloc = o.prealloc(emp, opt);
             for t = 1 : length(triples)
-                if o.normalize
-                    %emp = s_norm(triples{t}, :);
-                    emp = s_norm;
-                else
-                    %emp = s(triples{t},:);
-                    emp = s;
-                end
                 
                 % evaluate classifier at all thresholds in range
-                indep_emp = classifier_wrapper(emp, triples{t}, o.classifier, opt); %o.classifier(emp, opt);
+                indep_emp = classifier_wrapper(emp, triples{t}, o.classifier, prealloc, opt); %o.classifier(emp, opt);
                 indep_emp = reshape(indep_emp,[1 1 size(indep_emp)]);
                 
                 % increment scores accordingly (WARNING: HARD-CODED max num

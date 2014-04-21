@@ -1,7 +1,7 @@
-function rho = cc_classifier(emp, options)
+function rho = cc_classifier(emp, trip, options)
 % returns maximum absolute correlation over all assignments to conditioning
 % set
-
+    emp = emp(trip,:);
     arity = options.arity;
     
     rho = -Inf;

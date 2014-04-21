@@ -30,7 +30,6 @@ test_compute_sb();
 % data
 test_mk_asia_linear_gauss();
 
-
 % classifiers
 test_mi_classifier();
 test_pc_classifier();
