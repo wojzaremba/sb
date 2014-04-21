@@ -11,6 +11,7 @@ sb.pdf: $(PARTS) bibliography.bib
 	bibtex sb
 	pdflatex -shell-escape sb.tex
 	pdflatex -shell-escape sb.tex
+	open sb.pdf
 
 pdfcrop:
 	pdfcrop img/linear_arity_3-eps-converted-to.pdf

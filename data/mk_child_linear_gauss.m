@@ -57,5 +57,5 @@ end
 two_parents = [9:12 14 17];
 for i = 1:length(two_parents)
     idx = two_parents(i);
-    bnet.CPD{idx} = gaussian_CPD(bnet,idx,'mean',0,'cov',covariance,'weights',[0.5 0.5]);
+    bnet.CPD{idx} = gaussian_CPD(bnet,idx,'mean',0,'cov',covariance,'weights',sample_dirichlet([1 1],1));
 end

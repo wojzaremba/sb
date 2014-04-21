@@ -1,4 +1,4 @@
-function bnet = mk_asia_linear_gauss(covariance)
+function bnet = mk_asia_linear_gauss(variance)
 
 randn('seed', 1);
 
@@ -23,11 +23,11 @@ dag(TBorCancer, [Dys Xray]) = 1;
 node_sizes = ones(1,n);
 bnet = mk_bnet(dag, node_sizes,'observed',[],'discrete', []);
 
-bnet.CPD{VisitToAsia} = gaussian_CPD(bnet, VisitToAsia, 'mean',0,'cov',covariance);        
-bnet.CPD{TB} = gaussian_CPD(bnet, TB, 'mean',0,'cov',covariance,'weights',1);                            
-bnet.CPD{Smoking} = gaussian_CPD(bnet, Smoking, 'mean',0,'cov',covariance);                
-bnet.CPD{LungCancer} = gaussian_CPD(bnet, LungCancer, 'mean',0,'cov',covariance,'weights',1);           
-bnet.CPD{Bronchitis} = gaussian_CPD(bnet, Bronchitis, 'mean',0,'cov',covariance,'weights',1);            
-bnet.CPD{Dys} = gaussian_CPD(bnet, Dys, 'mean',0,'cov',covariance,'weights',[0.5 0.5]);             
-bnet.CPD{TBorCancer} = gaussian_CPD(bnet, TBorCancer, 'weights',[0.5 0.5]);
-bnet.CPD{Xray} = gaussian_CPD(bnet, Xray, 'mean',0,'cov',covariance,'weights',1);  
+bnet.CPD{VisitToAsia} = gaussian_CPD(bnet, VisitToAsia, 'mean',0,'cov',variance);        
+bnet.CPD{TB} = gaussian_CPD(bnet, TB, 'mean',0,'cov',variance,'weights',1);                            
+bnet.CPD{Smoking} = gaussian_CPD(bnet, Smoking, 'mean',0,'cov',variance);                
+bnet.CPD{LungCancer} = gaussian_CPD(bnet, LungCancer, 'mean',0,'cov',variance,'weights',1);           
+bnet.CPD{Bronchitis} = gaussian_CPD(bnet, Bronchitis, 'mean',0,'cov',variance,'weights',1);            
+bnet.CPD{Dys} = gaussian_CPD(bnet, Dys, 'mean',0,'cov',variance,'weights',sample_dirichlet([1 1],1));             
+bnet.CPD{TBorCancer} = gaussian_CPD(bnet, TBorCancer, 'mean',0,'cov',variance,'weights',sample_dirichlet([1 1],1));
+bnet.CPD{Xray} = gaussian_CPD(bnet, Xray, 'mean',0,'cov',variance,'weights',1);  

@@ -43,30 +43,22 @@
 \newtheorem{lem}[thm]{Lemma}
 %\newtheorem{definition}{Definition}
 
-\title{Optimal independence tests for Bayesian Networks}
+\title{Kernelized Independence Tests for Bayesian Network Structure Learning}
 
 \author{
+Rachel Hodos
+Computational Biology, NYU
+\texttt{hodos@cims.nyu.edu}
 \And
-Coauthor \\
-Affiliation \\
-Address \\
-\texttt{email} \\
+Wojciech Zaremba \\
+Computer Science, NYU \\
+%Address \\
+\texttt{woj.zaremba@gmail.com} \\
 \AND
-Coauthor \\
-Affiliation \\
-Address \\
-\texttt{email} \\
-\And
-Coauthor \\
-Affiliation \\
-Address \\
-\texttt{email} \\
-\And
-Coauthor \\
-Affiliation \\
-Address \\
-\texttt{email} \\
-(if needed)\\
+David Sontag \\
+Computer Science, NYU \\
+%Address \\
+\texttt{dsontag@cs.nyu.edu} \\
 }
 %
 % Using \And between authors leaves it to \LaTeX{} to determine where to break
@@ -245,9 +237,8 @@ in Sections\ref{sec:corr} both have a smoothness properties.
 \subsection{Curse of conditioning}\label{sec:curse}
 
 \subsection{Partial correlation}\label{sec:corr}
-Partial correlation measures relation between two random variables $A, B$ given other $C$ (random 
-variables on which we would like to condition). Partial correlation regress $C$ on $A$ and $B$. 
-Procedure is to compute residuals $R_A, R_B$ of such regression and measures correlation between them. More formally:
+The method of partial correlation measures the remaining correlation between two random variables $A, B$ after regressing on $C$ (a set of random 
+variables on which we would like to condition).  The procedure computes the residuals $R_A, R_B$ of each regression and then measures the correlation between the residuals. More formally:
 \begin{align*}
   w_A &= \argmin_{w_A} ||a - w_A c||_{2} \\
   w_B &= \argmin_{w_A} ||b - w_B c||_{2} \\
