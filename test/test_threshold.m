@@ -1,4 +1,3 @@
-function test_threshold()
 disp('test_threshold...');
 
 range = linspace(0,1,6);

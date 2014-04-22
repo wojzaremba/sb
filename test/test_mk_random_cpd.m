@@ -1,4 +1,3 @@
-function test_mk_random_cpd()
 
 randn('seed', 1);
 

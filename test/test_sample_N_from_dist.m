@@ -1,7 +1,6 @@
-function test_sample_N_from_dist()
 disp('test_sample_N_from_dist...');
 
-N = 1000:10000:1000000;
+N = 1000:10000:100000;
 err = zeros(1,length(N));
 
 arity = 3;

@@ -1,4 +1,3 @@
-function test_auc()
 disp('test_auc...');
 
 x = linspace(0,1,1000)';

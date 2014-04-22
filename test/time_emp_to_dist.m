@@ -1,4 +1,5 @@
-disp('test_emp_to_dist...');
+function time_emp_to_dist()
+
 bnet = mk_bnet4();
 K = length(bnet.dag);
 arity = get_arity(bnet);
@@ -9,12 +10,9 @@ N = 1000;
 s = samples(bnet,N);
 emp = s(triples{end}.cond_set{end}, :);
 
-D = emp_to_dist(emp,arity);
 
-for i = 1:size(D,3)
-    for j = 1:size(D,4)
-        assert( norm(sum(sum(D(:,:,i,j))) - 1) < 1e-4);
-    end
+
+
+for t = 1:10000
+    emp_to_dist(emp,arity);
 end
-
-

@@ -1,4 +1,4 @@
-function classes = classifier_wrapper(emp, triple, f, prealloc, opt)
+function classes = classifier_wrapper(emp, triple, f, opt, prealloc)
 % CLASSIFIER_WRAPPER calls the classifier f, once for each conditioning set
 % listed in triples.cond_set.  Chooses the rho corresponding to the
 % strongest evidence for independence among all conditioning sets tested.
@@ -11,8 +11,8 @@ function classes = classifier_wrapper(emp, triple, f, prealloc, opt)
 % (i,j), should pass triples{t} from output of gen_triples
 %
 % OUTPUTS:
-% classes- binary vector the same length as opt.range, with 1
-% signifying independence, and 0 dependence.  opt.range is a set of
+% classes- binary vector the same length as opt.threshold, with 1
+% signifying independence, and 0 dependence.  opt.threshold is a set of
 % threshold values.
 
 rho = Inf;
@@ -20,10 +20,13 @@ printf(2,'i,j = %d,%d\n',triple.i,triple.j);
 
 for c = 1:length(triple.cond_set)
     trip = [triple.i,triple.j,triple.cond_set{c}];
-    rho = min(rho,f(emp, trip, prealloc, opt));
+    rho = min(rho,f(emp, trip, opt, prealloc));
     printf(2,'%d, %d\n',length(triple.cond_set{c}),rho);
+    if (abs(rho - opt.rho_range(1)) < 1e-4)
+        break
+    end
 end
 printf(2,'\n');
 
-classes = threshold(opt.range,rho);
+classes = threshold(opt.thresholds,rho);
 

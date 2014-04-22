@@ -25,8 +25,8 @@ for fig = 1
     for c = 1:num_classifiers
         o = options{c};
 
-        idx = 1:skip(c):length(options{c}.range);
-        idx(end+1) = length(options{c}.range);
+        idx = 1:skip(c):length(options{c}.thresholds);
+        idx(end+1) = length(options{c}.thresholds);
         
         tpr = mean(TPR{c,N_idx},1);
         fpr = mean(FPR{c,N_idx},1);

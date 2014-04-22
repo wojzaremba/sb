@@ -1,4 +1,3 @@
-function test_normalize_cpd()
 disp('test_normalize_cpd...');
 
 randn('seed',1);

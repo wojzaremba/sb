@@ -1,4 +1,3 @@
-function test_cond_emp_to_counts()
 disp('test_cond_emp_to_counts...');
 
 arity = 3;
@@ -20,6 +19,4 @@ for t = 1:size(A,1)
     counts = cond_emp_to_counts(cond_emp,arity);
     assert(sum(counts(:)) == n);
     
-end
-
 end

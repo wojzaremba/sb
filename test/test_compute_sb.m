@@ -1,4 +1,3 @@
-function test_compute_sb()
 disp('test_compute_sb...');
 
 N = 100:10:500;
@@ -58,6 +57,3 @@ for i = 1:5
     assert(sb_mean(end-5+i) < sb_mean(i))
 end
 
-
-
-end

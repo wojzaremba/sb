@@ -1,4 +1,3 @@
-function test_mk_linear_cpd_const()
 disp('test_mk_linear_cpd_const...');
 
 cpd = mk_linear_cpd_const(10,2);

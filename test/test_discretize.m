@@ -1,4 +1,3 @@
-function test_discretize()
 disp('test_discretize...');
 
 bnet = mk_asia_linear_gauss(0.05);
