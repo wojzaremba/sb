@@ -1,4 +1,3 @@
-function test_gen_triples()
 disp('test_gen_triples...');
 triples = gen_triples(4,2);
 assert(length(triples)==6);

@@ -1,4 +1,3 @@
-function test_sb_classifier()
 disp('test_sb_classifier...');
 
 rand('seed',1);
@@ -14,4 +13,13 @@ emp_dep(2, emp_dep(1, :) == 3) = 1;
 emp_dep(1, emp_dep(1, :) == 3) = 2;
 
 assert(abs(sb_classifier(emp_dep, [1, 2], opt)-1)<1e-3);
+
+z = sign(rand(1, samples_size) - 0.5);
+x = z .* sign(rand(1, samples_size)-0.9);
+y = -z .* sign(rand(1, samples_size)-0.9);
+emp_dep = [x; y; z];
+emp_dep(emp_dep == -1) = 2;
+assert(cc_classifier(emp_dep, [1, 2], opt) > 0.6);
+assert(cc_classifier(emp_dep, [1 2 3], opt) < 0.06);
+
     

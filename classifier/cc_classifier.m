@@ -1,4 +1,4 @@
-function rho = cc_classifier(emp, trip, options)
+function rho = cc_classifier(emp, trip, options, prealloc)
 % returns maximum absolute correlation over all assignments to conditioning
 % set
     emp = emp(trip,:);
@@ -9,7 +9,10 @@ function rho = cc_classifier(emp, trip, options)
     for t = 1:size(A,1)
         cond_emp = condition_emp(emp,A(t,:));
         if (size(cond_emp,2) > 10)
-            rho = max(rho,abs(corr(cond_emp(1,:)',cond_emp(2,:)')));
+            rho = max(rho,abs(my_corr(cond_emp(1,:)',cond_emp(2,:)')));
+            if (abs(rho - options.rho_range(2)) < 1e-4)
+                break
+            end
         else
             rho = 1;
             break

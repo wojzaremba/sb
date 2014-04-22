@@ -1,4 +1,3 @@
-function test_mk_asia_large_arity()
 disp('test_mk_asia_large_arity...');
 
 arity = 2;

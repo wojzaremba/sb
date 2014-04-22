@@ -1,4 +1,4 @@
-function err = test_sb_variance()
+function test_sb_variance()
 disp('test_sb_variance...');
 
 arity = 3;

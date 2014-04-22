@@ -12,7 +12,7 @@ emp = [x'; y'];
 Ind = IndKernel();
 G = GaussKernel();
 
-opt = struct('arity',arity ,'kernel',Ind,'range',0:1e-3:1);
+opt = struct('arity',arity ,'kernel',Ind,'thresholds',0:1e-3:1);
 %assert(isequal(kci_classifier(emp, opt),[0; 1]));
 ind = kci_classifier(emp,opt);
 

@@ -1,4 +1,3 @@
-function test_condition_emp()
 disp('test_condition_emp...');
 arity = 2;
 emp = randi(arity,4,100);
@@ -17,4 +16,3 @@ end
 printf(3, 'total = %d, N = %d\n', total, N);
 assert(total == N);
 
-end

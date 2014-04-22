@@ -1,11 +1,10 @@
-function test_pc_classifier()
 
     disp('test_pc_classifier...');
     rand('seed',1);
     randn('seed',1);
     
     sample_size = 10000;
-    opt = struct('range',[0.01,1.01]);
+    opt = struct('thresholds',[0.01,1.01]);
         
     Z = randi(5,1,sample_size);
     X = 0.1.*Z + randn(1,sample_size);

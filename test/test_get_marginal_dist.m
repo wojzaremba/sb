@@ -1,4 +1,3 @@
-function test_get_marginal_dist()
 disp('test_get_marginal_dist...');
 bnet = mk_bnet3();
 D = get_marginal_dist([1,2],bnet);
