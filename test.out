@@ -1,0 +1,52 @@
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2013 The MathWorks, Inc.
+                    R2013a (8.1.0.604) 64-bit (glnxa64)
+                             February 15, 2013
+
+[Warning: MATLAB Toolbox Path Cache is out of date and is not being used.
+Type 'help toolbox_path_cache' for more info] 
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> not discrete, setting arity separately
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> Computing ground truth indep...
+>> >> >> ...finished in 1.255813e+00 seconds.
+>> >> >> >> >> >> >> >> Testing 156 independent and 176 dependent CPDs, arity=10.
+>> >> >> >> >> >> >> >> >> STARTING N=40.
+Experiment #1, N=40, sampling from bayes net.
+   Finished KCI, linear kernel, time = 8.542240e-01 seconds.
+   Finished KCI, gaussian kernel, time = 7.610380e-01 seconds.
+Time for experiment 1, N=40 is 1.615262e+00
+STARTING N=50.
+Experiment #1, N=50, sampling from bayes net.
+   Finished KCI, linear kernel, time = 6.699810e-01 seconds.
+   Finished KCI, gaussian kernel, time = 9.849420e-01 seconds.
+Time for experiment 1, N=50 is 1.654923e+00
+Total time for experiment 1 is 3.270185e+00
+STARTING N=40.
+Experiment #2, N=40, sampling from bayes net.
+   Finished KCI, linear kernel, time = 5.897290e-01 seconds.
+   Finished KCI, gaussian kernel, time = 7.347560e-01 seconds.
+Time for experiment 2, N=40 is 1.324485e+00
+STARTING N=50.
+Experiment #2, N=50, sampling from bayes net.
+   Finished KCI, linear kernel, time = 7.672050e-01 seconds.
+   Finished KCI, gaussian kernel, time = 9.427980e-01 seconds.
+Time for experiment 2, N=50 is 1.710003e+00
+Total time for experiment 2 is 3.034488e+00
+STARTING N=40.
+Experiment #3, N=40, sampling from bayes net.
+   Finished KCI, linear kernel, time = 7.827380e-01 seconds.
+   Finished KCI, gaussian kernel, time = 7.205140e-01 seconds.
+Time for experiment 3, N=40 is 1.503252e+00
+STARTING N=50.
+Experiment #3, N=50, sampling from bayes net.
+   Finished KCI, linear kernel, time = 6.878530e-01 seconds.
+   Finished KCI, gaussian kernel, time = 9.930790e-01 seconds.
+Time for experiment 3, N=50 is 1.680932e+00
+Total time for experiment 3 is 3.184184e+00
+>> >> >> Total running time for all experiments is 9.488857e+00 seconds.
+>> >> >> 
