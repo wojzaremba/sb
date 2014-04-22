@@ -4,7 +4,7 @@ rand('seed',1);
 
 samples_size = 1000;
 emp_indep = [randi(2, 1, samples_size); randi(2, 1, samples_size)];
-opt = struct('arity', 2,'params',struct('eta',0.01,'alpha',1));
+opt = struct('arity', 2,'rho_range', [0 1], 'params',struct('eta',0.01,'alpha',1));
 
 assert(abs(sb_classifier(emp_indep, [1, 2], opt))<1e-5);
 

@@ -2,7 +2,7 @@
     rand('seed',1); % seed random number generator
     samples_size = 100000;
     emp_indep = randi(2, 3, samples_size);
-    opt = struct('arity', 2);
+    opt = struct('arity', 2, 'rho_range', [0 1]);
     assert(cc_classifier(emp_indep, [1, 2], opt) < 0.01);
     assert(cc_classifier(emp_indep, [1 2 3], opt) < 0.01); 
     
