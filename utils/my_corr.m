@@ -110,7 +110,7 @@ outClass = superiorfloat(x,y);
 
 pnames = {'type'  'rows' 'tail'};
 dflts  = {'p'     'a'    'both'};
-[errid,errmsg,type,rows,tail] = internal.stats.getargs(pnames,dflts,varargin{:});
+%[errid,errmsg,type,rows,tail] = internal.stats.getargs(pnames,dflts,varargin{:});
 %if ~isempty(errid)
 %    error(sprintf('stats:corr:%s',errid),errmsg);
 %end
@@ -184,6 +184,7 @@ end
 
 % Validate the tail parameter.
 tailChoices = {'left','both','right'};
+tail = 'b';
 if ischar(tail) && (size(tail,1)==1)
     i = find(strncmpi(tail,tailChoices,length(tail)));
     if isempty(i)

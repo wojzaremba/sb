@@ -28,8 +28,8 @@ end
 K = length(bnet.dag);
 max_S = 2;
 
-num_experiments = 20;
-num_samples_range = [50];% 200 500];
+num_experiments = 1;
+num_samples_range = [30];% 200 500];
 num_N = length(num_samples_range);
 step_size = 1e-3;
 thresholds = 0:step_size:1;
@@ -46,7 +46,7 @@ P = PKernel();
 Ind = IndKernel();
 full_options = {struct('classifier', @kci_classifier, 'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', L,'thresholds', thresholds, 'color', 'g' ,'params',[],'normalize',true,'name','KCI, linear kernel'), ...
            struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', G, 'thresholds', thresholds, 'color', 'b','params',[],'normalize',true,'name','KCI, gaussian kernel'), ...
-           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', LA, 'thresholds', thresholds, 'color', 'm' ,'params',[],'normalize',true,'name','KCI, laplace kernel'), ...
+           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', LA, 'thresholds', thresholds, 'color', 'k' ,'params',[],'normalize',true,'name','KCI, laplace kernel'), ...
            struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', Ind, 'thresholds', thresholds, 'color', 'r' ,'params',[],'normalize',true,'name','KCI, indicator kernel'), ...
            struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', P, 'thresholds', thresholds, 'color', 'k' ,'params',[],'normalize',true,'name','KCI, heavytail kernel'), ...
            struct('classifier', @cc_classifier,'rho_range', rho_range, 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', thresholds, 'color', 'c','params',[],'normalize',false,'name','conditional correlation'), ...
@@ -58,7 +58,7 @@ full_options = {struct('classifier', @kci_classifier, 'rho_range', rho_range, 'p
                   %'r','params',[],'normalize',true,'name','partial
                   %correlation'), ...
 
-options = full_options([1 2 4 6 7 8]);
+options = full_options([6 7]);
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
 TPR = cell(num_classifiers, num_N);
@@ -172,5 +172,5 @@ end
 
 
 fprintf('Total running time for all experiments is %d seconds.\n',total_time);
-mat_file_command = sprintf('save child_%s_arity%d_N%d.mat',cpd_type,arity,num_samples);
+mat_file_command = sprintf('save results/child_%s_arity%d_N%d.mat',cpd_type,arity,num_samples);
 eval(mat_file_command);

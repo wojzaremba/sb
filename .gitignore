@@ -8,6 +8,7 @@
 */*.aux
 */*.mat
 *.mat
+results/
 *.tar
 */data/tcga/
 .DS_Store
