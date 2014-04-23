@@ -20,7 +20,7 @@ test_normalize_data();
 test_mk_random_cpd();
 test_normalize_cpd();
 test_mk_linear_cpd_const();
-test_discretize();
+test_discretize_data();
 
 % sb
 test_sb_expectation();

@@ -1,4 +1,4 @@
-function s = discretize(s,num_bins)
+function s = discretize_data(s,num_bins)
 
 small = 1e-10;
 
