@@ -16,13 +16,26 @@ if strcmpi(cpd_type,'linear')
     end
 elseif strcmpi(cpd_type,'random')
   if (arity >=2)
-    bnet = mk_child_random(arity)
+    bnet = mk_child_random(arity);
   else
     error('cant have arity < 2 with discrete (random) cpds');
   end
 else
   error('unexpected cpd_type');
 end
+if (discrete)
+  dis_or_cts = 'discrete';
+else
+  dis_or_cts = 'cts';
+end
+
+file_name = sprintf('%s_arity%d_N%d',cpd_type,arity,N);
+dir_name = sprintf('results/2014_04_22/%s/%s',dis_or_cts,file_name);
+system( ['mkdir -p ' dir_name]);
+system(['cp call_main.m ' dir_name '/']);
+mat_file_command = sprintf('save %s/%s.mat',dir_name,file_name);
+%diary(sprintf('%s/%s.out',dir_name,file_name));
+fprintf('Will %s\n',mat_file_command);
 
 K = length(bnet.dag);
 max_S = 2;
@@ -52,6 +65,9 @@ full_options = {struct('classifier', @kci_classifier, 'rho_range', rho_range, 'p
 a = [1 2 3 4 6 7];
 if (~(discrete) && ~isempty(intersect(a,[7 8])))
   error('cant run sb or mi classifier without discrete data');
+end
+if arity > 5
+  a = intersect(a,[1:6]);
 end
 options = full_options(a);
 num_classifiers = length(options);
@@ -105,7 +121,7 @@ for exp = 1:num_experiments
         s = samples(bnet, num_samples);
         fprintf('... done.\n');
         if (discretize)
-            s = discretize(s,arity);
+            s = discretize_data(s,arity);
         end
         s_norm = normalize_data(s);
         
@@ -155,21 +171,16 @@ for exp = 1:num_experiments
         fprintf('Time for experiment %d, N=%d is %d\n',exp,num_samples,time_N(N_idx));
     end
     
-    clf
-    plot_roc_multi
-    hold on
-    pause(1)
+    %clf
+    %plot_roc_multi
+    %hold on
+    %pause(1)
     
     time_exp = time_exp + sum(time_N);
     fprintf('Total time for experiment %d is %d\n',exp,time_exp);
     total_time = total_time + time_exp;
 end
 
-if (discrete)
-  dis_or_cts = 'discrete';
-else
-  dis_or_cts = 'cts';
-end
 fprintf('Total running time for all experiments is %d seconds.\n',total_time);
-mat_file_command = sprintf('save results/2014_04_22/%s/%s_arity%d_N%d.mat',cpd_type,arity,num_samples);
 eval(mat_file_command);
+%diary off
