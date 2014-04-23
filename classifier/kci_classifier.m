@@ -31,7 +31,7 @@ else
         Kz = H * options.kernel.k(z, z) * H;
         P = (eye(T) - Kz*pdinv(Kz + lambda*eye(T)));
         Kx = P * Kx * P';
-	Ky = P * Ky * P'; 
+        Ky = P * Ky * P';
     else
         Kx = H * options.kernel.k(x, x) * H;
     end

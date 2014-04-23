@@ -29,6 +29,8 @@
 \newcommand{\Rationals}{\mathbb{Q}}
 \newcommand{\Reals}{\mathbb{R}}
 \newcommand{\cS}{\mathcal{S}}
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\Y}{\mathbf{Y}}
 \newcommand{\st}{\,:\,}
 \newcommand{\RInts}{\mathcal{I}_\Rationals}
 \newcommand{\BSets}{\mathcal{B}_\Reals}
@@ -251,11 +253,13 @@ on independence of random variables. However, it has two desirable properties: (
 acts on values instead of counts \ref{sec:curse}. Kernelized version of partial correlation for 
 characteristic kernel recovers consistency.
 
+\subsection{Kernelized partial correlation}\label{sec:kci}
 
-Kernelized partial correlation (KCI) \cite{zhang2012kernel} is a kernelized version of aforementioned statistic. 
-For characteristic kernels (e.g. like Gaussian, or Laplace) it becomes consistent estimator of
-independence. Table\ref{tab:compar} compares statistical properties of available tests of independence.
-Experimental results show that indeed KCI has highest statistical for real data distributions.
+Kernelized conditional independence (KCI) \cite{zhang2012kernel} is a kernelized version of aforementioned statistic. 
+For characteristic kernels (e.g. like Gaussian, or Laplace), the test is consistent. Table\ref{tab:compar} compares statistical properties of available tests of independence.  Furthermore, experimental results on synthetic data indicate that KCI has the best performance in practice, as shown in the following section. %for real data distributions.
+
+First we will show how unconditional partial correlation (i.e. regular correlation) can be kernelized, and then how partial correlation can be kernelized.  Suppose you have $n$ observations each of random variables $X$, $Y$, and $Z$, where e.g. the $i^{th}$ observation of $X$ is denoted by $X_i$.  The empirical estimate of Pearson correlation between $X$ and $Y$ can be written as $$\dfrac{\X^T\Y}{\sqrt{\X^T\X \cdot \Y^T\Y}}$$
+
 
 
 \begin{table}[t]
