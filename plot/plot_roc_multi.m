@@ -3,7 +3,7 @@
 
 skips = cell(2,1);
 skips{1} = ones(num_classifiers,1);
-skips{2} = ones(num_classifiers,2);
+skips{2} = ones(num_classifiers,1);
 num_exp = size(TPR{1},1);
 
 for N_idx = 1:length(num_samples_range)
