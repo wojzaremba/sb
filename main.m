@@ -1,46 +1,41 @@
+function main(cpd_type,N,arity)
 
-% XXXX  TODO ????
-% 2. What is the difference between conditional correlation and partial
-% correlation in the binary case?
-% 3. Why do GaussKernel, LinearKernel and IndicatorKernel give the same numbers for binary
-% data? (without conditioning)?  They are just computing partial
-% correlation.  This does not hold for ternary data.  Should also check if
-% its true if I condition.
-% 4. writes tests for mk_bnet functions 
-% 6. Check if glueing would recover results of mutual information
-% 9. Explore manually which kernels work well. It's enough to have a paper
-% on a good kernel.
-% 10. If a BN tells me about the correlation structure in the data, is there a way to use this to directly compute a data transformation in which the data are no longer correlated?  Is this what I want for a drug-repurposing metric? 
-
-clear all;
+%clear all;
 global debug
 debug = 0;
 close all;
 
-cpd_type = 'linear'; %%%
-discrete = false; %%%
-bnet = mk_child_random(2); %%%
-arity = get_arity(bnet);
-if (~discrete)
-    disp('not discrete, setting arity separately');
-    arity = 20; %%%
+discretize = false;
+discrete = true;
+if strcmpi(cpd_type,'linear')
+  bnet = mk_child_linear_gauss(0.5);
+    if (arity >= 2)
+      discretize = true;
+    else
+      discrete = false;
+    end
+elseif strcmpi(cpd_type,'random')
+  if (arity >=2)
+    bnet = mk_child_random(arity)
+  else
+    error('cant have arity < 2 with discrete (random) cpds');
+  end
+else
+  error('unexpected cpd_type');
 end
+
 K = length(bnet.dag);
 max_S = 2;
-
 num_experiments = 20;
-num_samples_range = 100; %200 500];
+num_samples_range = N;
 num_N = length(num_samples_range);
 step_size = 1e-3;
 thresholds = 0:step_size:1;
-%eta_range = log2(1:0.01:1.2);%log2(1:.001:1.1);
-%alpha_range = [0 10.^(-3:0.2:3)];%[0 10.^(-3:0.2:3)];
 rho_range = [0 1];
 
 empty = struct('name', 'none');
 L = LinearKernel();
 G = GaussKernel();
-% C1 = CombKernel({L, G}, {-0.1, 1});
 LA = LaplaceKernel();
 P = PKernel();
 Ind = IndKernel();
@@ -53,12 +48,12 @@ full_options = {struct('classifier', @kci_classifier, 'rho_range', rho_range, 'p
            struct('classifier', @mi_classifier,'rho_range', [0 log2(arity)], 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', 0:step_size:log2(arity), 'color', 'y','params',[],'normalize',false,'name','conditional MI'), ...
            struct('classifier', @sb_classifier, 'rho_range', rho_range,'prealloc', @dummy_prealloc, 'kernel', empty,'thresholds',thresholds, 'color', 'm','params',struct('eta',0.01,'alpha',1.0),'normalize',false,'name','bayesian conditional MI')};
        
-                  %struct('classifier', @pc_classifier, 'kernel', empty,
-                  %'thresholds', thresholds, 'color',
-                  %'r','params',[],'normalize',true,'name','partial
-                  %correlation'), ...
 
-options = full_options([1 2 3 4 6 7]);
+a = [1 2 3 4 6 7];
+if (~(discrete) && ~isempty(intersect(a,[7 8])))
+  error('cant run sb or mi classifier without discrete data');
+end
+options = full_options(a);
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
 TPR = cell(num_classifiers, num_N);
@@ -109,7 +104,7 @@ for exp = 1:num_experiments
         fprintf('Experiment #%d, N=%d, sampling from bayes net...\n',exp,num_samples);
         s = samples(bnet, num_samples);
         fprintf('... done.\n');
-        if (~discrete)
+        if (discretize)
             s = discretize(s,arity);
         end
         s_norm = normalize_data(s);
@@ -170,7 +165,11 @@ for exp = 1:num_experiments
     total_time = total_time + time_exp;
 end
 
-
+if (discrete)
+  dis_or_cts = 'discrete';
+else
+  dis_or_cts = 'cts';
+end
 fprintf('Total running time for all experiments is %d seconds.\n',total_time);
-mat_file_command = sprintf('save results/2014_04_22/%s_arity%d_N%d.mat',cpd_type,arity,num_samples);
+mat_file_command = sprintf('save results/2014_04_22/%s/%s_arity%d_N%d.mat',cpd_type,arity,num_samples);
 eval(mat_file_command);
