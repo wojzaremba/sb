@@ -2,7 +2,7 @@
 f = figure;
 set(gcf, 'units', 'inches', 'position', [10 10 18 10])
 
-base_dir = 'results/2014_04_22/discrete';
+base_dir = 'results/2014_04_22/cts';
 n_range = [50 100 200];
 
 for n_idx = 1:length(n_range)

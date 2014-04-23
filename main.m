@@ -62,7 +62,7 @@ full_options = {struct('classifier', @kci_classifier, 'rho_range', rho_range, 'p
            struct('classifier', @sb_classifier, 'rho_range', rho_range,'prealloc', @dummy_prealloc, 'kernel', empty,'thresholds',thresholds, 'color', 'm','params',struct('eta',0.01,'alpha',1.0),'normalize',false,'name','bayesian conditional MI')};
        
 
-a = [1 2 3 4 6 7];
+a = [1 2 3 6];
 if (~(discrete) && ~isempty(intersect(a,[7 8])))
   error('cant run sb or mi classifier without discrete data');
 end
