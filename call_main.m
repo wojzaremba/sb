@@ -2,7 +2,7 @@
 
 cpd_type = 'linear';
 N = 200;
-arity = 1;
+arity = 20;
 
 try
   main(cpd_type,N,arity);
