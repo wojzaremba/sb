@@ -1,6 +1,6 @@
 function run_rocs(cpd_type,N,arity)
 
-clear all;
+%clear all;
 global debug
 debug = 0;
 close all;
@@ -16,17 +16,25 @@ if strcmpi(cpd_type,'linear')
     end
 elseif strcmpi(cpd_type,'random')
   if (arity >=2)
-    bnet = mk_child_random(arity)
+    bnet = mk_child_random(arity);
   else
     error('cant have arity < 2 with discrete (random) cpds');
   end
 else
   error('unexpected cpd_type');
 end
+if (discrete)
+  dis_or_cts = 'discrete';
+else
+  dis_or_cts = 'cts';
+end
+dir_name = sprintf('%s_arity%d_N%d',cpd_type,arity,N);
+mat_file_command = sprintf('save results/2014_04_22/%s/%s/%s.mat',dis_or_cts,dir_name,dir_name);
+fprintf('Will %s\n',mat_file_command);
 
 K = length(bnet.dag);
 max_S = 2;
-num_experiments = 20;
+num_experiments = 1;
 num_samples_range = N;
 num_N = length(num_samples_range);
 step_size = 1e-3;
@@ -105,7 +113,7 @@ for exp = 1:num_experiments
         s = samples(bnet, num_samples);
         fprintf('... done.\n');
         if (discretize)
-            s = discretize(s,arity);
+            s = discretize_data(s,arity);
         end
         s_norm = normalize_data(s);
         
@@ -165,11 +173,5 @@ for exp = 1:num_experiments
     total_time = total_time + time_exp;
 end
 
-if (discrete)
-  dis_or_cts = 'discrete';
-else
-  dis_or_cts = 'cts';
-end
 fprintf('Total running time for all experiments is %d seconds.\n',total_time);
-mat_file_command = sprintf('save results/2014_04_22/%s/%s_arity%d_N%d.mat',cpd_type,arity,num_samples);
 eval(mat_file_command);
