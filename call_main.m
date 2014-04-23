@@ -1,8 +1,8 @@
 
 
 cpd_type = 'linear';
-N = 200;
-arity = 20;
+N = 50;
+arity = 1;
 
 try
   main(cpd_type,N,arity);

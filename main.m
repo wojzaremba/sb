@@ -39,7 +39,7 @@ fprintf('Will %s\n',mat_file_command);
 
 K = length(bnet.dag);
 max_S = 2;
-num_experiments = 20;
+num_experiments = 1;
 num_samples_range = N;
 num_N = length(num_samples_range);
 step_size = 1e-3;
