@@ -10,5 +10,6 @@
 *.mat
 results/
 *.tar
+*.out
 */data/tcga/
 .DS_Store

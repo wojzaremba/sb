@@ -11,7 +11,7 @@ classes = zeros([length(thresholds) size(rho)]);
 % FOR NOW JUST HARD_CODE RHO TO BE MAX SIZE 2
 for i = 1:size(rho,1)
     for j = 1:size(rho,2)
-        classes(rho(i,j)<=thresholds,i,j) = 1;
+        classes(rho(i,j)<thresholds,i,j) = 1;
     end
 end
 

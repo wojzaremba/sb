@@ -19,17 +19,17 @@ close all;
 
 cpd_type = 'linear'; %%%
 discrete = false; %%%
-bnet = mk_child_linear_gauss(0.5); %%%
+bnet = mk_child_random(2); %%%
 arity = get_arity(bnet);
 if (~discrete)
     disp('not discrete, setting arity separately');
-    arity = 2; %%%
+    arity = 20; %%%
 end
 K = length(bnet.dag);
 max_S = 2;
 
-num_experiments = 1;
-num_samples_range = [30];% 200 500];
+num_experiments = 20;
+num_samples_range = 100; %200 500];
 num_N = length(num_samples_range);
 step_size = 1e-3;
 thresholds = 0:step_size:1;
@@ -58,7 +58,7 @@ full_options = {struct('classifier', @kci_classifier, 'rho_range', rho_range, 'p
                   %'r','params',[],'normalize',true,'name','partial
                   %correlation'), ...
 
-options = full_options([6 7]);
+options = full_options([1 2 3 4 6 7]);
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
 TPR = cell(num_classifiers, num_N);
