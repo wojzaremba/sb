@@ -14,3 +14,4 @@ TODO
 - Generalize distp
 - Test all kernels in test_kci
 - Download proper dataset (Karen Sachs? yeast?)
+- Compare BIC scores with output of bscore.

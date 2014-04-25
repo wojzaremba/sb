@@ -1,4 +1,4 @@
-function [shd] = SHD(learned_PDAG, true_PDAG)
+function [SHD] = shd(learned_PDAG, true_PDAG)
 
   if (length(find(diag(learned_PDAG)))>0 || length(find(diag(true_PDAG))) )
     error('SHD: input graphs should not have self-loops');
@@ -18,7 +18,7 @@ function [shd] = SHD(learned_PDAG, true_PDAG)
   num_undirected = (length(undirected_learned) + length(undirected_true)) / 2; % divide by 2 because each edge is counted twice
 
   % Count total differences
-  shd = sum(sum(learned_PDAG ~= true_PDAG));
+  SHD = sum(sum(learned_PDAG ~= true_PDAG));
 
   % Subtract off the number of reversals, as we overcounted these.
-  shd = shd - length(reversal) - num_undirected;
+  SHD = SHD - length(reversal) - num_undirected;

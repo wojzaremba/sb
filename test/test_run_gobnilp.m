@@ -27,6 +27,6 @@ DAG_true = bnet.dag;
 PDAG_pred = dag_to_cpdag(DAG_pred);
 PDAG_true = dag_to_cpdag(DAG_true);
 
-shd = SHD(PDAG_pred, PDAG_true);
+SHD = shd(PDAG_pred, PDAG_true);
 
 assert(shd==0);

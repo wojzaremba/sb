@@ -1,7 +1,6 @@
-function write_gobnilp_scores(file, S)
+function write_gobnilp_scores(fid, S)
+% just pass fid = 1 if you just want to print to screen
 
-score = '';
-fid = fopen(file, 'w');
 nodes = size(S, 1);
 fprintf(fid, '%d\n', nodes);
 for i = 1:nodes
@@ -14,5 +13,3 @@ for i = 1:nodes
         fprintf(fid, '\n');
     end
 end
-%fprintf(fid, score);
-fclose(fid);

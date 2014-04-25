@@ -1,6 +1,7 @@
 function G = run_gobnilp(data, arity)
 
-S = compute_bic(data, arity);
+maxpa = 2;
+S = compute_bic(data, arity, maxpa);
 
 fid = fopen('gobnilp/gobnilp.set', 'r');
 
@@ -32,7 +33,9 @@ fclose(fid);
 
 % write score file
 score_file = [gobnilp_in_file, '.score'];
-write_gobnilp_scores(score_file,S);
+fid = fopen(score_file, 'w');
+write_gobnilp_scores(fid,S);
+fclose(fid);
 
 % call gobnilp
 command = sprintf('%s -g%s %s', ...
