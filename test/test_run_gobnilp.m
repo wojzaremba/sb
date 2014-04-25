@@ -1,40 +1,32 @@
 % function test_run_gobnilp()
+disp('test_run_gobnilp...');
 
+
+randn('seed',1);
 bnet = mk_bnet4_vstruct();
-K = size(bnet.dag,1);
-S = cell(K,1);
-nodes = 1:K;
+arity = get_arity(bnet);
+data = samples(bnet,1000);
 
-good = -0.1;
-bad = -10000;
+DAG_pred = run_gobnilp(data, arity);
+DAG_true = bnet.dag;
 
-N = 1000;
-s = samples(bnet,N);
-maxpa = min(4,K-1);
+PDAG_pred = dag_to_cpdag(DAG_pred);
+PDAG_true = dag_to_cpdag(DAG_true);
 
-for i = 1:K
-    others = setdiff(nodes,i);
-    parent_sets = combinations(others,maxpa);
-    S = {};
-    for j = 1:size(parent_sets,1)
-        if dsep(i,j,parent_sets(j,:),bnet.dag)
-            
-        end
-            
-        S{end+1} = struct('score', ,'parents',parent_sets(j,:));
-    end
-    
-end
-% 
-% S{1} = {struct('score', indep,'parents', []), ...
-%     struct('score', dep ,'parents', [2]), ...
-%     struct('score', dep ,'parents', [3]), ...
-%     struct('score', dep ,'parents', [2 3])};
-% S{2} = {struct('score', indep,'parents', []), ...
-%     struct('score', dep ,'parents', [1]), ...
-%     struct('score', dep ,'parents', [3]), ...
-%     struct('score', dep ,'parents', [1 3])};
-% S{3} = {struct('score', indep,'parents', []), ...
-%     struct('score', dep ,'parents', [1]), ...
-%     struct('score', dep ,'parents', [2]), ...
-%     struct('score', dep ,'parents', [1 2])};
+shd = SHD(PDAG_pred, PDAG_true);
+
+assert(shd==0);
+
+
+bnet = mk_asia_random(2);;
+data = samples(bnet,10000);
+
+DAG_pred = run_gobnilp(data, arity);
+DAG_true = bnet.dag;
+
+PDAG_pred = dag_to_cpdag(DAG_pred);
+PDAG_true = dag_to_cpdag(DAG_true);
+
+shd = SHD(PDAG_pred, PDAG_true);
+
+assert(shd==0);

@@ -37,4 +37,7 @@ test_kci_classifier();
 test_sb_classifier();
 test_cc_classifier();
 
+% structure learning
+test_run_gobnilp();
+
 disp('Passed all tests!');
