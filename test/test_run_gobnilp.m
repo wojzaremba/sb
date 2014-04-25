@@ -8,11 +8,19 @@ nodes = 1:K;
 good = -0.1;
 bad = -10000;
 
+N = 1000;
+s = samples(bnet,N);
+maxpa = min(4,K-1);
+
 for i = 1:K
-    other_nodes = setdiff(nodes,i);
-    parent_sets = combinations(set,k);
+    others = setdiff(nodes,i);
+    parent_sets = combinations(others,maxpa);
     S = {};
     for j = 1:size(parent_sets,1)
+        if dsep(i,j,parent_sets(j,:),bnet.dag)
+            
+        end
+            
         S{end+1} = struct('score', ,'parents',parent_sets(j,:));
     end
     
