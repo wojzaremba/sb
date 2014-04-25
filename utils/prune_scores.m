@@ -8,7 +8,7 @@ for i = 1:length(S)
     for j = ni:-1:1
         for k = j-1:-1:1
             % check if parents of S_ij are a subset of parents of S_ik
-           if (isequal(S{i}{j}.parents,[])  || isequal(S{i}{j}.parents, ...
+           if ( isempty(S{i}{j}.parents) || isequal(S{i}{j}.parents, ...
                    intersect(S{i}{j}.parents,S{i}{k}.parents)) )
                % if the smaller subset has a better (larger) score, then
                % don't need the larger subset
