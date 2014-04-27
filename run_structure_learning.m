@@ -10,6 +10,9 @@ SHD = zeros(num_exp, length(Nvec));
 T1 = zeros(num_exp, length(Nvec)); % runtime
 T2 = zeros(num_exp, length(Nvec));
 
+
+o = struct('classifier', @sb_classifier, 'rho_range', rho_range,'prealloc', @dummy_prealloc, 'kernel', empty,'thresholds',thresholds, 'color', 'm','params',struct('eta',0.01,'alpha',1.0),'normalize',false,'name','bayesian conditional MI');
+
 for exp = 1:num_exp
     fprintf('exp %d...\n',exp);
     for N_idx = 1:length(Nvec)

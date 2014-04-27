@@ -52,6 +52,7 @@ G = GaussKernel();
 LA = LaplaceKernel();
 P = PKernel();
 Ind = IndKernel();
+
 full_options = {struct('classifier', @kci_classifier, 'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', L,'thresholds', thresholds, 'color', 'g' ,'params',[],'normalize',true,'name','KCI, linear kernel'), ...
            struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', G, 'thresholds', thresholds, 'color', 'b','params',[],'normalize',true,'name','KCI, gaussian kernel'), ...
            struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', LA, 'thresholds', thresholds, 'color', 'k' ,'params',[],'normalize',true,'name','KCI, laplace kernel'), ...
@@ -146,7 +147,8 @@ for exp = 1:num_experiments
             for t = 1 : length(triples)
                 
                 % evaluate classifier at all thresholds in thresholds
-                indep_emp = classifier_wrapper(emp, triples{t}, o.classifier, opt, prealloc); %o.classifier(emp, opt);
+                rho = classifier_wrapper(emp, triples{t}, o.classifier, opt, prealloc); %o.classifier(emp, opt);
+                indep_emp = threshold(opt.thresholds,rho);
                 indep_emp = reshape(indep_emp,[1 1 size(indep_emp)]);
                 
                 % increment scores accordingly (WARNING: HARD-CODED max num
