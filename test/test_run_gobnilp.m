@@ -1,10 +1,9 @@
-% function test_run_gobnilp()
 disp('test_run_gobnilp...');
 
 
 randn('seed',1);
 rand('seed',1);
-bnet = mk_bnet4_vstruct();
+bnet = mk_bnet4_vstruct(3);
 arity = get_arity(bnet);
 data = samples(bnet,1000);
 maxpa = 2;

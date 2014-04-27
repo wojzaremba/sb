@@ -10,6 +10,7 @@ SHD = zeros(num_exp, length(Nvec));
 T1 = zeros(num_exp, length(Nvec)); % runtime
 T2 = zeros(num_exp, length(Nvec));
 maxpa = 2;
+maxS = 2;
 
 empty = struct('name', 'none');
 opt = struct('classifier', @sb_classifier, 'rho_range', [0 1],...
@@ -23,9 +24,12 @@ for exp = 1:num_exp
         N = Nvec(N_idx);
         fprintf('N = %d\n', N);
         emp = samples(bnet,N);
+        if opt.normalize
+            emp = normalize_data(emp);
+        end
         tic;
-        S = compute_bic(data, arity, maxpa);
-        E = compute_edge_scores(emp, opt);
+        S = compute_bic(emp, arity, maxpa);
+        E = compute_edge_scores(emp, opt, maxS);
         S = add_edge_scores(S, E);
         S = prune_scores(S);
         T1(exp, N_idx) = toc;
