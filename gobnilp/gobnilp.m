@@ -6,6 +6,6 @@ function ret = gobnilp()
     elseif (length(findstr(name, 'rachel')) > 0)
         ret = '~/Desktop/Research/Thesis/sb/gobnilp/bin/gobnilp';
     else
-        assert(0);
+        ret = '/web/hodos/code/gobnilp/gobnilp1.3/bin/gobnilp';
     end
 end

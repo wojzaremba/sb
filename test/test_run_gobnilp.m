@@ -24,8 +24,11 @@ assert(hamming_distance == 0);
 
 bnet = mk_asia_random(2);
 data = samples(bnet,2500);
+arity = get_arity(bnet);
+S = compute_bic(data, arity, maxpa);
+S = prune_scores(S);
 
-DAG_pred = run_gobnilp(data, arity);
+DAG_pred = run_gobnilp(S);
 DAG_true = bnet.dag;
 
 PDAG_pred = dag_to_cpdag(DAG_pred);
