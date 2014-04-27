@@ -18,6 +18,8 @@ emp_dep2 = [x; y; z];
 emp_dep2(emp_dep2 == -1) = 2;
 emp_dep2 = normalize_data(emp_dep2);
 
+small = 5e-2;
+large = 0.15;
 
 printf(2,'  linear kernel...\n');
 opt = struct('arity', 2,'kernel', LinearKernel());
@@ -26,10 +28,10 @@ opt = struct('arity', 2,'kernel', LinearKernel());
 %prealloc_indep = kci_prealloc(emp_indep, opt);
 %prealloc_dep2 = kci_prealloc(emp_dep2, opt);
 
-assert(kci_classifier(emp_indep, [1, 2], opt, []) < 5e-2);
-assert(kci_classifier(emp_dep, [1, 2], opt, []) < 5e-2); % correlation is 0 because the distribution is symmetric about x = 0
-assert(kci_classifier(emp_dep2, [1 2], opt, []) > 0.2); 
-assert(kci_classifier(emp_dep2, [1 2 3], opt, []) < 5e-2);
+assert(kci_classifier(emp_indep, [1, 2], opt, []) < small);
+assert(kci_classifier(emp_dep, [1, 2], opt, []) < small); % correlation is 0 because the distribution is symmetric about x = 0
+assert(kci_classifier(emp_dep2, [1 2], opt, []) > large); 
+assert(kci_classifier(emp_dep2, [1 2 3], opt, []) < small);
 
 % kci with linear kernel is equivalent to computing partial correlation
 assert(abs(kci_classifier(emp_indep, [1, 2], opt, [])-pc_classifier(emp_indep, [1, 2], opt))<1e-3);
@@ -38,10 +40,10 @@ assert(abs(kci_classifier(emp_dep, [1, 2], opt, [])-pc_classifier(emp_dep, [1, 2
 printf(2,'  gauss kernel...\n');
 opt.kernel = GaussKernel();
 
-assert(kci_classifier(emp_indep, [1, 2], opt, []) < 5e-2);
-assert(kci_classifier(emp_dep, [1, 2], opt, []) > 0.2);
-assert(kci_classifier(emp_dep2, [1 2], opt, []) > 0.2); 
-assert(kci_classifier(emp_dep2, [1 2 3], opt, []) < 5e-2);
+assert(kci_classifier(emp_indep, [1, 2], opt, []) < small);
+assert(kci_classifier(emp_dep, [1, 2], opt, []) > large);
+assert(kci_classifier(emp_dep2, [1 2], opt, []) > large); 
+assert(kci_classifier(emp_dep2, [1 2 3], opt, []) < small);
 
 % prealloc_dep = kci_prealloc(emp_dep, opt);
 % prealloc_dep2 = kci_prealloc(emp_dep2, opt);
@@ -54,7 +56,18 @@ assert(kci_classifier(emp_dep2, [1 2 3], opt, []) < 5e-2);
 % assert(abs(kci_classifier(emp_dep2, [1 2 3], opt, []) - kci_classifier(emp_dep2, [1 2 3], opt, prealloc_dep2)) < 1e-15 );
 
 
+printf(2, '  laplace kernel...\n');
+opt.kernel = LaplaceKernel();
 
+assert(kci_classifier(emp_indep, [1, 2], opt, []) < small);
+assert(kci_classifier(emp_dep, [1, 2], opt, []) > large);
+assert(kci_classifier(emp_dep2, [1 2], opt, []) > large); 
+assert(kci_classifier(emp_dep2, [1 2 3], opt, []) < small);
    
     
+printf(2, '  indicator kernel...\n');
+opt.kernel = IndKernel();
     
+assert(kci_classifier(emp_indep, [1, 2], opt, []) < small);
+assert(kci_classifier(emp_dep2, [1 2], opt, []) > large); 
+assert(kci_classifier(emp_dep2, [1 2 3], opt, []) < small);

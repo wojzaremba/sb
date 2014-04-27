@@ -1,11 +1,11 @@
-function np = distp(x, c)
+function dp = distp(x, y, p)
 
-[ndata, dimx] = size(x);
-[ncentres, dimc] = size(c);
-if dimx ~= dimc
-	error('Data dimension does not match dimension of centres')
+[x1, x2] = size(x);
+[y1, y2] = size(y);
+if x2 ~= y2
+  error('Second dimension should agree');
 end
 
-x = repmat(reshape(x, [ndata, 1, dimx]), [1, ncentres, 1]);
-c = repmat(reshape(c, [1, ncentres, dimc]), [ndata, 1, 1]);
-np = sum((abs(x - c).^p), 3);
+x = repmat(reshape(x, [x1, 1, x2]), [1, y1, 1]);
+y = repmat(reshape(y, [1, y1, y2]), [x1, 1, 1]);
+dp = sum((abs(x - y).^p), 3);

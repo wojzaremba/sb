@@ -1,8 +1,9 @@
-function [G, solving_time, score_time] = run_gobnilp(data, arity)
+function [G, score_time, solving_time] = run_gobnilp(data, arity)
 
 maxpa = 2;
 tic;
 S = compute_bic(data, arity, maxpa);
+S = prune_scores(S);
 score_time = toc;
 
 % define file names

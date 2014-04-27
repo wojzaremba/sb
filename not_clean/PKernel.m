@@ -18,7 +18,7 @@ classdef PKernel < Kernel
                 width = 0.4;
             end            
             theta = 1/sqrt(width);            
-            np = distp(x, y);            
+            np = distp(x, y, 0.5);            
 %             if theta == 0
 %                 theta = 2/median(n2(tril(n2)>0));
 %             end                        
