@@ -7,8 +7,11 @@ rand('seed',1);
 bnet = mk_bnet4_vstruct();
 arity = get_arity(bnet);
 data = samples(bnet,1000);
+maxpa = 2;
+S = compute_bic(data, arity, maxpa);
+S = prune_scores(S);
 
-DAG_pred = run_gobnilp(data, arity);
+DAG_pred = run_gobnilp(S);
 DAG_true = bnet.dag;
 
 PDAG_pred = dag_to_cpdag(DAG_pred);

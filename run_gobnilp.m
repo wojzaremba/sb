@@ -1,10 +1,4 @@
-function [G, score_time, solving_time] = run_gobnilp(data, arity)
-
-maxpa = 2;
-tic;
-S = compute_bic(data, arity, maxpa);
-S = prune_scores(S);
-score_time = toc;
+function [G, solving_time] = run_gobnilp(S)
 
 % define file names
 gobnilp_in_file = sprintf('gobnilp/in/gobnilp-%s', strrep(strrep(datestr(clock), ' ', '_'), ':', '_'));

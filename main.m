@@ -132,7 +132,6 @@ for exp = 1:num_experiments
             opt = struct('arity', arity, 'kernel', o.kernel,'thresholds', o.thresholds,'params',o.params,'normalize',o.normalize, 'rho_range', o.rho_range);
             
             % allocate
-            classes = zeros([length(o.thresholds) param_size{c}]);
             num_thresholds = length(o.thresholds);
             scores = zeros([2 2 num_thresholds param_size{c}]);
             
