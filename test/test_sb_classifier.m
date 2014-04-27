@@ -19,7 +19,7 @@ x = z .* sign(rand(1, samples_size)-0.9);
 y = -z .* sign(rand(1, samples_size)-0.9);
 emp_dep = [x; y; z];
 emp_dep(emp_dep == -1) = 2;
-assert(cc_classifier(emp_dep, [1, 2], opt) > 0.6);
-assert(cc_classifier(emp_dep, [1 2 3], opt) < 0.06);
+assert(sb_classifier(emp_dep, [1, 2], opt) > 0.6);
+assert(sb_classifier(emp_dep, [1 2 3], opt) < 0.06);
 
     

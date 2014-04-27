@@ -42,7 +42,7 @@ write_gobnilp_scores(fid,S);
 fclose(fid);
 
 % call gobnilp
-command = sprintf('%s -g%s %s > %s',	getenv('GOB'), set_file, score_file, out_file);
+command = sprintf('%s -g%s %s > %s', gobnilp(), set_file, score_file, out_file);
 [status, cmdout] = system(command);
 
 % ~~~ get information from gobnilp

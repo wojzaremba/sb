@@ -19,7 +19,7 @@ hamming_distance = shd(PDAG_pred, PDAG_true);
 assert(hamming_distance == 0);
 
 
-bnet = mk_asia_random(2);;
+bnet = mk_asia_random(2);
 data = samples(bnet,2500);
 
 DAG_pred = run_gobnilp(data, arity);
