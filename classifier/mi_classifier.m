@@ -24,8 +24,14 @@ function rho = mi_classifier(emp, trip, options, prealloc)
         rho = NaN*ones(size(emp_dist, 3),1);
         for t = 1:size(emp_dist, 3)
             rho(t) = mutual_information(emp_dist(:, :, t));
+            if (rho(t) < 0)
+                assert(0)
+            end
         end
         rho = (rho'*counts) / sum(counts);
+        if (rho < 0)
+            assert(0)
+        end
     else
         error('unexpected value in options.aggregation.');
     end

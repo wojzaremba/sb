@@ -17,8 +17,11 @@ for c = 1:length(triple.cond_set)
     trip = [triple.i,triple.j,triple.cond_set{c}];
     rho = min(rho,f(emp, trip, opt, prealloc));
     printf(2,'%d, %d\n',length(triple.cond_set{c}),rho);
-    if (abs(rho - opt.rho_range(1)) < 1e-4) % XXX I think I should take this out when I do structure learning
-        break
+%     if (abs(rho - opt.rho_range(1)) < 1e-4) % XXX I think I should take this out when I do structure learning
+%         break
+%     end
+    if (rho < opt.rho_range(1))
+        assert(0)
     end
 end
 printf(2,'\n');

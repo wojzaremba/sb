@@ -15,6 +15,8 @@ function rho = cc_classifier(emp, trip, options, prealloc)
             if ~isempty(cond_emp)
                 % take weakest evidence for independence
                 rho = max(rho,abs(my_corr(cond_emp(1,:)',cond_emp(2,:)')));
+            else
+                printf(2,'cond_emp is empty');
             end
             if (abs(rho - options.rho_range(2)) < 1e-4)
                 break

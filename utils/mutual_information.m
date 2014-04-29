@@ -20,6 +20,10 @@ for i = 1:k
     end
 end
 
+if MI < 0
+    fprintf('Warning, changing MI from %f to 0.\n',MI);
+    MI = 0;
+end
 %disp(sprintf('I = %d',MI));
 end
 

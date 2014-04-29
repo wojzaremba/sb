@@ -1,4 +1,4 @@
-function main(network, final_arity, type, N, variance, num_exp)
+function main(network, final_arity, type, N, variance, num_exp, class_select)
 
 %clear all;
 global debug
@@ -63,19 +63,11 @@ full_options = {struct('classifier', @kci_classifier, 'rho_range', rho_range, 'p
            struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', P, 'thresholds', thresholds, 'color', 'k' ,'params',[],'normalize',true,'aggregation',[],'name','KCI, heavytail kernel'), ...
            struct('classifier', @cc_classifier,'rho_range', rho_range, 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', thresholds, 'color', 'r','params',[],'normalize',false,'aggregation','min','name','cond corr, min'), ...
            struct('classifier', @cc_classifier,'rho_range', rho_range, 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', thresholds, 'color', 'c','params',[],'normalize',false,'aggregation','mean','name','cond corr, avg'), ...           
-           struct('classifier', @mi_classifier,'rho_range', [0 log2(arity)], 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', 0:step_size:log2(arity), 'color', 'y','params',[],'normalize',false,'aggregation','min','name','cond MI, min'), ...
+           struct('classifier', @mi_classifier,'rho_range', [0 log2(arity)], 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', 0:step_size:log2(arity), 'color', 'k','params',[],'normalize',false,'aggregation','min','name','cond MI, min'), ...
            struct('classifier', @mi_classifier,'rho_range', [0 log2(arity)], 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', 0:step_size:log2(arity), 'color', 'm','params',[],'normalize',false,'aggregation','mean','name','cond MI, avg'), ...
            struct('classifier', @sb_classifier, 'rho_range', rho_range,'prealloc', @dummy_prealloc, 'kernel', empty,'thresholds',thresholds, 'color', 'm','params',struct('eta',0.01,'alpha',1.0),'normalize',false,'aggregation',[],'name','bayesian conditional MI')};
        
-
-a = [1 2 6 7 8 9];
-% if (~(discrete) && ~isempty(intersect(a,[7 8])))
-%   error('cant run sb or mi classifier without discrete data');
-% end
-% if arity > 5
-%   a = intersect(a,[1:6]);
-% end
-options = full_options(a);
+options = full_options(class_select);
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
 TPR = cell(num_classifiers, num_N);
@@ -150,7 +142,7 @@ for exp = 1:num_exp
             for t = 1 : length(triples)
                 
                 % evaluate classifier at all thresholds in thresholds
-                rho = classifier_wrapper(emp, triples{t}, o.classifier, opt, prealloc); %o.classifier(emp, opt);
+                rho = classifier_wrapper(emp, triples{t}, o.classifier, opt, prealloc);
                 indep_emp = threshold(opt.thresholds,rho);
                 indep_emp = reshape(indep_emp,[1 1 size(indep_emp)]);
                 
@@ -176,10 +168,10 @@ for exp = 1:num_exp
         fprintf('Time for experiment %d, N=%d is %d\n',exp,num_samples,time_N(N_idx));
     end
     
-    clf
-    plot_roc_multi
-    hold on
-    pause(1)
+%     clf
+%     plot_roc_multi
+%     hold on
+%     pause(1)
     
     time_exp = time_exp + sum(time_N);
     fprintf('Total time for experiment %d is %d\n',exp,time_exp);
