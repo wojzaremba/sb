@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 function bnet = mk_bnet4_large_arity(arity)
 randn('seed', 1);
 n = 4;

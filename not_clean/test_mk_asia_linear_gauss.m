@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 function test_mk_asia_linear_gauss()
 disp('test_mk_asia_linear_gauss...');
 

@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 function bnet = mk_asia_random(arity)
 
 randn('seed', 1);

@@ -1,6 +1,7 @@
 function bnet = mk_asia_linear_gauss(variance)
 
 randn('seed', 1);
+rand('seed',1);
 
 Smoking = 1;
 Bronchitis = 2;

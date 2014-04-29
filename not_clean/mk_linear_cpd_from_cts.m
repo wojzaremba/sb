@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 function mk_linear_cpd_from_cts(numparents,arity)
 
 % generate a discrete CPD based off of X = sum_k alpha_k z_k + epsilon,

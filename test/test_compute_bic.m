@@ -16,7 +16,7 @@ fid = fopen(my_file, 'w');
 write_gobnilp_scores(fid,S);
 fclose(fid);
 
-baseline_file = 'asia_1000_BIC_from_bscore.score';
+baseline_file = 'asia1000_bic_cpp.score';
 
 %command = sprintf('diff --side-by-side test/%s %s', baseline_file, my_file);
 %assert(system(command) == 0);

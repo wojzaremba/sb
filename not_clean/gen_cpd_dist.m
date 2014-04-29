@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 function [CPD,triples] = gen_cpd_dist(bnet)
 % XXX : Change N to K.
 addpath(genpath('.'));

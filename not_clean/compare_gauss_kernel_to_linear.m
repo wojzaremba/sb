@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 function compare_gauss_kernel_to_linear(arity)
 %[St_lin,St_gauss,S_lin,S_gauss] = 
 

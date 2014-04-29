@@ -1,4 +1,4 @@
-function bnet = mk_child_linear_gauss(covariance)
+function bnet = mk_child_poly_gauss(variance)
 
 randn('seed', 1);
 
@@ -43,19 +43,29 @@ dag(ChestXray, XrayReport) = 1;
 node_sizes = ones(1,n);
 bnet = mk_bnet(dag, node_sizes, 'discrete', [],'observed',[]);
 
+source_var = 0.1;
+assert(variance <= (source_var / 2));
+
 % source node
-bnet.CPD{1} = gaussian_CPD(bnet, 1, 'mean',0','cov',covariance); 
+bnet.CPD{1} = polynomial_gaussian_CPD(bnet, 1, 'mean',0','cov',source_var); 
 
 % nodes with one parent
 one_parent = [2:8 13 15:16 18:20];
 for i = 1:length(one_parent)
     idx = one_parent(i);
-    bnet.CPD{idx} = gaussian_CPD(bnet,idx,'mean',0,'cov',covariance,'weights',1);
+    bnet.CPD{idx} = polynomial_gaussian_CPD(bnet,idx,'mean',0,'cov',variance,'weights',mk_weights(1));
 end
 
 % nodes with two parents
 two_parents = [9:12 14 17];
 for i = 1:length(two_parents)
     idx = two_parents(i);
-    bnet.CPD{idx} = gaussian_CPD(bnet,idx,'mean',0,'cov',covariance,'weights',sample_dirichlet([1 1],1));
+    bnet.CPD{idx} = polynomial_gaussian_CPD(bnet,idx,'mean',0,'cov',variance,'weights',mk_weights(2));
+end
+
+end
+
+function w = mk_weights(numpa)
+    degree = 2;
+    w = randn(numpa, degree);
 end

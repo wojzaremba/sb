@@ -2,7 +2,7 @@ function h = plot_roc(N_idx,TPR,FPR,options,name,skip)
 
 %close all;
 clear h;
-num_classifiers = size(TPR,1);
+num_classifiers = 2; %size(TPR,1);
 
 for fig = 1
     for c = 1:num_classifiers
@@ -28,7 +28,7 @@ for fig = 1
         hold on
     end
     h(num_classifiers + 1) = plot(linspace(0,1),linspace(0,1),'k--'); %,'linewidth',2);
-    legend(h,[name 'random']);
+    legend(h,[name(1:num_classifiers) 'random']);
     xlabel('FPR');
     ylabel('TPR');
     ylim([0 1]);

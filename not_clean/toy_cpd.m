@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 C = 1000;
 a1 = 3/7 + randn(2*C, 1) / 100;
 b1 = 1/6 + randn(2*C, 1) / 100;

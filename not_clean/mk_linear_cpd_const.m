@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 function cpd = mk_linear_cpd_const(arity,dim)
 
 % generate a CPD (i.e. discrete distribution over last dimension

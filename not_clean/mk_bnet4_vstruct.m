@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 function bnet = mk_bnet4_vstruct(arity)
 
 n = 4;

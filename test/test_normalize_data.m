@@ -1,5 +1,7 @@
 
-bnet = mk_asia_linear(10);
+opt = struct('variance', 10, 'network', 'asia', 'arity', 1, 'type', 'linear_ggm');
+
+bnet = make_bnet(opt);
 rand('seed', 1);
 s = samples(bnet,500);
 

@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 function bnet = mk_asia_large_arity_nonlinear(arity)
 
 randn('seed', 1);

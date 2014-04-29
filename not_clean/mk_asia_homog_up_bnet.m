@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 function bnet = mk_asia_homog_up_bnet()
 
 Smoking = 1;

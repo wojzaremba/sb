@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 classdef CombKernel < Kernel
     properties
         kernels

@@ -1,9 +1,10 @@
 disp('test_compute_edge_scores...')
 
 rand('seed',1);
-randn('seed',1);
-
-bnet = mk_bnet4_vstruct(3);
+randn('seed',2);
+% bn_opt = struct('network', 'chain', 'arity', 2, 'type', 'random');
+% bnet = make_bnet(bn_opt);
+bnet = mk_bnet4();
 K = size(bnet.dag, 1);
 arity = get_arity(bnet);
 N = 200;

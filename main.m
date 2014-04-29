@@ -1,33 +1,47 @@
-function main(cpd_type,N,arity)
+function main(network, arity, type, N, variance)
 
 %clear all;
 global debug
 debug = 0;
 close all;
 
-discretize = false;
-discrete = true;
-if strcmpi(cpd_type,'linear')
-  bnet = mk_child_linear_gauss(0.5);
-    if (arity >= 2)
-      discretize = true;
-    else
-      discrete = false;
-    end
-elseif strcmpi(cpd_type,'random')
-  if (arity >=2)
-    bnet = mk_child_random(arity);
-  else
-    error('cant have arity < 2 with discrete (random) cpds');
-  end
+if exist('variance','var')
+    v = variance;
 else
-  error('unexpected cpd_type');
+    v = [];
 end
-if (discrete)
-  dis_or_cts = 'discrete';
-else
-  dis_or_cts = 'cts';
-end
+    
+
+bn_opt = struct('variance', v, 'network', network, 'arity', arity, 'type', 'linear_ggm');
+bnet = make_bnet(bn_opt);
+
+% discretize = false;
+% discrete = true;
+% if strcmpi(cpd_type,'linear')
+%   bnet = mk_child_linear_gauss(0.5);
+%     if (arity >= 2)
+%       discretize = true;
+%     else
+%       discrete = false;
+%     end
+% elseif strcmpi(cpd_type,'random')
+%   if (arity >=2)
+%     bnet = mk_child_random(arity);
+%   else
+%     error('cant have arity < 2 with discrete (random) cpds');
+%   end
+% elseif strcmpi(cpd_type,'quadratic')
+%     bnet = mk_child_poly_gauss(0.05);
+%     discrete = false;
+% else
+%   error('unexpected cpd_type');
+% end
+% if (discrete)
+%   dis_or_cts = 'discrete';
+% else
+%   dis_or_cts = 'cts';
+% end
+
 
 file_name = sprintf('%s_arity%d_N%d',cpd_type,arity,N);
 dir_name = sprintf('results/2014_04_22/%s/%s',dis_or_cts,file_name);
@@ -39,7 +53,7 @@ fprintf('Will %s\n',mat_file_command);
 
 K = length(bnet.dag);
 max_S = 2;
-num_experiments = 1;
+num_experiments = 20;
 num_samples_range = N;
 num_N = length(num_samples_range);
 step_size = 1e-3;
@@ -53,23 +67,25 @@ LA = LaplaceKernel();
 P = PKernel();
 Ind = IndKernel();
 
-full_options = {struct('classifier', @kci_classifier, 'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', L,'thresholds', thresholds, 'color', 'g' ,'params',[],'normalize',true,'name','KCI, linear kernel'), ...
-           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', G, 'thresholds', thresholds, 'color', 'b','params',[],'normalize',true,'name','KCI, gaussian kernel'), ...
-           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', LA, 'thresholds', thresholds, 'color', 'k' ,'params',[],'normalize',true,'name','KCI, laplace kernel'), ...
-           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', Ind, 'thresholds', thresholds, 'color', 'r' ,'params',[],'normalize',true,'name','KCI, indicator kernel'), ...
-           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', P, 'thresholds', thresholds, 'color', 'k' ,'params',[],'normalize',true,'name','KCI, heavytail kernel'), ...
-           struct('classifier', @cc_classifier,'rho_range', rho_range, 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', thresholds, 'color', 'c','params',[],'normalize',false,'name','conditional correlation'), ...
-           struct('classifier', @mi_classifier,'rho_range', [0 log2(arity)], 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', 0:step_size:log2(arity), 'color', 'y','params',[],'normalize',false,'name','conditional MI'), ...
-           struct('classifier', @sb_classifier, 'rho_range', rho_range,'prealloc', @dummy_prealloc, 'kernel', empty,'thresholds',thresholds, 'color', 'm','params',struct('eta',0.01,'alpha',1.0),'normalize',false,'name','bayesian conditional MI')};
+full_options = {struct('classifier', @kci_classifier, 'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', L,'thresholds', thresholds, 'color', 'g' ,'params',[],'normalize',true,'aggregation',[],'name','KCI, linear kernel'), ...
+           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', G, 'thresholds', thresholds, 'color', 'b','params',[],'normalize',true,'aggregation',[],'name','KCI, gaussian kernel'), ...
+           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', LA, 'thresholds', thresholds, 'color', 'r' ,'params',[],'normalize',true,'aggregation',[],'name','KCI, laplace kernel'), ...
+           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', Ind, 'thresholds', thresholds, 'color', 'r' ,'params',[],'normalize',true,'aggregation',[],'name','KCI, indicator kernel'), ...
+           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', P, 'thresholds', thresholds, 'color', 'k' ,'params',[],'normalize',true,'aggregation',[],'name','KCI, heavytail kernel'), ...
+           struct('classifier', @cc_classifier,'rho_range', rho_range, 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', thresholds, 'color', 'r','params',[],'normalize',false,'aggregation','min','name','cond corr, min'), ...
+           struct('classifier', @cc_classifier,'rho_range', rho_range, 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', thresholds, 'color', 'c','params',[],'normalize',false,'aggregation','mean','name','cond corr, avg'), ...           
+           struct('classifier', @mi_classifier,'rho_range', [0 log2(arity)], 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', 0:step_size:log2(arity), 'color', 'y','params',[],'normalize',false,'aggregation','min','name','cond MI, min'), ...
+           struct('classifier', @mi_classifier,'rho_range', [0 log2(arity)], 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', 0:step_size:log2(arity), 'color', 'm','params',[],'normalize',false,'aggregation','mean','name','cond MI, avg'), ...
+           struct('classifier', @sb_classifier, 'rho_range', rho_range,'prealloc', @dummy_prealloc, 'kernel', empty,'thresholds',thresholds, 'color', 'm','params',struct('eta',0.01,'alpha',1.0),'normalize',false,'aggregation',[],'name','bayesian conditional MI')};
        
 
-a = [1 2 3 6];
-if (~(discrete) && ~isempty(intersect(a,[7 8])))
-  error('cant run sb or mi classifier without discrete data');
-end
-if arity > 5
-  a = intersect(a,[1:6]);
-end
+a = [1 2 6 7 8 9];
+% if (~(discrete) && ~isempty(intersect(a,[7 8])))
+%   error('cant run sb or mi classifier without discrete data');
+% end
+% if arity > 5
+%   a = intersect(a,[1:6]);
+% end
 options = full_options(a);
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
@@ -95,7 +111,6 @@ fprintf('Testing %d no-edge and %d edge distributions, arity=%d.\n',length(find(
 for c = 1:num_classifiers
     o = options{c};
     name{c} = o.name;
-    num_thresholds = length(o.thresholds);
     
     param_size{c} = [];
     if (isstruct(o.params))
@@ -129,7 +144,7 @@ for exp = 1:num_experiments
         for c = 1:num_classifiers
             tic;
             o = options{c};
-            opt = struct('arity', arity, 'kernel', o.kernel,'thresholds', o.thresholds,'params',o.params,'normalize',o.normalize, 'rho_range', o.rho_range);
+            opt = struct('arity', arity, 'kernel', o.kernel,'thresholds', o.thresholds,'params',o.params,'normalize',o.normalize, 'rho_range', o.rho_range, 'aggregation',o.aggregation);
             
             % allocate
             num_thresholds = length(o.thresholds);
@@ -159,7 +174,7 @@ for exp = 1:num_experiments
             P = scores(2, 1, :, :, :) + scores(2, 2, :, :, :);
             N = scores(1, 1, :, :, :) + scores(1, 2, :, :, :);
             TP = scores(2, 2, :, :, :);
-            TN = scores(1, 1, :, :, :);
+            %TN = scores(1, 1, :, :, :);
             FP = scores(1, 2, :, :, :);
             TPR{c, N_idx}(exp, :, :, :) = squeeze(TP ./ P);
             FPR{c, N_idx}(exp, :, :, :) =  squeeze(FP ./ N);
@@ -172,10 +187,10 @@ for exp = 1:num_experiments
         fprintf('Time for experiment %d, N=%d is %d\n',exp,num_samples,time_N(N_idx));
     end
     
-    %clf
-    %plot_roc_multi
-    %hold on
-    %pause(1)
+    clf
+    plot_roc_multi
+    hold on
+    pause(1)
     
     time_exp = time_exp + sum(time_N);
     fprintf('Total time for experiment %d is %d\n',exp,time_exp);

@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 function [ind,gauss] = test_kernels()
 
 arity = 10;

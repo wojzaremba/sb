@@ -1,10 +1,10 @@
 disp('test_add_edge_scores...');
 
-arity = 3;
-bnet = mk_bnet4_vstruct(arity);
-maxpa = 2;
-maxS = 2;
-N = 1000;
+data = load('asia1000.dat');
+data = data';
+data(data == 0) = 2;
+arity = 2;
+
 
 empty = struct('name', 'none');
 opt = struct('classifier', @sb_classifier, 'rho_range', [0 1],...
@@ -12,11 +12,27 @@ opt = struct('classifier', @sb_classifier, 'rho_range', [0 1],...
     'color', 'm','params',struct('eta',0.01,'alpha',1.0),...
     'normalize',false,'name','bayesian conditional MI', 'arity', arity);
 
-emp = samples(bnet,N);
-if opt.normalize
-    emp = normalize_data(emp);
-end
+maxpa = 2;
+max_cond_set = 0;
+S = compute_bic(data, arity, maxpa);
+[E,R] = compute_edge_scores(data, opt, max_cond_set);
+S = add_edge_scores(S, E);
+S = prune_scores(S);
 
-S = compute_bic(emp, arity, maxpa);
-E = compute_edge_scores(emp, opt, maxS);
-S2 = add_edge_scores(S, E);
+my_file = 'gobnilp/in/test_bic_sb.score';
+fid = fopen(my_file, 'w');
+write_gobnilp_scores(fid,S);
+fclose(fid);
+
+baseline_file = 'asia1000_bic_sb_cpp.score';
+
+command = sprintf('diff --side-by-side test/%s %s', baseline_file, my_file);
+assert(system(command) == 0);
+
+% my_fid = fopen(my_file,'r');
+% fid = fopen(baseline_file,'r');
+% 
+% my_score_vector = textscan(my_fid,'%f','delimiter',' ');
+% baseline_score_vector = textscan(fid,'%f','delimiter',' ');
+% 
+% assert(norm(cell2mat(my_score_vector) - cell2mat(baseline_score_vector)) < 1e-2);

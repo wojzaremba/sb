@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 function test_choose_rand_off_diag()
 
 for k = 1:1000

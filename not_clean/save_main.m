@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 
 % for c = 1:length(classifiers)
 %     scores = zeros(2, 2, length(range));

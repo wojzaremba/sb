@@ -1,3 +1,6 @@
+function dummy()
+assert(0)
+-d function dummy()\nassert(0)
 
 % XXXX  TODO ????
 % 1. Subtract mean from samples, as preprocessing step.
