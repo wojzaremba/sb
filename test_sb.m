@@ -35,6 +35,7 @@ test_discretize_data();
 test_get_dag();
 test_make_bnet();
 
+% TODO: Get some tests with conditioning.
 % classifiers
 test_mi_classifier();
 test_pc_classifier();

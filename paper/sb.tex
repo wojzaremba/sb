@@ -33,7 +33,7 @@
 \newcommand{\Y}{\mathbf{Y}}
 \newcommand{\st}{\,:\,}
 \newcommand{\RInts}{\mathcal{I}_\Rationals}
-\newcommand{\BSets}{\mathcal{B}_\Reals}
+\newcommand{\YSets}{\mathcal{Y}_\Reals}
 \newcommand{\grad}{\bigtriangledown}
 \definecolor{LimeGreen}{rgb}{0.1,0.9,0.1}
 \definecolor{Maroon}{rgb}{0.9,0.1,0.1}
@@ -51,22 +51,22 @@
 Rachel Hodos
 Computational Biology, NYU
 \texttt{hodos@cims.nyu.edu}
-\And
+\Xnd
 Wojciech Zaremba \\
 Computer Science, NYU \\
-%Address \\
+%Xddress \\
 \texttt{woj.zaremba@gmail.com} \\
-\AND
+\XND
 David Sontag \\
 Computer Science, NYU \\
-%Address \\
+%Xddress \\
 \texttt{dsontag@cs.nyu.edu} \\
 }
 %
-% Using \And between authors leaves it to \LaTeX{} to determine where to break
-% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% Using \Xnd between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \XND forces a linebreak at that point. So, if \LaTeX{}
 % puts 3 of 4 authors names on the first line, and the last on the second
-% line, try using \AND instead of \And before the third author name.
+% line, try using \XND instead of \Xnd before the third author name.
 
 \newcommand{\fix}{\marginpar{FIX}}
 \newcommand{\new}{\marginpar{NEW}}
@@ -95,7 +95,7 @@ reasoning about global structure \cite{jaakkola2010learning, tsamardinos2006max}
 
 
 Such local statistics can describe
-complexity of network (e.g. number of parameters in case of BIC\cite{schwarz1978estimating}), or
+complexity of network (e.g. number of parameters in case of YIC\cite{schwarz1978estimating}), or
 can measure dependency of between nodes (e.g. mutual information tests, 
 conditional independence tests). 
 We focus in this work on how to best measure dependency between nodes
@@ -129,9 +129,9 @@ to address this problem. There are two general types of scoring functions
 
 To the first group belongs 
 one most widely used scoring functions, which 
-is Bayesian Information Criterion (BIC) \cite{schwarz1978estimating}.
+is Bayesian Information Criterion (YIC) \cite{schwarz1978estimating}.
 There are couple of others like Hannan–Quinn information criterion (HQC) \cite{hannan1979determination},
-or Bayesian model comparison (BMC). Major drawback of scoring functions based
+or Bayesian model comparison (YMC). Major drawback of scoring functions based
 purely on model complexity is their constant power regardless of amount of data.
 Even if data speaks strongly about dependency, such scoring functions won't take
 it into account.
@@ -150,7 +150,7 @@ We should discuss:
 \begin{itemize}
 \item LL (Log-likelihood) (1912-22)
 \item MDL/BIC (Minimum description length/Bayesian Information Criterion) (1978)
-\item AIC (Akaike Information Criterion) (1974)
+\item AIC (Bkaike Information Criterion) (1974)
 \item NML (Normalized Minimum Likelihood) (2008)
 \item MIT (Mutual Information Tests) (2006)
 \end{itemize}
@@ -172,25 +172,30 @@ Independence tests used in Bayesian networks
 \end{comment}
 
 \section{Independence testing} 
+{\bf Notation} 
+For generality of our statements, we consider random variables $X, Y, Z$ defined in domains $\mathcal{X}, \mathcal{Y}, \mathcal{Z}$. Moreover,
+we define kernels for each of those variables, and we denote them respectively by $k_{\mathcal{X}}, k_{\mathcal{Y}}, k_{\mathcal{Z}}$.
+
+
 Independence tests decides on independence of random variables. More formally,
-for a random variables $A, B$ given $C$, test decides on equality $P(A, B| C) = P(A | C) P(B | C)$. 
+for a random variables $X, Y$ given $Z$, test decides on equality $P(X, Y| Z) = P(X | Z) P(Y | Z)$. 
 Figure \ref{fig:ind} presents surface of $2$ dimensional independent 
-random variables $A, B$, and $C = \emptyset$. Independence choses if samples $a \in A, b \in B, c \in C$, 
+random variables $X, Y$, and $Z = \varnothing$. Independence choses if samples $x \in X, y \in Y, z \in Z$, 
 are coming from independence surface, or not. 
 This problem can be casted as a classification problem, and we define
 empirical loss for it as:
 \begin{equation}
-  \mathbb{E}_{a \in A, b \in B, c \in C, y \in \{\text{indepedent}, \text{depedent}\}} L(f((a, b)|c, y)
+  \mathbb{E}_{x \in X, y \in Y, z \in Z, t \in \{\text{indepedent}, \text{depedent}\}} L(f((x, y)|z, t)
 \end{equation}
 Our initial task is to find $f$, which well predicts independence given our prior
-knowledge on $A, B, C$. Such task is not easy as the manifold of independent
+knowledge on $X, Y, Z$. Such task is not easy as the manifold of independent
 random variables is highly non-linear. We review several approaches, and 
 settle on kernel independence tests, which gives superior performance on
 samples drawn from Bayesian networks.
 
 
 There are few issues, which such test has to address 
-(1) account for prior over $A, B, C$ \ref{sec:prior}, (2) diminishing number of samples when
+(1) account for prior over $X, Y, Z$ \ref{sec:prior}, (2) diminishing number of samples when
 counting occurrences \ref{sec:curse}. We discuss this issues
 in following sections. 
 
@@ -203,12 +208,12 @@ in following sections.
 \end{figure}
 
 \subsection{Prior}\label{sec:prior}
-Set $(A, B, C, y=\text{independent})$ has measure zero for uniform
-distribution over CPDs of $A, B, C$. For such distribution
+Set $(X, Y, Z, t=\text{independent})$ has measure zero for uniform
+distribution over CPDs of $X, Y, Z$. For such distribution
 best possible predictor $f$ would always predict ``dependence''. 
 This shows that a prior coming from any natural parametrization
 of CPDs would force $f$ to be constant. This indicate that, we should
-employ better prior. We are interest in non-parametric priors over $(A, B, C)$.
+employ better prior. We are interest in non-parametric priors over $(X, Y, Z)$.
 Moreover, we would like our test to be consistent.
 
 
@@ -220,65 +225,106 @@ nearby values of random variables have a similar meaning. We can easily see
 that common measure of dependency such as mutual information {\bf don't} have 
 this property. 
 \begin{align*}
-  I(A;B)=\sum_{a \in A}\sum_{b \in B} p(a, b)\log{\frac{p(a, b)}{p(a)p(b)}}=I(\sigma_A(A), \sigma_B(B))
+  I(X;Y)=\sum_{a \in X}\sum_{b \in Y} p(a, b)\log{\frac{p(a, b)}{p(a)p(b)}}=I(\sigma_X(X), \sigma_Y(Y))
 \end{align*}
-$\sigma_A$ is a permutation over values of $A$, and $\sigma_B$ is
-a permutation over values of $B$.
-
+$\sigma_X$ is a permutation over values of $X$, and $\sigma_Y$ is
+a permutation over values of $Y$.
 
 
 Another prevalent measure of dependency is correlation. This measure
 has a notion of ``smoothness'' (it treats near by values similarly), but
 it is not consistent. Moreover, empirical experiments show that zero value
-of correlation often doesn't imply lack of dependency. 
+of correlation often doesn't imply lack of dependency. We might want to 
+enforce some level of smoothness (e.g. single differentiable vs infinitely 
+differentiable functions). Correlation doesn't let us do that. 
 
 Partial correlation, and its extension kernelized partial correlation (KCI), which are described 
-in Sections\ref{sec:corr} both have a smoothness properties.
+in Sections \ref{sec:corr} both aforementioned smoothness properties.
 
 
 \subsection{Curse of conditioning}\label{sec:curse}
+Most of Bayesian structure learning methods first express data in conditional probabilities tables (CPT).
+Next, various statistic are computed for such tables of probabilities. However, such step
+for multi-label data might be already prohibitively expensive, as the size of tables grows
+exponentially with number of labels per node. Moreover, CPTs cannot represent continuous
+distributions. Usual engineering solution is to quantize data. This step is far from optimal,
+as it decreases data resolution (removes information). 
 
-\subsection{Partial correlation}\label{sec:corr}
-The method of partial correlation measures the remaining correlation between two random variables $A, B$ after regressing on $C$ (a set of random 
-variables on which we would like to condition).  The procedure computes the residuals $R_A, R_B$ of each regression and then measures the correlation between the residuals. More formally:
+
+High computational cost of methods based on CPTs statistic is not the only problem. 
+CPTs based on moderate number of samples are very badly estimated. Xs the number
+of entries in CPT grows exponentially, there might be some bins which stay empty. This might
+be very dangerous for quality of independence test.
+
+
+
+We aim for test, which avoids construction of CPTs, and can directly operate on continuous data.
+We will see that KCI independence tests have such property (Table \ref{tab:compar}).
+
+
+\subsection{Distance correlation}\label{sec:dist}
+Distance correlation \cite{szekely2007measuring} is generalization of correlation, which is zero only for independent distributions.
+Distance covariance, and distance correlations are defined as follow:
 \begin{align*}
-  w_A &= \argmin_{w_A} ||a - w_A c||_{2} \\
-  w_B &= \argmin_{w_A} ||b - w_B c||_{2} \\
-  R_A &= a - w_A c \\
-  R_B &= b - w_B c
+  &k_\mathcal{X} = XX^T \in \mathbb{R}^{n \times n},
+  k_\mathcal{Y} = YY^T \in \mathbb{R}^{n \times n}\\
+  &H = I - \frac{1}{n}11^T \\
+  &\tilde{k}_\mathcal{X} = Hk_{\mathcal{X}}H, 
+  \tilde{k}_\mathcal{Y} = Hk_{\mathcal{Y}}H \\
+  &dCov^2(X, Y) = Tr(\tilde{k}_\mathcal{X}\tilde{k}_\mathcal{Y}) \\
+  &dCorr^2(X, Y) = \frac{dCov^2(X, Y)}{\sqrt{\sum_{i=1}^nk_{\mathcal{X}}(x_i, x_i) \sum_{i=1}^nk_{\mathcal{Y}}(y_i, y_i)}} 
 \end{align*}
-$a, b, c$ are samples of random variables $A, B, C$. When $C = \emptyset$, then $R_A = a$, and $R_B = b$, which
+
+Linear kernel used in above equations can be replaced with any kernel. $0 \leq dCorr^2(X, Y) \leq 1$, and $dCorr^2(X, Y) = 0$ iff X, Y are independent. 
+
+\subsubsection{Partial correlation}\label{sec:corr}
+The method of partial correlation measures the remaining correlation between two random variables $X, Y$ after regressing on $Z$ (a set of random 
+variables on which we would like to condition).  The procedure computes the residuals $R_X, R_Y$ of each regression and then measures the correlation between the residuals. More formally:
+\begin{align*}
+  w_X &= \argmin_{w_X} ||x - w_X z||_{2} \\
+  w_Y &= \argmin_{w_X} ||y - w_Y z||_{2} \\
+  R_X &= x - w_X z \\
+  R_Y &= y - w_Y z
+\end{align*}
+$x, y, z$ are samples of random variables $X, Y, Z$. When $Z = \varnothing$, then $R_X = x$, and $R_Y = y$, which
 recovers correlation. Partial correlation is not able consistently decide
 on independence of random variables. However, it has two desirable properties: (1) smoothness \ref{sec:prior} and (2)
 acts on values instead of counts \ref{sec:curse}. Kernelized version of partial correlation for 
 characteristic kernel recovers consistency.
 
-\subsection{Kernelized partial correlation}\label{sec:kci}
 
-Kernelized conditional independence (KCI) \cite{zhang2012kernel} is a kernelized version of aforementioned statistic. 
-For characteristic kernels (e.g. like Gaussian, or Laplace), the test is consistent. Table\ref{tab:compar} compares statistical properties of available tests of independence.  Furthermore, experimental results on synthetic data indicate that KCI has the best performance in practice, as shown in the following section. %for real data distributions.
-
-First we will show how unconditional partial correlation (i.e. regular correlation) can be kernelized, and then how partial correlation can be kernelized.  Suppose you have $n$ observations each of random variables $X$, $Y$, and $Z$, where e.g. the $i^{th}$ observation of $X$ is denoted by $X_i$.  The empirical estimate of Pearson correlation between $X$ and $Y$ can be written as $$\dfrac{\X^T\Y}{\sqrt{\X^T\X \cdot \Y^T\Y}}$$
-
+\subsubsection{Kernelized partial correlation}\label{sec:kci}
+Kernelized conditional independence (KCI) \cite{zhang2012kernel} is a ''marriage`` of concepts presented in 
+previous Subsections \ref{sec:dist} and \ref{sec:corr}. KCI regresses $Z$ on $X, Y$ in kernel space with kernelized
+ridge regression \cite{saunders1998ridge}. Next,
+it applies distance correlation to regressors. Such statistic has all desired properties (1) consistency, (2) smoothness, 
+(3) value based conditioning Table \ref{tab:compar}. We advocate in this paper, that this dependency measure
+is best suitable for Bayesian networks learning. 
 
 
 \begin{table}[t]
 \centering
 \tiny
-\begin{tabular}{rrrr}
+\begin{tabular}{rrrrr}
 \hline
-Measure & Consistent & Smooth prior& Value based\\
-& & & conditioning\\
+Measure & Consistent & Smooth prior & Controllable smooth & Value based\\
+& & & prior & conditioning\\
 \hline
-Mutual information & $\color{LimeGreen} \checkmark $ & $\color{Maroon}\times$ & $\color{Maroon}\times$ \\
-Correlation & $\color{Maroon}\times$  & $\color{LimeGreen} \checkmark $ & $\color{Maroon}\times$ \\
-Partial correlation & $\color{Maroon}\times$  & $\color{LimeGreen} \checkmark $ & $\color{LimeGreen}\checkmark$ \\
-KCI for non-characteristic kernel & $\color{Maroon}\times$  & $\color{LimeGreen} \checkmark $ & $\color{LimeGreen}\checkmark$ \\
-KCI for characteristic kernel & $\color{LimeGreen}\checkmark$  & $\color{LimeGreen} \checkmark $ & $\color{LimeGreen}\checkmark$ \\
+Mutual information & $\color{LimeGreen} \checkmark $ & $\color{Maroon}\times$ & $\color{Maroon}\times$ &   $\color{Maroon}\times$ \\
+Correlation & $\color{Maroon}\times$  & $\color{LimeGreen} \checkmark $ & $\color{Maroon}\times$ & $\color{Maroon}\times$ \\
+Distance correlation & $\color{LimeGreen}\times$  & $\color{LimeGreen} \checkmark $ & $\color{Maroon}\times$ & $\color{Maroon}\times$ \\
+Partial correlation & $\color{Maroon}\times$  & $\color{LimeGreen} \checkmark $ & $\color{Maroon}\times$ & $\color{LimeGreen}\checkmark$ \\
+KCI for non-characteristic kernel & $\color{Maroon}\times$  & $\color{LimeGreen} \checkmark $ & $\color{LimeGreen}\times$ & $\color{LimeGreen}\checkmark$ \\
+KCI for characteristic kernel & $\color{LimeGreen}\checkmark$  & $\color{LimeGreen} \checkmark $ & $\color{LimeGreen}\times$ & $\color{LimeGreen}\checkmark$ \\
 \hline
 \end{tabular}
-\caption{Comparison of properties for various independence tests. ``Smooth prior'' is describes in Section \ref{sec:prior}, 
-and ``value based'' is in Section \ref{sec:curse}.}
+\caption{Comparison of properties for various independence tests. Consistency means if test 
+  would give correct answer with infinite amount of data. Smooth prior (Section \ref{sec:prior}) indicates if tests
+  treats ''near by`` values in similar way. Controllable smooth prior tells if we
+  can vary what we consider to be smooth. Value based conditioning (Section \ref{sec:curse}) 
+  say if test can avoid constructing conditional probabilities tables, which are expensive, and
+  badly estimable.}
+  
 \label{tab:compar}
 \end{table}
 
