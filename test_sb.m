@@ -34,6 +34,7 @@ test_normalize_cpd();
 test_mk_linear_cpd_const();
 test_discretize_data();
 
+% TODO: Get some tests with conditioning.
 % classifiers
 test_mi_classifier();
 test_pc_classifier();
