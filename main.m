@@ -33,16 +33,21 @@ bn_opt = struct('variance', v, 'network', network, 'arity', starting_arity, 'typ
 bnet = make_bnet(bn_opt);
 arity = final_arity;
 
-file_name = sprintf('%s_arity%d_N%d',cpd_type,final_arity,N);
-dir_name = sprintf('results/test/%s/%s',dis_or_cts,file_name);
+file_name = sprintf('%s_%s_arity%d_N%d',network, cpd_type, final_arity, N);
+dir_name = sprintf('results/2014_04_30/%s/%s', dis_or_cts, file_name);
 system( ['mkdir -p ' dir_name]);
-system(['cp call_main.m ' dir_name '/']);
-mat_file_command = sprintf('save %s/%s.mat',dir_name,file_name);
-%diary(sprintf('%s/%s.out',dir_name,file_name));
-fprintf('Will %s\n',mat_file_command);
+%system(['cp call_main.m ' dir_name '/']);
+mat_file_command = sprintf('save %s/%s.mat', dir_name, file_name);
+diary(sprintf('%s/%s.out', dir_name, file_name));
+fprintf('Will %s\n', mat_file_command);
 
 K = length(bnet.dag);
 max_S = 2;
+if final_arity >= 20
+  fprintf('WARNING: changing max_S to 1\n');
+  max_S = 1;
+end
+
 num_samples_range = N;
 num_N = length(num_samples_range);
 step_size = 1e-3;
@@ -176,8 +181,8 @@ for exp = 1:num_exp
     time_exp = time_exp + sum(time_N);
     fprintf('Total time for experiment %d is %d\n',exp,time_exp);
     total_time = total_time + time_exp;
+    eval(mat_file_command);
 end
 
 fprintf('Total running time for all experiments is %d seconds.\n',total_time);
-eval(mat_file_command);
-%diary off
+diary off

@@ -9,7 +9,7 @@ function rho = mi_classifier(emp, trip, options, prealloc)
     assert(sum(counts) == size(emp, 2));
 
     if strcmpi(options.aggregation,'min')
-        rho = -Inf;
+        rho = 0;
         
         for t = 1:size(emp_dist, 3)
         

@@ -9,7 +9,7 @@ function rho = cc_classifier(emp, trip, options, prealloc)
     n = NaN*ones(size(A,1),1);
     
     if strcmpi(options.aggregation, 'min')
-        rho = -Inf;
+        rho = 0;
         for t = 1:size(A,1)
             cond_emp = condition_emp(emp,A(t,:));
             if ~isempty(cond_emp)
