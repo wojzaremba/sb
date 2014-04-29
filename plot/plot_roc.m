@@ -2,7 +2,7 @@ function h = plot_roc(N_idx,TPR,FPR,options,name,skip)
 
 %close all;
 clear h;
-num_classifiers = 2; %size(TPR,1);
+num_classifiers = size(TPR,1);
 
 for fig = 1
     for c = 1:num_classifiers

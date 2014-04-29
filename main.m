@@ -1,4 +1,4 @@
-function main(network, arity, type, N, variance)
+function main(network, final_arity, type, N, variance, num_exp)
 
 %clear all;
 global debug
@@ -10,41 +10,31 @@ if exist('variance','var')
 else
     v = [];
 end
-    
 
-bn_opt = struct('variance', v, 'network', network, 'arity', arity, 'type', 'linear_ggm');
+a = strsplit('_',type);
+cpd_type = a{1};
+
+% defaults
+discretize = false;
+starting_arity = final_arity;
+
+if ( strcmpi(a{2},'ggm') && final_arity > 1)
+    discretize = true;
+    starting_arity = 1;
+end
+
+if final_arity > 1
+    dis_or_cts = 'discrete';
+else
+    dis_or_cts = 'cts';
+end
+
+bn_opt = struct('variance', v, 'network', network, 'arity', starting_arity, 'type', type);
 bnet = make_bnet(bn_opt);
+arity = final_arity;
 
-% discretize = false;
-% discrete = true;
-% if strcmpi(cpd_type,'linear')
-%   bnet = mk_child_linear_gauss(0.5);
-%     if (arity >= 2)
-%       discretize = true;
-%     else
-%       discrete = false;
-%     end
-% elseif strcmpi(cpd_type,'random')
-%   if (arity >=2)
-%     bnet = mk_child_random(arity);
-%   else
-%     error('cant have arity < 2 with discrete (random) cpds');
-%   end
-% elseif strcmpi(cpd_type,'quadratic')
-%     bnet = mk_child_poly_gauss(0.05);
-%     discrete = false;
-% else
-%   error('unexpected cpd_type');
-% end
-% if (discrete)
-%   dis_or_cts = 'discrete';
-% else
-%   dis_or_cts = 'cts';
-% end
-
-
-file_name = sprintf('%s_arity%d_N%d',cpd_type,arity,N);
-dir_name = sprintf('results/2014_04_22/%s/%s',dis_or_cts,file_name);
+file_name = sprintf('%s_arity%d_N%d',cpd_type,final_arity,N);
+dir_name = sprintf('results/test/%s/%s',dis_or_cts,file_name);
 system( ['mkdir -p ' dir_name]);
 system(['cp call_main.m ' dir_name '/']);
 mat_file_command = sprintf('save %s/%s.mat',dir_name,file_name);
@@ -53,7 +43,6 @@ fprintf('Will %s\n',mat_file_command);
 
 K = length(bnet.dag);
 max_S = 2;
-num_experiments = 20;
 num_samples_range = N;
 num_N = length(num_samples_range);
 step_size = 1e-3;
@@ -124,7 +113,7 @@ end
 
 total_time = 0;
 
-for exp = 1:num_experiments
+for exp = 1:num_exp
     time_N = zeros(num_N,1);
     time_exp = 0;
 
