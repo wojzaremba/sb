@@ -22,8 +22,12 @@ hamming_distance = shd(PDAG_pred, PDAG_true);
 assert(hamming_distance == 0);
 
 
-bnet = mk_asia_random(2);
-data = samples(bnet,2500);
+%bnet2 = mk_asia_random(3);
+%opt.network = 'asia';
+%opt.arity = 3;
+bnet = make_bnet(opt);
+%compare_bnets(bnet,bnet2);
+data = samples(bnet,1000);
 arity = get_arity(bnet);
 S = compute_bic(data, arity, maxpa);
 S = prune_scores(S);

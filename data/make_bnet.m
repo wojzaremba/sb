@@ -27,7 +27,7 @@ for i = 1:n
         bnet.CPD{i} = polynomial_gaussian_CPD(bnet, i, 'mean', 0, 'cov', variance, 'weights', mk_weights(numpa));
     elseif strcmpi(opt.type, 'random')
         if numpa == 0
-            unif = ones(opt.arity, 1) / opt.arity;
+            unif = ones(1, opt.arity) / opt.arity;
             bnet.CPD{i} = tabular_CPD(bnet, i, unif);
         else
             bnet.CPD{i} = tabular_CPD(bnet, i, mk_random_cpd(opt.arity,numpa+1));
