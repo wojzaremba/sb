@@ -43,10 +43,10 @@ fprintf('Will %s\n', mat_file_command);
 
 K = length(bnet.dag);
 max_S = 2;
-if final_arity >= 20
-  fprintf('WARNING: changing max_S to 1\n');
-  max_S = 1;
-end
+% if final_arity >= 20
+%   fprintf('WARNING: changing max_S to 1\n');
+%   max_S = 1;
+% end
 
 num_samples_range = N;
 num_N = length(num_samples_range);
@@ -61,16 +61,14 @@ LA = LaplaceKernel();
 P = PKernel();
 Ind = IndKernel();
 
-full_options = {struct('classifier', @kci_classifier, 'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', L,'thresholds', thresholds, 'color', 'g' ,'params',[],'normalize',true,'aggregation',[],'name','KCI, linear kernel'), ...
-           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', G, 'thresholds', thresholds, 'color', 'b','params',[],'normalize',true,'aggregation',[],'name','KCI, gaussian kernel'), ...
-           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', LA, 'thresholds', thresholds, 'color', 'r' ,'params',[],'normalize',true,'aggregation',[],'name','KCI, laplace kernel'), ...
-           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', Ind, 'thresholds', thresholds, 'color', 'r' ,'params',[],'normalize',true,'aggregation',[],'name','KCI, indicator kernel'), ...
-           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', P, 'thresholds', thresholds, 'color', 'k' ,'params',[],'normalize',true,'aggregation',[],'name','KCI, heavytail kernel'), ...
-           struct('classifier', @cc_classifier,'rho_range', rho_range, 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', thresholds, 'color', 'r','params',[],'normalize',false,'aggregation','min','name','cond corr, min'), ...
-           struct('classifier', @cc_classifier,'rho_range', rho_range, 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', thresholds, 'color', 'c','params',[],'normalize',false,'aggregation','mean','name','cond corr, avg'), ...           
-           struct('classifier', @mi_classifier,'rho_range', [0 log2(arity)], 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', 0:step_size:log2(arity), 'color', 'k','params',[],'normalize',false,'aggregation','min','name','cond MI, min'), ...
-           struct('classifier', @mi_classifier,'rho_range', [0 log2(arity)], 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', 0:step_size:log2(arity), 'color', 'm','params',[],'normalize',false,'aggregation','mean','name','cond MI, avg'), ...
-           struct('classifier', @sb_classifier, 'rho_range', rho_range,'prealloc', @dummy_prealloc, 'kernel', empty,'thresholds',thresholds, 'color', 'm','params',struct('eta',0.01,'alpha',1.0),'normalize',false,'aggregation',[],'name','bayesian conditional MI')};
+full_options = {struct('classifier', @kci_classifier, 'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', L,'thresholds', thresholds, 'color', 'g' ,'params',[],'normalize',true,'name','KCI, linear kernel'), ...
+           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', G, 'thresholds', thresholds, 'color', 'b','params',[],'normalize',true,'name','KCI, gaussian kernel'), ...
+           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', LA, 'thresholds', thresholds, 'color', 'r' ,'params',[],'normalize',true,'name','KCI, laplace kernel'), ...
+           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', Ind, 'thresholds', thresholds, 'color', 'r' ,'params',[],'normalize',true,'name','KCI, indicator kernel'), ...
+           struct('classifier', @kci_classifier,'rho_range', rho_range, 'prealloc', @kci_prealloc, 'kernel', P, 'thresholds', thresholds, 'color', 'k' ,'params',[],'normalize',true,'name','KCI, heavytail kernel'), ...
+           struct('classifier', @cc_classifier,'rho_range', rho_range, 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', thresholds, 'color', 'r','params',[],'normalize',false,'name','cond corr, min'), ...          
+           struct('classifier', @mi_classifier,'rho_range', [0 log2(arity)], 'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', 0:step_size:log2(arity), 'color', 'k','params',[],'normalize',false,'name','cond MI, min'), ...
+           struct('classifier', @sb_classifier, 'rho_range', rho_range,'prealloc', @dummy_prealloc, 'kernel', empty,'thresholds',thresholds, 'color', 'm','params',struct('eta',0.01,'alpha',1.0),'normalize',false,'name','bayesian conditional MI')};
        
 options = full_options(class_select);
 num_classifiers = length(options);
@@ -98,14 +96,14 @@ for c = 1:num_classifiers
     o = options{c};
     name{c} = o.name;
     
-    param_size{c} = [];
-    if (isstruct(o.params))
-        fields = fieldnames(o.params);
-        for i = 1:length(fields)
-            param_size{c} = [param_size{c} length(o.params.(fields{i}))];
-        end
-    end
-    
+     param_size{c} = [];
+%     if (isstruct(o.params))
+%         fields = fieldnames(o.params);
+%         for i = 1:length(fields)
+%             param_size{c} = [param_size{c} length(o.params.(fields{i}))];
+%         end
+%     end
+
 end
 
 total_time = 0;
@@ -130,7 +128,7 @@ for exp = 1:num_exp
         for c = 1:num_classifiers
             tic;
             o = options{c};
-            opt = struct('arity', arity, 'kernel', o.kernel,'thresholds', o.thresholds,'params',o.params,'normalize',o.normalize, 'rho_range', o.rho_range, 'aggregation',o.aggregation);
+            opt = struct('arity', arity, 'kernel', o.kernel,'thresholds', o.thresholds,'params',o.params,'normalize',o.normalize, 'rho_range', o.rho_range); %, 'aggregation',o.aggregation);
             
             % allocate
             num_thresholds = length(o.thresholds);
@@ -148,6 +146,9 @@ for exp = 1:num_exp
                 
                 % evaluate classifier at all thresholds in thresholds
                 rho = classifier_wrapper(emp, triples{t}, o.classifier, opt, prealloc);
+                rho = rho(1);
+                
+                
                 indep_emp = threshold(opt.thresholds,rho);
                 indep_emp = reshape(indep_emp,[1 1 size(indep_emp)]);
                 

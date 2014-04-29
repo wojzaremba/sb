@@ -1,4 +1,4 @@
-function rho = cc_classifier(emp, trip, options, prealloc)
+function Rho = cc_classifier(emp, trip, options, prealloc)
 % returns either maximum absolute correlation over all assignments to
 % conditioning set, or a weighted mean
 
@@ -7,22 +7,23 @@ function rho = cc_classifier(emp, trip, options, prealloc)
     
     A = enumerate_assignments(size(emp,1)-2,arity);
     n = NaN*ones(size(A,1),1);
+    Rho = NaN*ones(1,2);
     
-    if strcmpi(options.aggregation, 'min')
-        rho = 0;
-        for t = 1:size(A,1)
-            cond_emp = condition_emp(emp,A(t,:));
-            if ~isempty(cond_emp)
-                % take weakest evidence for independence
-                rho = max(rho,abs(my_corr(cond_emp(1,:)',cond_emp(2,:)')));
-            else
-                printf(2,'cond_emp is empty');
-            end
-            if (abs(rho - options.rho_range(2)) < 1e-4)
-                break
-            end
-        end
-    elseif strcmpi(options.aggregation, 'mean')
+%     if strcmpi(options.aggregation, 'min')
+%         rho = 0;
+%         for t = 1:size(A,1)
+%             cond_emp = condition_emp(emp,A(t,:));
+%             if ~isempty(cond_emp)
+%                 % take weakest evidence for independence
+%                 rho = max(rho,abs(my_corr(cond_emp(1,:)',cond_emp(2,:)')));
+%             else
+%                 printf(2,'cond_emp is empty');
+%             end
+%             if (abs(rho - options.rho_range(2)) < 1e-4)
+%                 break
+%             end
+%         end
+%     elseif strcmpi(options.aggregation, 'mean')
         rho = NaN*ones(size(A,1),1);
         for t = 1:size(A,1)
             cond_emp = condition_emp(emp,A(t,:));
@@ -34,10 +35,11 @@ function rho = cc_classifier(emp, trip, options, prealloc)
             n(t) = size(cond_emp, 2);
         end
         assert(sum(n) == size(emp, 2));
-        rho = (rho'*n) / sum(n);
-    else
-        error('unexpected value in options.aggregation.');
-    end
+        Rho(1) = max(rho);
+        Rho(2) = (rho'*n) / sum(n);
+%     else
+%         error('unexpected value in options.aggregation.');
+%     end
 end
 
 

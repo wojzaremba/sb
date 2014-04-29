@@ -13,13 +13,18 @@ function rho = classifier_wrapper(emp, triple, f, opt, prealloc)
 rho = Inf;
 printf(2,'i,j = %d,%d\n',triple.i,triple.j);
 
+% will compute both min and mean
+if (isequal(f, @cc_classifier) || isequal(f, @mi_classifier))
+   rho = Inf * ones(1,2); 
+end
+
 for c = 1:length(triple.cond_set)
     trip = [triple.i,triple.j,triple.cond_set{c}];
     rho = min(rho,f(emp, trip, opt, prealloc));
     printf(2,'%d, %d\n',length(triple.cond_set{c}),rho);
-%     if (abs(rho - opt.rho_range(1)) < 1e-4) % XXX I think I should take this out when I do structure learning
-%         break
-%     end
+    if (abs(rho - opt.rho_range(1)) < 1e-4) % XXX I think I should take this out when I do structure learning
+        break
+    end
     if (rho < opt.rho_range(1))
         assert(0)
     end
