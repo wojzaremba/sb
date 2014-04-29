@@ -127,12 +127,14 @@ for exp = 1:num_exp
         
         for c = 1:num_classifiers
             tic;
+            classifier_count = 0; % since mi_classifier and cc_classifier have two options
             o = options{c};
             opt = struct('arity', arity, 'kernel', o.kernel,'thresholds', o.thresholds,'params',o.params,'normalize',o.normalize, 'rho_range', o.rho_range); %, 'aggregation',o.aggregation);
             
             % allocate
             num_thresholds = length(o.thresholds);
-            scores = zeros([2 2 num_thresholds param_size{c}]);
+            %scores = zeros([2 2 num_thresholds param_size{c}]);
+            S = {zeros([2 2 num_thresholds param_size{c}]), zeros([2 2 num_thresholds param_size{c}])};
             
             if o.normalize
                 emp = s_norm;
@@ -146,25 +148,30 @@ for exp = 1:num_exp
                 
                 % evaluate classifier at all thresholds in thresholds
                 rho = classifier_wrapper(emp, triples{t}, o.classifier, opt, prealloc);
-                rho = rho(1);
-                
-                
-                indep_emp = threshold(opt.thresholds,rho);
-                indep_emp = reshape(indep_emp,[1 1 size(indep_emp)]);
-                
-                % increment scores accordingly (WARNING: HARD-CODED max num
-                % params to optimize as 2)
-                scores(1 + no_edge(t),1,:,:,:) = scores(1 + no_edge(t),1,:,:,:) + ~indep_emp;
-                scores(1 + no_edge(t),2,:,:,:) = scores(1 + no_edge(t),2,:,:,:) + indep_emp;
+                             
+                for r = 1:length(rho)
+                    indep_emp{r} = threshold(opt.thresholds,rho(r));
+                    indep_emp{r} = reshape(indep_emp{r},[1 1 size(indep_emp{r})]);
+                    
+                    % increment scores accordingly (WARNING: HARD-CODED max num
+                    % params to optimize as 2)
+                    scores = S{r};
+                    scores(1 + no_edge(t),1,:,:,:) = scores(1 + no_edge(t),1,:,:,:) + ~indep_emp;
+                    scores(1 + no_edge(t),2,:,:,:) = scores(1 + no_edge(t),2,:,:,:) + indep_emp;
+                end
             end
-
-            P = scores(2, 1, :, :, :) + scores(2, 2, :, :, :);
-            N = scores(1, 1, :, :, :) + scores(1, 2, :, :, :);
-            TP = scores(2, 2, :, :, :);
-            %TN = scores(1, 1, :, :, :);
-            FP = scores(1, 2, :, :, :);
-            TPR{c, N_idx}(exp, :, :, :) = squeeze(TP ./ P);
-            FPR{c, N_idx}(exp, :, :, :) =  squeeze(FP ./ N);
+            
+            for r = 1:length(rho)
+                classifier_count = classifier_count + length(rho);
+                scores = S{r};
+                P = scores(2, 1, :, :, :) + scores(2, 2, :, :, :);
+                N = scores(1, 1, :, :, :) + scores(1, 2, :, :, :);
+                TP = scores(2, 2, :, :, :);
+                %TN = scores(1, 1, :, :, :);
+                FP = scores(1, 2, :, :, :);
+                TPR{classifier_count, N_idx}(exp, :, :, :) = squeeze(TP ./ P);
+                FPR{classifier_count, N_idx}(exp, :, :, :) =  squeeze(FP ./ N);
+            end
 
             time_classifier = toc;
             time_N(N_idx) = time_N(N_idx) + time_classifier;
