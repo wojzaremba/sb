@@ -37,4 +37,7 @@ else
     end
 end
 
-Sta = sqrt(abs(sum(Kx(:) .* Ky(:)) / (sum(diag(Kx)) * sum(diag(Ky)))));
+St = sqrt(abs(sum(Kx(:) .* Ky(:)) / (sum(diag(Kx)) * sum(diag(Ky)))));
+
+Sta = min(1, max(0, St));
+assert(abs(St - Sta) < 1e-5);

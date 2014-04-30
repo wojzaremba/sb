@@ -13,8 +13,9 @@ rho = -Inf*ones(length(eta),length(alpha));
 for t = 1:size(A,1)
     cond_emp = condition_emp(emp,A(t,:));
     counts = cond_emp_to_counts(cond_emp,arity);
-    rho = max(rho,compute_sb(counts,eta,alpha));
-%     if (abs(rho - options.rho_range(2)) < 1e-4)
-%         break
-%     end
+    rho = max(rho,compute_sb(counts,eta,alpha));    
+    if (rho >= 1 - 1e-4)
+        break
+    end
+
 end

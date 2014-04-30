@@ -84,58 +84,39 @@ Computer Science, NYU \\
 
 
 \section{Introduction}
-Learning Bayesian networks for general distributions is
-intractable task \cite{chickering1996learning}. However, often
-for real data distributions, still we are able to 
-recover Bayesian network structure. This implies that real data
-distribution has some special properties, which simplify process
-of structure recovery. Such process is almost always
-based on computation local statistics, and then 
+It is well known that Bayesian network structure learning for general distributions is 
+intractable \cite{chickering1996learning}. However, often
+for real data distributions, we are still able to 
+recover the Bayesian network structure. This implies that real data
+distributions have some special properties, which can simplify the process
+of structure recovery.  This  process is almost always
+based on computing local statistics, and then 
 reasoning about global structure \cite{jaakkola2010learning, tsamardinos2006max}. 
 
 
-Such local statistics can describe
-complexity of network (e.g. number of parameters in case of YIC\cite{schwarz1978estimating}), or
-can measure dependency of between nodes (e.g. mutual information tests, 
-conditional independence tests). 
-We focus in this work on how to best measure dependency between nodes
-in empirical CPDs from Bayessian network. We are mainly interest
+Examples of local statistics are measures of the model complexity (e.g. number of parameters in case of BIC\cite{schwarz1978estimating}), and conditional independence tests e.g. based on mutual information.  We focus in this work on how to best measure dependency between nodes
+in empirical CPDs from Bayesian network. We are mainly interest
 in developing techniques applicable to discovery of structure
 in gene expression data. This implies that each random variable
-can belong to many classes (when expression is quantized), or have continuous
-values. Moreover, such datasets are always relatively small $\sim200$ samples.
-We focus our attention on addressing Bayesian network structure learning
-in aforementioned regime. 
+can either 1) take many values (when expression values are discretized), or 2) have continuous
+values. The first case poses challenges if one wants to estimate conditional distributions in order to perform CI tests, a.k.a the curse of dimensionality.  The second case also makes conditioning difficult- how should one properly condition on a continuous variable?  One solution is perform linear regression on the conditioning variable (this is the approach taken by partial correlation), however, we would not like to restrict ourselves to linear relationships.  Furthermore, an property of the vast majority of gene expression datasets is that there are much fewer samples than there are variables, e.g. 20000 variables, and 100 samples.   We focus our attention on addressing Bayesian network structure learning
+in such a regime. 
 
 
-Our main contribution is in designing very efficient dependency test
-for Bayesian networks. It is kernelized partial correlation (KCI) with
-kernels sensitive to linear dependency present in CPDs. We show
+Our main contribution is in designing efficient dependency test
+for Bayesian networks. It is kernelized conditional independence (KCI) with
+kernels sensitive to the particular types of dependence relations present in our domain of interest. We show
 that kernelized partial correlation with proper kernel in ``gene expression''
 regime is almost always better than any other previously considered
 dependency test. 
 
 
 \section{Related work}
-There has been extensive research in area of scoring functions for
-Bayesian networks. This step is crucial to prevent algorithms from 
-recovering complete graph structure.
-Without any scoring function, log-likelihood term would force optimization
-to choose fully connected graph. There have been proposed few regularizations (scoring functions)
-to address this problem. There are two general types of scoring functions 
-(1) based purely on model complexity, (2) combining model complexity with data evidences.
+There has been extensive research in the area of scoring functions for
+Bayesian network structure learning. An appropriate scoring function is very important, e.g. if one simply maximized the likelihood, one would almost always recover the complete graph structure (the intuition is that a finite sample of two variables, even if independent, will almost always appear at least a little bit dependent).  Hence regularization is crucial.  There are two general types of regularization terms:(1) based purely on model complexity, and more recently (2) data-dependent regularization terms \cite{brenner2013sparsityboost}.
 
-
-
-To the first group belongs 
-one most widely used scoring functions, which 
-is Bayesian Information Criterion (YIC) \cite{schwarz1978estimating}.
-There are couple of others like Hannan–Quinn information criterion (HQC) \cite{hannan1979determination},
-or Bayesian model comparison (YMC). Major drawback of scoring functions based
-purely on model complexity is their constant power regardless of amount of data.
-Even if data speaks strongly about dependency, such scoring functions won't take
-it into account.
-
+To the first group belongs one of the most widely used scoring functions, which is Bayesian Information Criterion (BIC) \cite{schwarz1978estimating}.  Another popular score is the Bayesian Dirichlet score, (BDe), There are couple of others like Hannan–Quinn information criterion (HQC) \cite{hannan1979determination},
+or Bayesian model comparison (BMC). A major drawback of scoring functions based purely on model complexity is that they have constant power regardless of the amount of data.  Hence even if there is strong evidence, e.g. that an edge should not be in the graph, such scoring functions won't take this into account.
 
 
 \begin{comment}
