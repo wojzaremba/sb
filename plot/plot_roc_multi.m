@@ -11,13 +11,13 @@ for N_idx = 1:length(num_samples_range)
     for fig = 1:numfigs
         subplot(numfigs,num_N,N_idx + (fig-1)*num_N)
         hold on
-        ts = sprintf('N=%d, arity=%d, %d experiments, %s CPDs',num_samples_range(N_idx),arity,num_exp,cpd_type); %ROC on CPDs generated from asia network, 
+        ts = sprintf('%s network with %s CPDs, N=%d, %d experiments, ',network, cpd_type, num_samples_range(N_idx),num_exp);
         skip = skips{fig};
         if fig == 1
-            ts = ['Full ROC, ' ts];
+            %ts = ['Full ROC, ' ts];
             xlims = [0 1];
         else
-            ts = ['ROC small FPR, ' ts];
+            %ts = ['ROC small FPR, ' ts];
             xlims = [0 0.05];
         end
         plot_roc(N_idx,TPR,FPR,options,name,skip);

@@ -4,7 +4,7 @@ function ret = gobnilp()
     if (length(findstr(name, 'wojciech')) > 0)
         ret = '/Users/wojto/sb/gobnilp/bin/gobnilp';
     elseif (length(findstr(name, 'rachel')) > 0)
-        ret = '~/Desktop/Research/Thesis/sb/gobnilp/bin/gobnilp';
+        ret = '/Users/rhodos/Desktop/Research/Thesis/Software/gobnilp/bin/gobnilp';
     else
         ret = '/web/hodos/code/gobnilp/gobnilp1.3/bin/gobnilp';
     end

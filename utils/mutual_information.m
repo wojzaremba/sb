@@ -21,7 +21,7 @@ for i = 1:k
 end
 
 if MI < 0
-    fprintf('Warning, changing MI from %f to 0.\n',MI);
+    printf(2, 'Warning, changing MI from %f to 0.\n',MI);
     MI = 0;
 end
 %disp(sprintf('I = %d',MI));

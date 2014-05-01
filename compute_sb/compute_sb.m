@@ -16,9 +16,9 @@ function rho = compute_rho(counts,eta,alpha)
     rho = NaN*ones(length(eta),length(alpha));
     for i = 1:length(alpha);
         E = sb_expectation(counts,alpha(i));
-        S = sqrt(sb_variance(counts,alpha(i)));
-        if S ~= 0
-            rho(:,i) = 1 - gamcdf(eta,(E/S)^2,(S^2)/E);
+        V = sb_variance(counts,alpha(i));
+        if V ~= 0
+            rho(:,i) = 1 - gamcdf(eta,(E^2)/V,V/E);
         else
             %XXX not sure if this is the right thing to do.  I added this
             %in order to match with the c++ code for a particular case when

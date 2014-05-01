@@ -10,10 +10,8 @@ arity = get_arity(bnet);
 N = 200;
 
 empty = struct('name', 'none');
-opt = struct('classifier', @sb_classifier, 'rho_range', [0 1],...
-    'prealloc', @dummy_prealloc, 'kernel', empty,...
-    'color', 'm','params',struct('eta',0.01,'alpha',1.0),...
-    'normalize',false,'name','bayesian conditional MI', 'arity', arity);
+opt = struct('classifier', @sb_classifier, 'prealloc', @dummy_prealloc, ...
+    'params',struct('eta',0.01,'alpha',1.0), 'arity', arity);
 
 data = samples(bnet, N);
 
@@ -32,3 +30,22 @@ end
 
 assert(isequal(intersect(find(~isinf(E)), find(E > 0.4)), find(T == 1)));
 assert(isequal(intersect(find(~isinf(E)), find(E < 0.01)), find(T == 0)));
+
+
+
+data = load('test/asia1000/asia1000.dat');
+data = data';
+data(data == 0) = 2;
+arity = 2;
+
+E0 = compute_edge_scores(data, opt, 0)
+B0 = -load('test/asia1000/asia1000_sb_min_edge_scores.0')
+
+E1 = compute_edge_scores(data, opt, 1)
+B1 = -load('test/asia1000/asia1000_sb_min_edge_scores.1')
+
+E2 = compute_edge_scores(data, opt, 2)
+B2 = -load('test/asia1000/asia1000_sb_min_edge_scores.2')
+
+
+

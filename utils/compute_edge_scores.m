@@ -18,8 +18,7 @@ for t = 1:length(triples)
 
 end
 
-N = size(emp, 2);
-E = -log(R); %log(N)
+E = -log(R);
 
 
 

@@ -51,7 +51,7 @@ solving_time = str2num(solving_str_split{2});
 % check that it converged
 [status, cvg_str] = system(sprintf('grep "SCIP Status" %s', out_file));
 cvg_str_split = regexp(cvg_str, ' : ', 'split');
-assert(strcmp(strtrim(cvg_str_split{3}),'problem is solved [optimal solution found]'));
+assert(strcmp(strtrim(cvg_str_split{end}),'problem is solved [optimal solution found]'));
 
 % delete output files
 command = sprintf('rm %s %s %s %s', adj_file, score_file, out_file, set_file);

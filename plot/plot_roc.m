@@ -24,10 +24,11 @@ for fig = 1
         
         %errorbarxy(fpr,tpr,fpr_err,tpr_err,{o.color,o.color,o.color});
         %h(c) = errorbar(fpr,tpr,tpr_err,[o.color '*-'],'linewidth',2);
-        h(c) = plot(fpr,tpr,[o.color '.-']);%,'linewidth',2);
+        h(c) = plot(fpr,tpr,o.color,'linewidth',2);
         hold on
+        plot(fpr(2),tpr(2),'r*');
     end
-    h(num_classifiers + 1) = plot(linspace(0,1),linspace(0,1),'k--'); %,'linewidth',2);
+    h(num_classifiers + 1) = plot(linspace(0,1),linspace(0,1),'k--','linewidth',2);
     legend(h,[name(1:num_classifiers) 'random']);
     xlabel('FPR');
     ylabel('TPR');

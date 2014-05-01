@@ -5,12 +5,8 @@ data = data';
 data(data == 0) = 2;
 arity = 2;
 
-
-empty = struct('name', 'none');
-opt = struct('classifier', @sb_classifier, 'rho_range', [0 1],...
-    'prealloc', @dummy_prealloc, 'kernel', empty,...
-    'color', 'm','params',struct('eta',0.01,'alpha',1.0),...
-    'normalize',false,'name','bayesian conditional MI', 'arity', arity);
+opt = struct('classifier', @sb_classifier,'prealloc', @dummy_prealloc,...
+    'params',struct('eta',0.01,'alpha',1.0), 'arity', arity);
 
 maxpa = 2;
 max_cond_set = 0;
@@ -27,7 +23,7 @@ fclose(fid);
 baseline_file = 'asia1000_bic_sb_cpp.score';
 
 command = sprintf('diff --side-by-side test/%s %s', baseline_file, my_file);
-assert(system(command) == 0);
+tassert(system(command) == 0);
 
 % my_fid = fopen(my_file,'r');
 % fid = fopen(baseline_file,'r');
