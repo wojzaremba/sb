@@ -1,3 +1,6 @@
+clear all
+close all
+
 load results/2014_04_30/child_quadratic_arity3_N100/child_quadratic_arity3_N100.mat
 
 options = {struct('classifier', @kci_classifier, 'discretize',false,...
@@ -25,9 +28,21 @@ options = {struct('classifier', @kci_classifier, 'discretize',false,...
     'color', 'm-.','params',[],'normalize',false,'name',sprintf('cond MI, arity=%d',arity))};
 
 plot_roc_multi
-title(sprintf('Child network with quadratic gaussian CPDs, N=100, 20 experiments'),'fontsize',14);
-set(gcf, 'units','inches', 'position', [5 5 7 4]);
+%title(sprintf('Child network with quadratic gaussian CPDs, N=100, 20 experiments'),'fontsize',14);
+title('Child network','fontsize',14);
+%set(gcf, 'units','inches', 'position', [5 5 6 4]);
 xlim([0 1]);
 ylim([0 1]);
+
+clear all;
+figure
+load ins_quadratic_arity3_N100
+plot_roc_multi
+%title(sprintf('Insurance network with quadratic gaussian CPDs, N=100, 20 experiments'),'fontsize',14);
+title('Insurance network','fontsize',14);
+%set(gcf, 'units','inches', 'position', [5 5 6 4]);
+xlim([0 1]);
+ylim([0 1]);
+
 
 

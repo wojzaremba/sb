@@ -1,5 +1,4 @@
 function S = compute_bic_family(S, emp, family, arity)
-% CURRENTLY JUST COMPUTES (MAXIMUM) LOG-LIKELIHOOD
 
 emp = emp(family, :);
 

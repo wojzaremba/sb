@@ -3,7 +3,7 @@ function main(network, arity, type, N, variance, num_exp)
 %clear all;
 global debug
 debug = 0;
-close all;
+%close all;
 
 if exist('variance','var')
     v = variance;
@@ -11,8 +11,7 @@ else
     v = [];
 end
 
-a = strsplit('_',type);
-cpd_type = a{1};
+cpd_type = strtok(type, '_');
 
 bn_opt = struct('variance', v, 'network', network, 'arity', 1, 'type', type);
 bnet = make_bnet(bn_opt);
@@ -60,7 +59,7 @@ full_options = {struct('classifier', @kci_classifier, 'discretize',false,...
     'color', 'm-.','params',[],'normalize',false,'name',sprintf('cond MI, arity=%d',arity))};
 
 
-options = full_options;
+options = full_options([2 4 5 6]);
 num_classifiers = length(options);
 name = cell(1,num_classifiers);
 TPR = cell(num_classifiers, num_N);

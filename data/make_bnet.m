@@ -1,7 +1,7 @@
 function bnet = make_bnet(opt)
 
-randn('seed',1);
-rand('seed',1);
+%randn('seed',1);
+%rand('seed',1);
 
 dag = get_dag(opt.network);
 

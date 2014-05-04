@@ -61,6 +61,28 @@ elseif strcmpi(network, 'asia')
     dag(TB, TBorCancer) = 1;
     dag(TBorCancer, [Dys Xray]) = 1;
     
+elseif strcmpi(network, 'asia_M') %moralized
+    
+    n = 8;
+    
+    Smoking = 1;
+    Bronchitis = 2;
+    LungCancer = 3;
+    VisitToAsia = 4;
+    TB = 5;
+    TBorCancer = 6;
+    Dys = 7;
+    Xray = 8;
+    
+    dag = zeros(n);
+    dag(Smoking, [Bronchitis LungCancer]) = 1;
+    dag(Bronchitis, Dys) = 1;
+    dag(LungCancer, TBorCancer) = 1;
+    dag(VisitToAsia, TB) = 1;
+    dag(TB, [TBorCancer LungCancer]) = 1;
+    dag(TBorCancer, [Dys Xray Bronchitis]) = 1;
+    
+    
 elseif (strcmpi(network, 'ins') || strcmpi(network, 'insurance'))
     
     n = 27;
@@ -145,6 +167,13 @@ elseif strcmpi(network, 'Y')
     n = 4;
     dag = zeros(n);
     dag(1,3) = 1;
+    dag(2,3) = 1;
+    dag(3,4) = 1;
+    
+elseif strcmpi(network, 'kite')
+    n = 4;
+    dag = zeros(n);
+    dag(1,[2 3]) = 1;
     dag(2,3) = 1;
     dag(3,4) = 1;
     
