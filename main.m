@@ -1,4 +1,4 @@
-function main(network, arity, type, N, variance, num_exp)
+function main(network, arity, type, N, variance, num_exp, max_S)
 
 %clear all;
 global debug
@@ -24,7 +24,6 @@ diary(sprintf('%s/%s.out', dir_name, file_name));
 fprintf('Will %s\n', mat_file_command);
 
 K = length(bnet.dag);
-max_S = 2;
 num_samples_range = N;
 num_N = length(num_samples_range);
 thresholds = 0:1e-3:1;

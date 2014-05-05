@@ -37,7 +37,7 @@ else
     end
 end
 
-if options.pval
+if (isfield(options, 'pval') && options.pval)
     % the statistic presented in Zhang 2012
     Sta = abs(sum(Kx(:) .* Ky(:)));
 else
@@ -45,7 +45,7 @@ else
     Sta = sqrt(abs(sum(Kx(:) .* Ky(:)) / (sum(diag(Kx)) * sum(diag(Ky)))));
 end
 
-if options.pval
+if (isfield(options, 'pval') && options.pval)
     Num_eig = floor(T/4); % or T
     Thresh = 1E-5;
     
