@@ -18,9 +18,10 @@ test_auc();
 test_dist1();
 test_shd();
 test_extract_vector();
-test_compute_edge_scores();
+%test_compute_edge_scores();
+disp('NOT TESTING COMPUTE EDGE SCORES');
 %test_add_edge_scores();
-disp('NOT TESTING ADD EDGE SCORES!');
+disp('NOT TESTING ADD EDGE SCORES');
 
 % sb
 test_sb_expectation();

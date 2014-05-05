@@ -38,14 +38,14 @@ data = data';
 data(data == 0) = 2;
 arity = 2;
 
-E0 = compute_edge_scores(data, opt, 0)
-B0 = -load('test/asia1000/asia1000_sb_min_edge_scores.0')
+E0 = compute_edge_scores(data, opt, 0);
+B0 = -load('test/asia1000/asia1000_sb_min_edge_scores.0');
 
-E1 = compute_edge_scores(data, opt, 1)
-B1 = -load('test/asia1000/asia1000_sb_min_edge_scores.1')
+E1 = compute_edge_scores(data, opt, 1);
+B1 = -load('test/asia1000/asia1000_sb_min_edge_scores.1');
 
-E2 = compute_edge_scores(data, opt, 2)
-B2 = -load('test/asia1000/asia1000_sb_min_edge_scores.2')
+E2 = compute_edge_scores(data, opt, 2);
+B2 = -load('test/asia1000/asia1000_sb_min_edge_scores.2');
 
 
 
