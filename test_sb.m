@@ -1,6 +1,5 @@
 clear all;
 addpath(genpath('.'));
-dbclear if error
 global debug
 debug = 0;
 
