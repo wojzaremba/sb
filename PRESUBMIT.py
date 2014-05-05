@@ -5,7 +5,6 @@ import re
 import subprocess
 import sys
 import signal
-import all_tests
 from subprocess import call
 
 modified = re.compile('^[ ]*(?:M|A)(\s+)(?P<name>.*)')
