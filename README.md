@@ -2,8 +2,7 @@ Sparsity Boost
 ==============
 
 TODO
-- Run ROCs on continuous data.
-- Write up KCI in paper, edit previous stuff
+- FIX ROC and PRECISION CURVES !!!
 - Look at previous work using kernels to learn BNs
 - Devise scoring function for KCI
 - Look into conditioning on many nodes.

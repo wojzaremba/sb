@@ -37,13 +37,7 @@ else
     end
 end
 
-if (isfield(options, 'pval') && options.pval)
-    % the statistic presented in Zhang 2012
-    Sta = abs(sum(Kx(:) .* Ky(:)));
-else
-    %true analog of partial correlation
-    Sta = sqrt(abs(sum(Kx(:) .* Ky(:)) / (sum(diag(Kx)) * sum(diag(Ky)))));
-end
+Sta_notnormal = abs(sum(Kx(:) .* Ky(:)));
 
 if (isfield(options, 'pval') && options.pval)
     Num_eig = floor(T/4); % or T
@@ -89,9 +83,7 @@ if (isfield(options, 'pval') && options.pval)
     var_appr = 2*trace(uu_prod^2);
     k_appr = mean_appr^2/var_appr;
     theta_appr = var_appr/mean_appr;
-    %Cri_appr = gaminv(1-alpha, k_appr, theta_appr);
-    npval = gamcdf(Sta, k_appr, theta_appr); %1-gamcdf(Sta, k_appr, theta_appr);
+    npval = gamcdf(Sta_notnormal, k_appr, theta_appr);
 end
 
-
-
+Sta = sqrt(Sta_notnormal / (sum(diag(Kx)) * sum(diag(Ky))));

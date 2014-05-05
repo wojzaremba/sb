@@ -3,6 +3,9 @@ addpath(genpath('.'));
 global debug
 debug = 0;
 
+%end2end
+test_compute_tpr();
+
 % utils
 test_enumerate_assignments();
 test_allocate_tensor();
@@ -36,7 +39,6 @@ test_discretize_data();
 test_get_dag();
 test_make_bnet();
 
-% TODO: Get some tests with conditioning.
 % classifiers
 test_mi_classifier();
 test_pc_classifier();

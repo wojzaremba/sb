@@ -313,7 +313,9 @@ KCI for characteristic kernel & $\color{LimeGreen}\checkmark$  & $\color{LimeGre
 \section{Experiments}
 
 
-\subsection{Synthetically generated data}
+\subsection{Synthetic data}
+
+\subsubsection{Bayesian networks}
 In order to evaluate the power of the KCI test in the context of Bayesian network structure learning, we generated synthetic data from several Bayesian networks, and then computed each statistic, taking the min over various conditioning sets in the same way that they would be incorporated into the SparsityBoost framework.  Let f be the function which computes a statistic of interest. Then for each pair $X_i$ and $X_j$ we compute:  \begin{eqnarray*} T_f(i,j) &:=& \min_{S \in \Omega_{ij} } f(X_i,X_j | S; D) \\ \Omega_{ij} &:=& \{ S \in \mathbf{X} / \{i,j\} : |S| \leq 2 \} \end{eqnarray*}  Taking the minimum over all sets in $\Omega_{ij}$ corresponds to taking the strongest evidence of independence over all conditioning sets (that we choose to consider), since it is enough to find one conditioning set which renders $X_i$ and $X_j$ independent in order to conclude that edge $\{i,j\}$ should not be present.  We treat f as a classifier by thresholding at various values throughout the range, and then evaluate the true and false positive rates (with respect to all pairs of variables in the network) in order to generate ROC curves.  Here we define positive to mean independence, hence the point (0,0) in the plots corresponds to a classifier which always claims dependence, and likewise (1,1) corresponds to a classifier which always claims independence.
 
 \begin{figure}[h]
@@ -329,40 +331,7 @@ In order to evaluate the power of the KCI test in the context of Bayesian networ
 \label{fig:ROC}
 \end{figure}
 
-%We have performed several experiments on synthetic networks. We considered asia network
-%with modified local CPDs: (1) to vary arity of labels, (2) introduce dependency between labels.
-%
-%
-%Firstly, we aimed to evaluate the power of independence tests. We have generated $200$, $400$, $600$
-%samples, for networks with CPDs of arity 3, and 5. Generated CPDs 
-%have either linear structure in dependency Figure \ref{fig:asia_linear}, or no structure Figure \ref{fig:asia_random}.
-%
-%\begin{figure}[h]
-%\centering
-%    \subfigure{
-%      \includegraphics[width=0.45\linewidth]{img/linear_arity_3-eps-converted-to-crop.pdf} 
-%    }
-%    \quad
-%    \subfigure{
-%      \includegraphics[width=0.45\linewidth]{img/linear_arity_5-eps-converted-to-crop.pdf} 
-%    }
-%\caption{ROCs for joint distributions generated from ``asia'' network structure with each variable having {\bf (Left)} arity 3, {\bf (Right)} arity 5, and each CPD with randomly sampled entries from $|\mathcal{N}(0, 1)|$, with a constant added along the diagonal of the CPD tensor (adding linear structure).}
-%\label{fig:asia_linear}
-%\end{figure}
-%
-%
-%\begin{figure}[h]
-%\centering
-%    \subfigure{
-%      \includegraphics[width=0.45\linewidth]{img/random_arity_3-eps-converted-to-crop.pdf} 
-%    }
-%    \quad
-%    \subfigure{
-%      \includegraphics[width=0.45\linewidth]{img/random_arity_5-eps-converted-to-crop.pdf} 
-%    }
-%\caption{ROCs for joint distributions generated from ``asia'' network structure with each variable having {\bf (Left)} arity 3, {\bf (Right)} arity 5, and each CPD with randomly sampled entries from $|\mathcal{N}(0, 1)|$.}
-%\label{fig:asia_random}
-%\end{figure}
+\subsubsection{Markov Random Fields}
 
 \subsection{Gene expression data}
 
