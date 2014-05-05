@@ -1,4 +1,4 @@
-function Sta = kci_classifier(emp, trip, options, prealloc)
+function [Sta, npval] = kci_classifier(emp, trip, options, prealloc)
 
 if (exist('prealloc','var') && ~isempty(prealloc))
     if (length(trip) >= 3)
@@ -37,7 +37,61 @@ else
     end
 end
 
-St = sqrt(abs(sum(Kx(:) .* Ky(:)) / (sum(diag(Kx)) * sum(diag(Ky)))));
+if options.pval
+    % the statistic presented in Zhang 2012
+    Sta = abs(sum(Kx(:) .* Ky(:)));
+else
+    %true analog of partial correlation
+    Sta = sqrt(abs(sum(Kx(:) .* Ky(:)) / (sum(diag(Kx)) * sum(diag(Ky)))));
+end
 
-Sta = min(1, max(0, St));
-assert(abs(St - Sta) < 1e-5);
+if options.pval
+    Num_eig = floor(T/4); % or T
+    Thresh = 1E-5;
+    
+    % calculate the eigenvalues
+    % Due to numerical issues, Kxz and Kyz may not be symmetric:
+    [eig_Kx, eivx] = eigdec((Kx + Kx') / 2, Num_eig);
+    [eig_Ky, eivy] = eigdec((Ky + Ky') / 2, Num_eig);
+    
+    % calculate the product of the square root of the eigvector and the eigen
+    % vector
+    IIx = find(eig_Kx > max(eig_Kx) * Thresh);
+    IIy = find(eig_Ky > max(eig_Ky) * Thresh);
+    eig_Kx = eig_Kx(IIx);
+    eivx = eivx(:,IIx);
+    eig_Ky = eig_Ky(IIy);
+    eivy = eivy(:,IIy);
+    
+    eiv_prodx = eivx * diag(sqrt(eig_Kx));
+    eiv_prody = eivy * diag(sqrt(eig_Ky));
+    clear eivx eig_Kx eivy eig_Ky
+    
+    % calculate their product
+    Num_eigx = size(eiv_prodx, 2);
+    Num_eigy = size(eiv_prody, 2);
+    Size_u = Num_eigx * Num_eigy;
+    uu = zeros(T, Size_u);
+    
+    for i=1:Num_eigx
+        for j=1:Num_eigy
+            uu(:,(i-1)*Num_eigy + j) = eiv_prodx(:,i) .* eiv_prody(:,j);
+        end
+    end
+    
+    if Size_u > T
+        uu_prod = uu * uu';
+    else
+        uu_prod = uu' * uu;
+    end
+    
+    mean_appr = trace(uu_prod);
+    var_appr = 2*trace(uu_prod^2);
+    k_appr = mean_appr^2/var_appr;
+    theta_appr = var_appr/mean_appr;
+    %Cri_appr = gaminv(1-alpha, k_appr, theta_appr);
+    npval = gamcdf(Sta, k_appr, theta_appr); %1-gamcdf(Sta, k_appr, theta_appr);
+end
+
+
+
