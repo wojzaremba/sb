@@ -1,33 +1,32 @@
-function [TPR, FPR, runtime_params] = compute_tpr(network, arity, type, variance, N, num_exp, max_S)
+function [scores, rp] = compute_roc_scores(bn_opt, rp)
+
 global debug
-debug = 0;
-%close all;
-[bnet, cpd_type, mat_file_command] = init_main(network, arity, type, variance, N);
+debug = 1;
 
-full_options = get_options(arity);
-options = full_options([2 4 5 6]);
+options = get_options(rp);
 num_classifiers = length(options);
-TPR = cell(num_classifiers, 1);
-FPR = cell(num_classifiers, 1);
+dag = get_dag(bn_opt.network);
+triples = gen_triples(length(dag), rp.maxS);
+[no_edge, rp] = get_no_edge(dag, triples, rp);
+time_classifier = zeros(1, num_classifiers);
 
-triples = gen_triples(length(bnet.dag), max_S);
-no_edge = get_no_edge(bnet, triples);
+for c = 1 : num_classifiers
+    scores{c} = zeros([2 2 length(options{c}.thresholds)]);
+end
 
-total_time = 0;
-for exp = 1 : num_exp
-    time_exp = 0;
-    fprintf('Experiment #%d, N=%d, sampling from bayes net...\n',exp,N);
-    s = samples(bnet, N);
-    fprintf('... done.\n');
+for exp = 1 : rp.num_exp
+    rp.exp = exp;
+    fprintf('Experiment #%d, sampling from bayes net...\n', exp);
+    bnet = make_bnet(bn_opt);
+    s = samples(bnet, rp.N);
     s = normalize_data(s); 
-    s_disc = discretize_data(s, arity);
+    s_disc = discretize_data(s, rp.arity);
+    fprintf('... done.\n');
 
     for c = 1 : num_classifiers
         tic;
         opt = options{c};
-        opt.arity = arity;
-        num_thresholds = length(opt.thresholds);
-        scores = zeros([2 2 num_thresholds]);
+        opt.arity = rp.arity;
         if opt.discretize
             emp = s_disc;
         else
@@ -40,48 +39,31 @@ for exp = 1 : num_exp
             rho = classifier_wrapper(emp, triples{t}, opt.classifier, opt, prealloc);
             indep_emp = threshold(opt.thresholds,rho);
             indep_emp = reshape(indep_emp,[1 1 size(indep_emp)]);                
-            scores(1 + no_edge(t),1,:) = scores(1 + no_edge(t),1,:) + ~indep_emp;
-            scores(1 + no_edge(t),2,:) = scores(1 + no_edge(t),2,:) + indep_emp;               
+            scores{c}(1 + no_edge(t),1,:) = scores{c}(1 + no_edge(t),1,:) + ~indep_emp;
+            scores{c}(1 + no_edge(t),2,:) = scores{c}(1 + no_edge(t),2,:) + indep_emp;               
         end
-        [TPR{c}(exp, :), FPR{c}(exp, :)] = scores_to_tpr(scores);            
-        time_classifier(c) = toc;
-        fprintf('\tFinished %s, time = %d seconds.\n', opt.name,time_classifier(c));
+        time = toc;
+        time_classifier(c) = time_classifier(c) + time;
+        fprintf('\tFinished %s, time = %d seconds.\n', opt.name,time);
+    end   
+    
+    if rp.plot_flag
+        clf 
+        plot_roc(scores, options, rp);
+        pause(0.5);
     end
-    fprintf('Time for experiment %d, N=%d is %d\n',exp,N);    
-    clf
-    plot_roc_multi();    
-    time_exp = time_exp + sum(time_classifier);
-    fprintf('Total time for experiment %d is %d\n', exp, time_exp);
-    total_time = total_time + time_exp;
-    eval(mat_file_command);
-end
-fprintf('Total running time for all experiments is %d seconds.\n',total_time);
-diary off
+    
+    eval(rp.mat_file_command);
+    fprintf('Finished exp %d.\n',exp);
 end
 
-function [TPR, FPR] = scores_to_tpr(scores)    
-    P = scores(2, 1, :) + scores(2, 2, :);
-    N = scores(1, 1, :) + scores(1, 2, :);
-    TP = scores(2, 2, :);
-    FP = scores(1, 2, :);
-    TPR = squeeze(TP ./ P);
-    FPR =  squeeze(FP ./ N);
+fprintf('Total running time for all experiments is %d seconds.\n',sum(time_classifier));
+
 end
 
-function [bnet, cpd_type, mat_file_command] = init_main(network, arity, type, variance, N)    
-    bn_opt = struct('network', network, 'arity', 1, 'type', type, 'variance', variance);
-    cpd_type = strtok(type, '_');
-    bnet = make_bnet(bn_opt);
+%%%%%%%%%%%%%%%%%
 
-    file_name = sprintf('%s_%s_arity%d_N%d',network, cpd_type, arity, N);
-    dir_name = sprintf('results/2014_04_30/%s', file_name);
-    system( ['mkdir -p ' dir_name]);
-    mat_file_command = sprintf('save %s/%s.mat', dir_name, file_name);
-    diary(sprintf('%s/%s.out', dir_name, file_name));
-    fprintf('Will %s\n', mat_file_command);
-end
-
-function no_edge = get_no_edge(bnet, triples)
+function [no_edge, rp] = get_no_edge(dag, triples, rp)
 % label each pair of variables according to whether there is an edge
 % between them
     no_edge = zeros(length(triples),1);
@@ -89,13 +71,17 @@ function no_edge = get_no_edge(bnet, triples)
     for t = 1 : length(triples)
         i = triples{t}.i;
         j = triples{t}.j;
-        no_edge(t) = ~(bnet.dag(i,j) || bnet.dag(j,i));
+        no_edge(t) = ~(dag(i,j) || dag(j,i));
     end
     num_edge = length(no_edge) - length(find(no_edge));
-    fprintf('Generated %d no-edge and %d edge distributions.\n',length(find(no_edge)),num_edge);    
+    fprintf('Generated %d no-edge and %d edge distributions.\n',length(find(no_edge)),num_edge);  
+    
+    rp.num_edge = num_edge;
+    rp.num_no_edge = length(find(no_edge));
 end
 
-function full_options = get_options(arity)
+function options = get_options(rp)
+    arity = rp.arity;
     empty = struct('name', 'none');
     L = LinearKernel();
     G = GaussKernel();
@@ -124,4 +110,11 @@ function full_options = get_options(arity)
     struct('classifier', @mi_classifier,'discretize',true, ...
     'prealloc', @dummy_prealloc, 'kernel', empty, 'thresholds', thresholds_mi, ...
     'color', 'm-.','params',[],'normalize',false,'name',sprintf('cond MI, arity=%d',arity))};
+
+    if isfield(rp, 'f_sel')
+        options = full_options(rp.f_sel);
+    else
+        options = full_options;
+    end
+    
 end

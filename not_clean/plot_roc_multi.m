@@ -1,4 +1,4 @@
-function plot_roc_multi(TPR, FPR, runtime_params)
+function plot_roc_multi(TPR, FPR, runparams)
 
 num_exp = size(TPR{1},1);
 numfigs = 1;

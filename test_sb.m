@@ -2,9 +2,10 @@ clear all;
 addpath(genpath('.'));
 global debug
 debug = 0;
+dbstop if error
 
 %end2end
-test_compute_tpr();
+test_compute_roc_scores();
 
 % utils
 test_enumerate_assignments();
@@ -21,6 +22,8 @@ test_auc();
 test_dist1();
 test_shd();
 test_extract_vector();
+test_scores_to_tpr();
+test_compare_curves();
 %test_compute_edge_scores();
 disp('NOT TESTING COMPUTE EDGE SCORES');
 %test_add_edge_scores();
