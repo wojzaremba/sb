@@ -18,20 +18,23 @@ emp_dep2 = [x; y; z];
 emp_dep2(emp_dep2 == -1) = 2;
 emp_dep2 = normalize_data(emp_dep2);
 
-small = 8e-2;
-large = 0.15;
+small = 0.95;
+large = 0.99;
 
 fprintf('  linear kernel...\n');
-opt = struct('arity', 2,'kernel', LinearKernel(), 'pval', false);
+opt = struct('arity', 2,'kernel', LinearKernel(), 'pval', true);
 
-assert(kci_classifier(emp_indep, [1, 2], opt, []) < small);
-assert(kci_classifier(emp_dep, [1, 2], opt, []) < small); % correlation is 0 because the distribution is symmetric about x = 0
+[p_indep, rho_indep] = kci_classifier(emp_indep, [1, 2], opt, []);
+[p_dep, rho_dep] = kci_classifier(emp_dep, [1, 2], opt, []);
+
+assert(p_indep < small);
+assert(p_dep < small); % correlation is 0 because the distribution is symmetric about x = 0
 assert(kci_classifier(emp_dep2, [1 2], opt, []) > large); 
 assert(kci_classifier(emp_dep2, [1 2 3], opt, []) < small);
 
 % kci with linear kernel is equivalent to computing partial correlation
-assert(abs(kci_classifier(emp_indep, [1, 2], opt, [])-pc_classifier(emp_indep, [1, 2], opt))<1e-3);
-assert(abs(kci_classifier(emp_dep, [1, 2], opt, [])-pc_classifier(emp_dep, [1, 2], opt))<1e-3);
+assert(abs(rho_indep - pc_classifier(emp_indep, [1, 2], opt)) < 1e-3);
+assert(abs(rho_dep - pc_classifier(emp_dep, [1, 2], opt)) < 1e-3);
 
 fprintf('  gauss kernel...\n');
 opt.kernel = GaussKernel();
@@ -79,10 +82,10 @@ for i = 1:length(N)
     emp_dep2(emp_dep2 == -1) = 2;
     emp_dep2 = normalize_data(emp_dep2);
     
-    %[~, indep(i)] = kci_classifier(emp_indep, [1, 2], opt, []);
-    [~, dep(i)] = kci_classifier(emp_dep, [1, 2], opt, []);
-    [~, dep2u(i)] = kci_classifier(emp_dep2, [1 2], opt, []); 
-    %[~, dep2c(i)] = kci_classifier(emp_dep2, [1 2 3], opt, []);
+    %indep(i) = kci_classifier(emp_indep, [1, 2], opt, []);
+    dep(i) = kci_classifier(emp_dep, [1, 2], opt, []);
+    dep2u(i) = kci_classifier(emp_dep2, [1 2], opt, []); 
+    %dep2c(i) = kci_classifier(emp_dep2, [1 2 3], opt, []);
     
 end
 

@@ -1,4 +1,4 @@
-function [bn_opt, runparams] = init_compute_roc_scores(network, arity, type, variance, N, num_exp, maxS, plot_flag, save_flag, f_sel)   
+function [bn_opt, runparams, options] = init_compute_roc_scores(network, arity, type, variance, N, num_exp, maxS, plot_flag, save_flag, f_sel)   
 
     % check that we are in the sb directory
     fulldir = strsplit('/',pwd);
@@ -31,4 +31,5 @@ function [bn_opt, runparams] = init_compute_roc_scores(network, arity, type, var
     bn_opt = struct('network', network, 'arity', 1, 'type', type, 'variance', variance);
     
     runparams = rp;
+    options = get_classifier_options(rp);
 end

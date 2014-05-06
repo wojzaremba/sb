@@ -1,4 +1,6 @@
-function [Sta, npval] = kci_classifier(emp, trip, options, prealloc)
+function [npval, Sta] = kci_classifier(emp, trip, options, prealloc)
+
+T = size(emp, 2);
 
 if (exist('prealloc','var') && ~isempty(prealloc))
     if (length(trip) >= 3)
@@ -21,7 +23,6 @@ else
     x = emp(trip(1), :)';
     y = emp(trip(2), :)';
     lambda = 1E-3;
-    T = size(emp, 2);
     H =  eye(T) - ones(T, T) / T;
     Ky = H * options.kernel.k(y, y) * H;
     
@@ -84,6 +85,8 @@ if (isfield(options, 'pval') && options.pval)
     k_appr = mean_appr^2/var_appr;
     theta_appr = var_appr/mean_appr;
     npval = gamcdf(Sta_notnormal, k_appr, theta_appr);
+else
+    assert(0); % spits out npval first, so just catch this for now
 end
 
 Sta = sqrt(Sta_notnormal / (sum(diag(Kx)) * sum(diag(Ky))));
