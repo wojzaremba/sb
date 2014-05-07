@@ -2,8 +2,7 @@ function bnet = make_bnet(opt)
 
 %randn('seed',1);
 %rand('seed',1);
-
-dag = get_dag(opt.network);
+dag = get_dag(opt.network, opt.moralize);
 
 n = size(dag, 1);
 node_sizes = opt.arity * ones(1,n);

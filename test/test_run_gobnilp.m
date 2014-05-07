@@ -3,7 +3,7 @@ disp('test_run_gobnilp...');
 
 randn('seed',1);
 rand('seed',1);
-opt = struct('network', 'Y', 'arity', 3, 'type', 'random');
+opt = struct('network', 'Y', 'arity', 3, 'type', 'random', 'moralize', false);
 bnet = make_bnet(opt);
 arity = get_arity(bnet);
 data = samples(bnet,1000);

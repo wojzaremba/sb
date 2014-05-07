@@ -28,7 +28,7 @@ function [bn_opt, runparams, options] = init_compute_roc_scores(network, arity, 
     rp.save_flag = save_flag;
     rp.f_sel = f_sel;
     
-    bn_opt = struct('network', network, 'arity', 1, 'type', type, 'variance', variance);
+    bn_opt = struct('network', network, 'arity', 1, 'type', type, 'variance', variance, 'moralize', false);
     
     runparams = rp;
     options = get_classifier_options(rp);

@@ -1,7 +1,7 @@
 function [scores, rp] = compute_roc_scores(bn_opt, rp, options)
 
 global debug
-debug = 1;
+debug = 0;
 
 num_classifiers = length(options);
 dag = get_dag(bn_opt.network);
@@ -36,14 +36,14 @@ for exp = 1 : rp.num_exp
         for t = 1 : length(triples)                
             % Evaluate classifier at all thresholds in thresholds.
             rho = classifier_wrapper(emp, triples{t}, opt.classifier, opt, prealloc);
-            indep_emp = threshold(opt.thresholds,rho);
-            indep_emp = reshape(indep_emp,[1 1 size(indep_emp)]);                
-            scores{c}(1 + no_edge(t),1,:) = scores{c}(1 + no_edge(t),1,:) + ~indep_emp;
-            scores{c}(1 + no_edge(t),2,:) = scores{c}(1 + no_edge(t),2,:) + indep_emp;               
+            indep_emp = threshold(opt.thresholds, rho);
+            indep_emp = reshape(indep_emp, [1 1 size(indep_emp)]);                
+            scores{c}(1 + no_edge(t), 1, :) = scores{c}(1 + no_edge(t),1,:) + ~indep_emp;
+            scores{c}(1 + no_edge(t), 2, :) = scores{c}(1 + no_edge(t),2,:) + indep_emp;               
         end
         time = toc;
         time_classifier(c) = time_classifier(c) + time;
-        fprintf('\tFinished %s, time = %d seconds.\n', opt.name,time);
+        fprintf('\tFinished %s, time = %d seconds.\n', opt.name, time);
     end   
     
     if rp.plot_flag

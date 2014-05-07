@@ -24,6 +24,7 @@ test_shd();
 test_extract_vector();
 test_scores_to_tpr();
 test_compare_curves();
+test_is_topol_sorted();
 %test_compute_edge_scores();
 disp('NOT TESTING COMPUTE EDGE SCORES');
 %test_add_edge_scores();
@@ -40,6 +41,7 @@ test_mk_random_cpd();
 test_normalize_cpd();
 test_discretize_data();
 test_get_dag();
+test_moralize_dag();
 test_make_bnet();
 
 % classifiers

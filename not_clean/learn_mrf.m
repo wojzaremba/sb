@@ -5,7 +5,7 @@ N = 1000;
 
 randn('seed',1);
 
-bn_opt = struct('variance', v, 'network', 'asia_M', 'arity', 1, 'type', 'quadratic_ggm');
+bn_opt = struct('variance', v, 'network', 'asia', 'arity', 1, 'type', 'quadratic_ggm', 'moralize', true);
 bnet = make_bnet(bn_opt);
 true_dag = bnet.dag;
 true_pdag = dag_to_cpdag(true_dag);
@@ -31,7 +31,7 @@ for i = 1:K
     for j = i+1:K
         others = setdiff(1:K,[i j]);
         trip = [i j others];
-        [rho, pval] = kci_classifier(data, trip, opt, pre);
+        [pval, rho] = kci_classifier(data, trip, opt, pre);
 
         if ( bnet.dag(i,j) || bnet.dag(j,i))
             edge_ps = [edge_ps pval];
@@ -50,11 +50,18 @@ fprintf('SHD = %d\n',SHD);
 
 figure
 hold on
-scatter(indep_ps,ones(size(indep_ps)),'r*')
-scatter(edge_ps,ones(size(edge_ps)),'b*')
-scatter(indep_rhos,2*ones(size(indep_rhos)),'r*')
-scatter(edge_rhos,2*ones(size(edge_rhos)),'b*')
-ylim([0 3]);
+h(1) = scatter(indep_ps,rand(size(indep_ps)),'r*');
+h(2) = scatter(edge_ps,rand(size(edge_ps)),'b*');
+title('KCI p-values for variable pairs in moralized asia network', 'fontsize', 14);
+legend(h, 'no edge', 'edge');
+
+figure
+hold on
+h(1) = scatter(indep_rhos,rand(size(indep_rhos)),'r*');
+h(2) = scatter(edge_rhos,rand(size(edge_rhos)),'b*');
+title('KCI raw statistics for variable pairs in moralized asia network', 'fontsize', 14);
+legend(h, 'no edge', 'edge');
+
 
 
 

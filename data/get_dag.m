@@ -1,4 +1,8 @@
-function dag = get_dag(network)
+function dag = get_dag(network, moralize)
+
+if ~exist('moralize', 'var')
+    moralize = false;
+end
 
 if strcmpi(network,'child')
    
@@ -60,29 +64,7 @@ elseif strcmpi(network, 'asia')
     dag(VisitToAsia, TB) = 1;
     dag(TB, TBorCancer) = 1;
     dag(TBorCancer, [Dys Xray]) = 1;
-    
-elseif strcmpi(network, 'asia_M') %moralized
-    
-    n = 8;
-    
-    Smoking = 1;
-    Bronchitis = 2;
-    LungCancer = 3;
-    VisitToAsia = 4;
-    TB = 5;
-    TBorCancer = 6;
-    Dys = 7;
-    Xray = 8;
-    
-    dag = zeros(n);
-    dag(Smoking, [Bronchitis LungCancer]) = 1;
-    dag(Bronchitis, Dys) = 1;
-    dag(LungCancer, TBorCancer) = 1;
-    dag(VisitToAsia, TB) = 1;
-    dag(TB, [TBorCancer LungCancer]) = 1;
-    dag(TBorCancer, [Dys Xray Bronchitis]) = 1;
-    
-    
+        
 elseif (strcmpi(network, 'ins') || strcmpi(network, 'insurance'))
     
     n = 27;
@@ -179,5 +161,13 @@ elseif strcmpi(network, 'kite')
     
 else
     error('Unexpected network name');
+end
+
+if moralize
+    dag = moralize_dag(dag);
+    assert(isequal(dag, moralize_dag(dag)));
+    assert(is_topol_sorted(dag));
+end
+
 end
     
