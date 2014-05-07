@@ -57,7 +57,7 @@ for exp = 1 : rp.num_exp
 end
 
 fprintf('Total running time for all experiments is %d seconds.\n',sum(time_classifier));
-
+diary off;
 end
 
 %%%%%%%%%%%%%%%%%
