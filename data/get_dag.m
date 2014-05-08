@@ -1,12 +1,27 @@
-function dag = get_dag(network, moralize)
+function dag = get_dag(opt)
 
-if ~exist('moralize', 'var')
-    moralize = false;
+if ~isfield(opt, 'moralize')
+    opt.moralize = false;
 end
 
-if strcmpi(network,'child')
+if isnumeric(opt.network)
+
+    dag = opt.network;
+
+elseif strcmpi(opt.network, 'large')
+    
+    opt = init_n(opt, 50);
+    P = rand(opt.n) / (opt.n/4);
+    for i = 1 : opt.n
+        for j = 1 : i
+            P(i, j) = 0;
+        end
+    end
+    dag = sample_dag(P);
+    
+elseif strcmpi(opt.network,'child')
    
-    n = 20;
+    opt = init_n(opt, 20);
     
     BirthAsphyxia = 1;
     Disease = 2;
@@ -29,7 +44,7 @@ if strcmpi(network,'child')
     CO2Report = 19;
     XrayReport = 20;
     
-    dag = zeros(n);
+    dag = zeros(opt.n);
     dag(BirthAsphyxia, Disease) = 1;
     dag(Disease, [Age Sick DuctFlow CardiacMixing LungParench LungFlow LVH]) = 1;
     dag(Sick, [Age Grunting]) = 1;
@@ -44,9 +59,9 @@ if strcmpi(network,'child')
     dag(CO2, CO2Report) = 1;
     dag(ChestXray, XrayReport) = 1;
     
-elseif strcmpi(network, 'asia')
+elseif strcmpi(opt.network, 'asia')
     
-    n = 8;
+    opt = init_n(opt, 8);
     
     Smoking = 1;
     Bronchitis = 2;
@@ -57,7 +72,7 @@ elseif strcmpi(network, 'asia')
     Dys = 7;
     Xray = 8;
     
-    dag = zeros(n);
+    dag = zeros(opt.n);
     dag(Smoking, [Bronchitis LungCancer]) = 1;
     dag(Bronchitis, Dys) = 1;
     dag(LungCancer, TBorCancer) = 1;
@@ -65,9 +80,9 @@ elseif strcmpi(network, 'asia')
     dag(TB, TBorCancer) = 1;
     dag(TBorCancer, [Dys Xray]) = 1;
         
-elseif (strcmpi(network, 'ins') || strcmpi(network, 'insurance'))
+elseif (strcmpi(opt.network, 'ins') || strcmpi(opt.network, 'insurance'))
     
-    n = 27;
+    opt = init_n(opt, 27);
     
     Age = 1;            %
     SocioEcon = 2;      %
@@ -97,7 +112,7 @@ elseif (strcmpi(network, 'ins') || strcmpi(network, 'insurance'))
     ThisCarCost = 26;   %
     PropCost = 27;      %
     
-    dag = zeros(n);
+    dag = zeros(opt.n);
     dag(Age, [SocioEcon RiskAversion GoodStudent SeniorTrain DrivingSkill MedCost]) = 1;
     dag(SocioEcon, [OtherCar RiskAversion GoodStudent MakeModel VehicleYear HomeBase AntiTheft]) = 1;
     dag(RiskAversion, [SeniorTrain DrivHist DrivQuality MakeModel VehicleYear HomeBase AntiTheft]) = 1;
@@ -122,39 +137,39 @@ elseif (strcmpi(network, 'ins') || strcmpi(network, 'insurance'))
     
     assert(length(find(dag)) == 52);
     % assert that nodes are already topologically sorted
-    for i = 1:n
+    for i = 1:opt.n
         for j = 1:i
             assert(dag(i,j) == 0);
         end
     end
     
-elseif strcmpi(network,'chain')
+elseif strcmpi(opt.network,'chain')
     
-    n = 4;
+    opt = init_n(opt, 4);
     
-    dag = zeros(n);
+    dag = zeros(opt.n);
     
-    for i = 1:(n-1)
+    for i = 1:(opt.n-1)
         dag(i,i+1) = 1;
     end
     
-elseif strcmpi(network,'vstruct')
+elseif strcmpi(opt.network,'vstruct')
     
-    n = 3;
-    dag = zeros(n);
+    opt = init_n(opt, 3);
+    dag = zeros(opt.n);
     dag(1,3) = 1;
     dag(2,3) = 1;
     
-elseif strcmpi(network, 'Y')
-    n = 4;
-    dag = zeros(n);
+elseif strcmpi(opt.network, 'Y')
+    opt = init_n(opt, 4);
+    dag = zeros(opt.n);
     dag(1,3) = 1;
     dag(2,3) = 1;
     dag(3,4) = 1;
     
-elseif strcmpi(network, 'kite')
-    n = 4;
-    dag = zeros(n);
+elseif strcmpi(opt.network, 'kite')
+   opt = init_n(opt, 4);
+    dag = zeros(opt.n);
     dag(1,[2 3]) = 1;
     dag(2,3) = 1;
     dag(3,4) = 1;
@@ -163,11 +178,17 @@ else
     error('Unexpected network name');
 end
 
-if moralize
-    dag = moralize_dag(dag);
-    assert(isequal(dag, moralize_dag(dag)));
+if opt.moralize
+    %dag = moralize_dag(dag);
+    %assert(isequal(dag, moralize_dag(dag)));
     assert(is_topol_sorted(dag));
 end
 
+end
+
+function opt = init_n(opt, default)
+    if ~isfield(opt, 'n')
+        opt.n = default;
+    end
 end
     

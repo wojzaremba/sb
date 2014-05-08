@@ -10,7 +10,8 @@ num_classifiers = length(opt);
 %     capitalize(runparams.network), runparams.cpd_type, ...
 %     runparams.N, runparams.exp);
 
-ts = sprintf('%s network', capitalize(runparams.network));
+%ts = sprintf('%s network', capitalize(runparams.network));
+ts = '';
 
 for c = 1:num_classifiers
     [fpr, tpr] = scores_to_tpr(scores{c});

@@ -1,6 +1,7 @@
 disp('test_is_topol_sorted...');
 
-dag = get_dag('asia', true);
+opt = struct('network', 'asia', 'moralize', true);
+dag = get_dag(opt);
 assert(is_topol_sorted(dag));
 
 dag(3, 3) = 1;

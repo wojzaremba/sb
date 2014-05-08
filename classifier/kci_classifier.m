@@ -86,7 +86,8 @@ if (isfield(options, 'pval') && options.pval)
     theta_appr = var_appr/mean_appr;
     npval = gamcdf(Sta_notnormal, k_appr, theta_appr);
 else
-    assert(0); % spits out npval first, so just catch this for now
+    npval = -1; 
+    %assert(0); % spits out npval first, so just catch this for now
 end
 
 Sta = sqrt(Sta_notnormal / (sum(diag(Kx)) * sum(diag(Ky))));

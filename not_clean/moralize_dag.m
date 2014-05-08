@@ -1,14 +1,17 @@
-function dag = moralize_dag(dag)
+function new_dag = moralize_dag(dag)
 
+old_dag = dag;
 new_dag = sweep_dag(dag);
-printf(2, 'added %d new edges..\n', shd(dag, new_dag));
+printf(2, 'added %d new edges..\n', shd(old_dag, new_dag));
+printf(2, 'max in-degree before: %d, after: %d\n', max(sum(old_dag, 1)), max(sum(new_dag, 1)));
 
-% we may have induced new v-structures
-while ~isequal(dag, new_dag)
-    dag = new_dag; 
-    new_dag = sweep_dag(dag);
-    printf(2, 'added %d new edges..\n', shd(dag, new_dag));
-end
+fprintf('WARNING- only sweeping through dag once.\n');
+% % we may have induced new v-structures
+% while ~isequal(dag, new_dag)
+%     dag = new_dag; 
+%     new_dag = sweep_dag(dag);
+%     printf(2, 'added %d new edges..\n', shd(dag, new_dag));
+% end
 printf(2, '  ..done.\n');
 
 end
@@ -25,6 +28,9 @@ for j = 1:n
         end
     end
     if length(parents) > 1
+        printf(2, 'inducing clique over ');
+        printf(2, '%d ', parents);
+        printf(2, '\n');
         dag = induce_clique(dag, parents);
     end
 end

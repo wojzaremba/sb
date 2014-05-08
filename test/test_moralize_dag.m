@@ -1,6 +1,7 @@
 disp('test_moralize_dag...');
 
-dag = get_dag('Y');
+opt = struct('network', 'Y');
+dag = get_dag(opt);
 
 mdag = moralize_dag(dag);
 
