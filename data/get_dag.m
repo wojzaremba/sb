@@ -7,11 +7,41 @@ end
 if isnumeric(opt.network)
 
     dag = opt.network;
+    
+elseif strcmpi(opt.network, 'sachs')
+   % consensus network according to Kevin Murphy's paper
+    n = 11;
+    
+    Raf = 1;
+    Mek = 2;
+    PLCg = 3;
+    PIP2 = 4;
+    PIP3 = 5;
+    Erk = 6;
+    AKT = 7;
+    PKA = 8; 
+    PKC = 9;
+    P38 = 10;
+    JNK = 11;
+    
+    dag = zeros(n);
+    dag(Raf, Mek) = 1;
+    dag(Mek, Erk) = 1;
+    dag(PLCg, [PIP2, PKC]) = 1;
+    dag(PIP2, PKC) = 1;
+    dag(PIP3, [PIP2, PLCg, AKT]) = 1;
+    dag(PKA, [AKT, Erk, Mek, Raf, JNK, P38]) = 1;
+    dag(PKC, [Mek, Raf, JNK, P38]) = 1;
+    
+    assert(length(find(dag)) == 18);
+    
 
 elseif strcmpi(opt.network, 'large')
     
     opt = init_n(opt, 50);
-    P = rand(opt.n) / (opt.n/4);
+    n = opt.n;
+    p = 2.5*n / (n^2 - n); % will generate a dag with ~(5/4)n edges
+    P = p * ones(n);
     for i = 1 : opt.n
         for j = 1 : i
             P(i, j) = 0;

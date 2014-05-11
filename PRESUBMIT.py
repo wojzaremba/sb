@@ -88,7 +88,7 @@ def main(all_files):
         files.append(match.group('name'))
   
   # Run unit tests
-  tests_result = call(["matlab", "-nojvm -nosplash -nodisplay -r", "\"try test_sb(); catch exit(-1);end;exit(0);\""])
+  tests_result = call(["matlab", "-nojvm -nosplash -nodisplay -r", "\"try test_all(); catch exit(-1);end;exit(0);\""])
   
   # Fail iff tests failed. TODO(karol): change to "tests_result or result"
   # in the future.

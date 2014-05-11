@@ -1,12 +1,10 @@
-function [scores, opt] = compute_mrf_scores(edge_ps, indep_ps, edge_rhos, indep_rhos)
+function scores = compute_mrf_scores(edge_rhos, indep_rhos, thresholds)
 
-thresholds = 0:1e-3:1;
-scores{1} = mrf_score(edge_ps, indep_ps, thresholds);
-scores{2} = mrf_score(edge_rhos, indep_rhos, thresholds);
-opt{1}.name = 'KCI Gauss kernel, pval';
-opt{2}.name = 'KCI Gauss kernel, rho';
-opt{1}.color = 'b-';
-opt{2}.color = 'g--';
+if ~exist('thresholds', 'var')
+    thresholds = 0:1e-4:1;
+end
+
+scores = mrf_score(edge_rhos, indep_rhos, thresholds);
 
 end
 
@@ -21,6 +19,10 @@ for i = 1:length(edge_stats)
     classes = reshape(classes, [1 1 size(classes)]);
     scores(1, 1, :) = scores(1, 1, :) + ~classes;
     scores(1, 2, :) = scores(1, 2, :) + classes;
+    
+end
+
+for i = 1: length(indep_stats)
     
     classes = threshold(thresholds, indep_stats(i));
     classes = reshape(classes, [1 1 size(classes)]);

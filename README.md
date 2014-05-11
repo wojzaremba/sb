@@ -4,9 +4,10 @@ Sparsity Boost
 TODO
 - Look at previous work using kernels to learn BNs
 - Devise scoring function for KCI
-- Look into conditioning on many nodes.
 - Generalize distp
 - Take out unnecessary multiplications by H in kci_classifier, since H is idempotent, hence Tr(HAH HBH) = Tr(AHBH).
+- Get tests working for compute_edge_scores and add_edge_scores.
+- Test learn_mrf.
 
 Setting up hooks
 ================

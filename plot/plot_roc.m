@@ -1,4 +1,4 @@
-function h = plot_roc(scores,opt,runparams)
+function h = plot_roc(scores,opt)
 
 num_classifiers = length(opt);
 % ts = sprintf(['%s network with %s CPDs, N=%d, %d experiments,\n '...

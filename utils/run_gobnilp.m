@@ -1,5 +1,9 @@
 function [G, solving_time] = run_gobnilp(S)
 
+% check that we are in the sb directory
+fulldir = strsplit('/',pwd);
+assert(strcmpi(fulldir{end},'sb'));
+
 % define file names
 gobnilp_in_file = sprintf('gobnilp/in/gobnilp-%s', strrep(strrep(datestr(clock), ' ', '_'), ':', '_'));
 gobnilp_out_file = strrep(gobnilp_in_file, 'in', 'out');

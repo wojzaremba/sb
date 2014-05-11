@@ -1,7 +1,5 @@
 function S = add_edge_scores(S, E)
 
-K = size(E, 1);
-nodes = 1:K;
 
 for i = 1:length(S)
   for k = 1:length(S{i})

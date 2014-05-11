@@ -1,0 +1,397 @@
+<title>The Bayes Net Structure Learning (BNSL) library</title>
+<h1>The Bayes Net Structure Learning (BNSL) library</h1>
+
+This Matlab package supports Bayesian inference about DAG structures
+using dynamic programming and MCMC.
+<br>
+Written by
+<a href="mailto:deaton@cs.ubc.ca">
+Daniel Eaton</a>
+and
+<a href="mailto:murphyk@cs.ubc.ca">
+Kevin Murphy</a>,
+2006--2007.
+<p>
+
+<h2>Quick start</h2>
+
+This software has no external dependencies. (Under the BNSL/Foreign
+directory, you will find code extracted from other Matlab toolboxes,
+such as the Bayes Net Toolbox, and the Structure Learning
+Toolbox.)
+However, the Java code for ADtrees only seems to work for Matlab 2007a
+(7.4) or later.
+
+<ul>
+<li>Download and unzip <a href="bnsl2.zip">bnsl2.zip</a>.
+<li> In Matlab, change the directory to the newly created BNSL folder.
+<li> Run the script mkPath, which adds all necessary folders to the
+path, and compiles Mex files (if required).  
+<li> Run cancerDemo, cancerDemoInter, sachsDemo, dbnDemo.
+</ul>
+
+
+<h2>Major features</h2>
+
+The main features of the package are described below.
+See the <a href="#references">references</a> for details.
+The user is assumed to be familiar with these papers.
+
+<ul>
+<li> Computes G_map = arg max_G p(G|D) exactly using dynamic
+programming (DP) using the algorithm of Silander06,
+where G is a DAG and D is data.
+This takes O(d 2^d) time and space,
+so is limited to about 20 variables.
+
+<p>
+<li> Computes edge marginals
+p(G_{ij}=1|D) = sum_G I(G(i,j)=1) p(G|D)
+exactly using DP using the algorithm of Koivisto04/06.
+This takes O(d 2^d) time and space,
+so is limited to about 20 variables.
+
+<p>
+<li> Computes  p(G_{ij}=1|D) approximately
+using MCMC with a DP-based proposal; see Eaton07_uai.
+This allows one to use an arbitrary prior.
+It also supports standard local proposals,
+order-space sampling (see Friedman03),
+and Gibbs sampling on the adjacency matrix.
+
+<p>
+<li> Supports various models of intervention; see Eaton07_aistats for details.
+
+<p>
+<li> Supports BDe score for Multinomial models with Dirichlet priors,
+and BGe score for Gaussian models with Gaussian-Gamma priors.
+</ul>
+
+
+<h2>Basic DP</h2>
+
+We illustrate the core DP algorithms using the 5 node cancer network
+below; see <tt>cancerDemo</tt> for the details.
+<p>
+<center>
+<IMG SRC="Figures/cancerNetwork.png">
+</center>
+<p>
+Suppose the graph prior is uniform over all parents sets
+of size <= maxFanIn.
+We first construct the all families log prior matrix
+<pre>
+aflp(i,gi) =  log p(parents of i = gi)
+</pre>
+which is a 5x32 matrix, since there are 2^5=32 possible parent sets.
+(Actually, there are only 2^4, since Xi cannot include itself; the
+corresponding illegal entries are set to -Inf.)
+<pre>
+nNodes = 5;
+maxFanIn = nNodes - 1; 
+aflp = mkAllFamilyLogPrior( nNodes, 'maxFanIn', maxFanIn ); 
+</pre>
+Now let us create some data.
+We can sample  data from the cancer network, using random CPTs,
+using <tt>cancerMakeData</tt>.
+The resulting data is stored in
+<tt>cancerDataObs.mat</tt>.
+Let us load this and compute the
+5x32 all families log marginal likelihood matrix
+<pre>
+aflml(i,gi) = sum_n log p(X(i,n) | X(gi,n))
+</pre>
+We can do this as follows:
+<pre>
+load 'cancerDataObs.mat' % from cancerMakeData 
+% data is size d*N (nodes * cases), values are {1,2}
+aflml = mkAllFamilyLogMargLik( data, 'nodeArity', repmat(2,1,nNodes), ...
+			       'impossibleFamilyMask', aflp~=-Inf, ...
+			       'priorESS', 1);
+</pre>
+This uses ADtrees to cache the sufficient statistics (see Moore98 for
+details). This is implemented in Java.
+
+<p>
+
+Finally we are ready to compute the optimal DAG
+<pre>
+optimalDAG = computeOptimalDag(aflml); % max p(D|G)
+%optimalDAG = computeOptimalDag(aflml+aflp); % max p(D,G)
+</pre>
+We can also compute exact edge marginals using DP:
+<pre>
+epDP = computeAllEdgeProb( aflp, aflml ); 
+</pre>
+In this simple setting, we can compute exact edge marginals by brute
+force enumeration over all 29,281 DAGs of 5 nodes:
+<pre>
+epEnumer = computeAllEdgeProb_Exact(0, aflml); % 0 denotes uniform prior
+</pre>
+If we visualize these heat maps, we see that they are different.
+<p>
+<center>
+<IMG SRC="Figures/cancerDemoHeatMaps.png">
+</center>
+<p>
+This is because the DP algorithm implicitly assumes
+a special "modular" prior; see Friedman03 and Koivisto04.
+We will fix this below using MCMC sampling.
+
+
+<h2>Basic MCMC</h2>
+
+Let us now fix the biased p(G) problem by  using Metropolis Hastings,
+as described in Eaton07.
+We use a proposal that 10% of the time samples DAGs based
+on the DP edge marginals,
+and 90% of the time does standard local moves.
+<pre>
+[samples, diagnostics, runningSum] = sampleDags(@uniformGraphLogPrior, aflml, ...
+				    'burnin', 100, 'verbose', true, ...
+				    'edgeMarginals', epDP, 'globalFrac', 0.1, ...
+				    'thinning', 2, 'nSamples', 5000);
+epMCMC = samplesToEdgeMarginals(samples);
+</pre>
+The heat map above shows that  this gives the same results as
+exhaustive enumeration with a uniform prior.
+The MCMC routine uses Java hash tables to represent samples of
+graphs compactly.
+<p>
+Order sampling is in the OrderMcmc directory.
+
+
+<h2>Interventional data</h2>
+
+To learn the orientation of all the edges in a DAG,
+we need interventional data.
+We will illustrate this using the cancer network;
+see <tt>cancerDemoInter</tt> for details.
+<p>
+Let us load some data where we have performed a perfect intervention
+on node A.
+The 5x700 matrix <tt>clamped</tt> is defined
+so clamped(i,n)=1 iff node i is set by intervention in case n.
+We modify the computation of the marginal likelihoods to remove cases
+that were set by intervention.
+<pre>
+load 'cancerDataInterA.mat' % from cancerMakeData 
+nNodes = 5;
+maxFanIn = nNodes - 1; 
+aflp = mkAllFamilyLogPrior( nNodes, 'maxFanIn', maxFanIn ); 
+aflml_perfect = mkAllFamilyLogMargLik( data, 'nodeArity', repmat(2,1,nNodes), ...
+			       'impossibleFamilyMask', aflp~=-Inf, ...
+			       'priorESS', 1, ...
+			       'clampedMask', clamped);
+epDP_perfect = computeAllEdgeProb( aflp, aflml_perfect ); 
+</pre>
+This lets  us recover the true structure uniquely.
+If we ignore the fact that this is interventional data (by omitting
+the clamped parameter), we get the wrong answer, as shown below.
+
+<p>
+<center>
+<IMG SRC="Figures/cancerDemoInterHeatmaps.png">
+</center>
+<p>
+
+<h2>Uncertain interventions</h2>
+
+If we do not know which nodes are affected by the intervention,
+we can add the intervention node to the graph and learn its children
+(targets), as described in Eaton07_aistats.
+Let us call the intervention node number 6.
+This node is always clamped; let us put it in state 1 half the time,
+and state 2 for the rest, and append this to the normal data.
+<pre>
+N = size(data,2);
+nObservationCases = N/2; % # observational data cases
+nInterventionCases = N/2; % no interventions
+assert(N==nObservationCases+nInterventionCases);
+data_uncertain = [data; [ones(1,nObservationCases) 2*ones(1,nInterventionCases)]];
+clamped_uncertain = [zeros(size(clamped)); ones(1,N)];
+</pre>
+When learning the topology, we do not want to allow connections
+between the intervention nodes, or back from the backbone nodes to the
+intervention nodes.
+We can enforce this by putting the intevention node in layer 1,
+and the other nodes in layer 2,
+and restricting the fan-in between and withing layers as follows
+<pre>
+% fan-in
+%     L1  L2
+% L1   0   1    % only 1 intervention parent allowed for L2 nodes
+% L2   0   max  % only max # paretns allowed in total for L2 nodes
+
+maxFanIn_uncertain = [ 0 1 ; 0 maxFanIn ]; 
+layering = [2*ones(1,nNodes) 1];
+nodeArity = 2*ones(1,nNodes);
+nodeArity_uncertain = [nodeArity 2];
+
+aflp_uncertain = mkAllFamilyLogPrior( nNodes+1, 'maxFanIn', maxFanIn_uncertain, ...
+				      'nodeLayering', layering );
+
+aflml_uncertain = mkAllFamilyLogMargLik(data_uncertain, ...
+		'nodeArity', nodeArity_uncertain, 'clampedMask', clamped_uncertain, ...
+		'impossibleFamilyMask', aflp_uncertain~=-Inf, 'verbose', 0 );
+
+epDP_uncertain = computeAllEdgeProb( aflp_uncertain, aflml_uncertain ); 
+</pre>
+We see from the picture above that we learn that node 6 targets node 1
+(A), and we also correctly recover the backbone.
+
+<h2>Layering</h2>
+
+In general, layering is defined as follows.
+The maxFanIn matrix is upper triangular.
+M(i,j) is the maximum fan-in allowed from j into i;
+M(i,i) is the maximum fan-in from any preceeding layer;
+use -1 to mean "don't care".
+<p>
+For example, suppose nodes (1,3) are in layer 1
+and nodes (2,4,5) are in layer 2.
+We can allow connections from L1 to L2, and within L2, as follows:
+<pre>
+layering = [1 2 1 2 2 ]; 
+maxFanIn = [0 -1 ; 0 3 ];
+</pre>
+M(1,1)=0 means no connections into L1.
+M(1,2)=-1 means no constraints on the number of L1->L2 connections
+(modulo constraints imposed by M(2,2));
+M(2,2)=3 means at most 3 parents for any node in L2.
+
+
+<h2>DBNs</h2>
+
+We can use the DP algorithm to learn edge marginals for fully observed
+DBNs.
+If we have d nodes per time slice,
+we just learn a 2d x 2d DAG,
+with a layering constraint that there can be no connections backwards
+in time.
+The key function is <tt>transformDbnData</tt> which takes a dxT time
+series and computes a (2d)x(T-1) matrix of two-slice samples.
+Then we use the standard DP code above.
+See <tt>dbnDemo</tt> for a simple example.
+
+
+
+<h2>Graph layout</h2>
+
+A very simple graph drawing function (based on code by Ali Cemgil) is
+illustrated in <tt>cancerDemo</tt> and can be called as shown below:
+<pre>
+myDrawGraph(dag, 'labels', labels, 'layout', graphicalLayout)
+</pre>
+If the layout coordinates are omitted, the function lays the nodes out
+in a circle.
+<p>
+To achieve higher quality results,
+I recommed the free windows program
+called
+<a href="http://vlado.fmf.uni-lj.si/pub/networks/pajek/">pajek</a>.
+A function <tt>adj2pajek2</tt> will convert a dag to the pajek format;
+this file can then be read in and automatically layed out in a pretty
+way.
+
+<h2>Analysing biological data</h2>
+
+A more interesting example can be found in <tt>sachsDemo</tt>, where
+we learn the MAP optimal DAG and edge marginals using DP
+from 5400 interventional samples of 11 variables from the Sachs05 paper.
+The effects of various graph priors (using MCMC) is
+studied in <tt>sachsDemoPriors</tt>.
+
+
+<h2><a name="references">References</h2>
+
+<ul>
+
+<li>
+@inproceedings{Eaton07_aistats,
+  author = "D. Eaton and K. Murphy",
+ title = {{Exact Bayesian structure learning from uncertain
+interventions}},
+ booktitle = "AI/Statistics",
+ year = 2007
+}
+
+<p>
+<li>
+@inproceedings{Eaton07_uai,
+  author = "D. Eaton and K. Murphy",
+ title = {{Bayesian structure learning using dynamic programming and MCMC}},
+ booktitle = uai,
+ year = 2007
+}
+
+<p>
+<li>
+@article{Friedman03,
+ title = {{Being Bayesian about Network Structure: A Bayesian Approach to Structure Discovery in Bayesian Networks}},
+ author = "N. Friedman and D. Koller",
+  journal = "Machine Learning",
+ volume = 50,
+  pages = "95-126",
+ year = 2003
+}
+
+<p>
+<li>
+@article{Koivisto04,
+ author = "M. Koivisto and K. Sood",
+ title = {{Exact Bayesian structure discovery in Bayesian networks}},
+ journal = jmlr,
+ year = 2004,
+ volume = 5,
+ pages = "549--573",
+url =
+{{http://www.ai.mit.edu/projects/jmlr//papers/volume5/koivisto04a/koivisto04a.pdf}}
+}
+
+
+<p>
+<li>
+@inproceedings{Koivisto06,
+ author = "M. Koivisto",
+ title = {{Advances in exact Bayesian structure discovery in Bayesian networks}},
+ booktitle = uai,
+ year = 2006,
+url = {http://www.cs.helsinki.fi/u/mkhkoivi/publications/uai-2006.pdf}
+}
+
+<p>
+<li>
+@article{Moore98cached,
+    author = "A.  Moore and M. Lee",
+    title = "Cached Sufficient Statistics for Efficient Machine Learning with Large Datasets",
+    journal = jair,
+    volume = "8",
+    pages = "67-91",
+    year = "1998"
+   url = "citeseer.nj.nec.com/moore97cached.html"
+
+<p>
+<li>
+@article{Sachs05,
+ title = "Causal Protein-Signaling Networks Derived from
+Multiparameter Single-Cell Data",
+ author = "K. Sachs and O. Perez and D. Pe'er
+and D. Lauffenburger and G. Nolan",
+ journal = "Science",
+ year = 2005,
+  volume = 308,
+ page = "523"
+}
+
+<p>
+<li>
+@inproceedings{Silander06,
+ author = "T. Silander and P. Myllmaki",
+  title = {{A simple approach for finding the globally optimal Bayesian network structure}},
+  year = 2006,
+  booktitle = uai,
+  url = {{http://eprints.pascal-network.org/archive/00002135/01/main.pdf}}
+
+</ul>
+

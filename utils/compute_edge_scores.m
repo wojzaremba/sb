@@ -1,5 +1,4 @@
-function [E, R] = compute_edge_scores(emp, opt, maxS)
-% XXX remove R
+function [E] = compute_edge_scores(emp, opt, maxS)
 
 % number of variables
 K = size(emp, 1);
@@ -14,7 +13,7 @@ for t = 1:length(triples)
     R(triples{t}.i,triples{t}.j) = classifier_wrapper(emp, triples{t}, opt.classifier, opt, prealloc);
 end
 
-E = -log(R);
+E = -log(R)*1000;
 
 
 

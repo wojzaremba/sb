@@ -6,10 +6,10 @@ function dag = sample_dag(P)
 
 done = 0;
 directed = 1;
-iter = 1;
+%iter = 1;
 while ~done
   dag = binornd(1, P); % each edge is an indep Bernoulli (0/1) random variable
   dag = setdiag(dag, 0);
   done = acyclic(dag, directed);
-  iter = iter + 1
+  %iter = iter + 1
 end
