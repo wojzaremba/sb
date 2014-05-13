@@ -2,7 +2,7 @@ function plot_f3()
 
 close all
 clear all
-load child_null
+load asia_null
 
 base_color = 'k-';
 ind_color = 'r-';

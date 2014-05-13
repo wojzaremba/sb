@@ -1,14 +1,14 @@
-function [total, num_ind, num_dep] = count_ind_cond_sets(dag, maxS)
+function [total, num_ind, num_dep] = count_ind_cond_sets(dag, S)
 
 global debug;
-debug = 2;
+debug = 3;
 
 n = size(dag, 1);
 total = 0;
 num_dep = 0;
 num_ind = 0;
 
-triples = gen_triples(n, [0 : maxS]);
+triples = gen_triples(n, S, 200);
 for t = 1:length(triples)
     i = triples{t}.i;
     j = triples{t}.j;

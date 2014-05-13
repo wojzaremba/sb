@@ -1,7 +1,7 @@
 disp('test_gen_triples...');
 
 % only conditioning on smaller sets
-triples = gen_triples(4, [0 : 2]);
+triples = gen_triples(4, 0 : 2);
 assert(length(triples) == 6);
 assert(length(triples{1}.cond_set) == 4);
 assert(isequal(triples{1}.cond_set{4}, [3 4]));
@@ -14,5 +14,8 @@ assert(length(triples{1}.cond_set) == 16);
 assert(isequal(triples{1}.cond_set{end}, 3:6));
 assert(isempty(triples{end}.cond_set{1}));
 
-
+% conditioning on large sets and subsampling
+triples = gen_triples(12, 5, 200);
+assert(length(triples) == 66);
+assert(length(triples{1}.cond_set) == 200);
 
