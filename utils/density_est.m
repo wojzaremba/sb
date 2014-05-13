@@ -1,4 +1,4 @@
-function [p, x] = plot_dist(z, opt)
+function [p, x] = density_est(z, opt)
 
 if ~isfield(opt, 'nbins')
     opt.nbins = 50;

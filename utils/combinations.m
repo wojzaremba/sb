@@ -1,7 +1,5 @@
 function c = combinations(set, k)
 
-
-
 if k == 0
     c = [];
 elseif k < 0

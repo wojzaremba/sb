@@ -1,8 +1,5 @@
 function [total, num_ind, num_dep] = count_ind_cond_sets(dag, S)
 
-global debug;
-debug = 3;
-
 n = size(dag, 1);
 total = 0;
 num_dep = 0;

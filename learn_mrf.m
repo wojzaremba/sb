@@ -36,7 +36,7 @@ for p = 1:size(pairs, 1)
    j = pair(2);
    others = setdiff(1:K,[i j]);
    trip = [i j others];
-   [~, rho] = kci_classifier(data, trip, opt, pre);
+   rho = kci_classifier(data, trip, opt, pre);
    
    if ( mdag(i,j) || mdag(j,i))
        edge_rhos = [edge_rhos rho];

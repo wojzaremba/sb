@@ -1,4 +1,4 @@
-function [npval, Sta] = kci_classifier(emp, trip, options, prealloc)
+function [rho, info] = kci_classifier(emp, trip, options, prealloc)
 
 T = size(emp, 2);
 
@@ -84,10 +84,18 @@ if (isfield(options, 'pval') && options.pval)
     var_appr = 2*trace(uu_prod^2);
     k_appr = mean_appr^2/var_appr;
     theta_appr = var_appr/mean_appr;
-    npval = gamcdf(Sta_notnormal, k_appr, theta_appr);
+    pval = gamcdf(Sta_notnormal, k_appr, theta_appr);
 else
-    npval = -1; 
-    %assert(0); % spits out npval first, so just catch this for now
+    pval = NaN; 
 end
 
 Sta = sqrt(Sta_notnormal / (sum(diag(Kx)) * sum(diag(Ky))));
+
+if (isfield(options, 'pval') && options.pval)
+    rho = pval;
+else
+    rho = Sta;
+end
+
+info.Sta = Sta;
+info.pval = pval;

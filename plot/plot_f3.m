@@ -18,15 +18,15 @@ figure
 hold on
 
 opt = struct('nbins', 50, 'plot_flag', true, 'color', base_color);
-plot_dist(z, opt);
+density_est(z, opt);
 
 opt.scale = ind_prop;
 opt.color = ind_color;
-plot_dist(zind, opt);
+density_est(zind, opt);
 
 opt.scale = dep_prop;
 opt.color = dep_color;
-plot_dist(zdep, opt);
+density_est(zdep, opt);
 
 %%% first remove all z's with strong evidence of independence
 figure
@@ -36,7 +36,7 @@ z2 = z(find(normcdf(z) > 0.01));
 ind2 = ind(find(normcdf(z) > 0.01));
 opt.scale = length(z2) / length(z);
 opt.color = base_color;
-plot_dist(z2, opt);
+density_est(z2, opt);
 
 z2ind = z2(ind2);
 ind_prop = length(z2ind) / length(z);
@@ -46,9 +46,9 @@ assert(ind_prop + dep_prop == opt.scale);
 
 opt.scale = ind_prop;
 opt.color = ind_color;
-plot_dist(z2ind, opt);
+density_est(z2ind, opt);
 
 opt.scale = dep_prop;
 opt.color = dep_color;
-plot_dist(z2dep, opt);
+density_est(z2dep, opt);
 

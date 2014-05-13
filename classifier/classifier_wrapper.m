@@ -12,30 +12,24 @@ function rho = classifier_wrapper(emp, triple, f, opt, prealloc)
 
 rho = Inf;
 printf(2,'i,j = %d,%d\n',triple.i,triple.j);
-%best_S = [];
 
 for c = 1:length(triple.cond_set)
     trip = [triple.i,triple.j,triple.cond_set{c}];
-    %old_rho = rho;
-    rho = min(rho,f(emp, trip, opt, prealloc));
-    assert(length(rho) == 1);
-    printf(2,'%d, %d\n',length(triple.cond_set{c}),rho);
+    [new_rho, new_info] = f(emp, trip, opt, prealloc);
     
-    %if ~isequal(rho, old_rho)
-    %    best_S = triple.cond_set{c};
-    %end
-    
-    if (rho <= 1e-4) % XXX I think I should take this out when I do structure learning
-        break
+    if new_rho < rho
+        rho = new_rho;
+        info = new_info;
+        info.cond_set = triple.cond_set{c};
+        info.i = triple.i;
+        info.j = triple.j;
     end
+   
+%     if (rho <= 1e-4) % XXX I think I should take this out when I do structure learning
+%         break
+%     end
     assert(rho >= 0)
 end
-%str = sprintf('  %s best conditioning set for (%d,%d) is ', func2str(f), triple.i, triple.j);
-%for i = 1:length(best_S)
-%    str = [str num2str(best_S(i)) ' '];
-%end
-%fprintf('%s\n',str);
-printf(2,'\n');
 
 
 

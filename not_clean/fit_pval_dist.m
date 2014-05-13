@@ -21,7 +21,7 @@ end
 function [xx, yy] = fit_pval_dist_numpts(z, numpts)
 
 opt = struct('plot_flag', true, 'color', 'b-');
-[p, x] = plot_dist(z, opt);
+[p, x] = density_est(z, opt);
 hold on
 xx = linspace(min(x), max(x), numpts);
 yy = spline(x, p, xx);

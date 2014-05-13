@@ -9,6 +9,7 @@ TODO
 - Take out unnecessary multiplications by H in kci_classifier, since H is idempotent, hence Tr(HAH HBH) = Tr(AHBH).
 - Get tests working for compute_edge_scores and add_edge_scores.
 - Take out unnecessary calculations in computing KCI p-value when performing unconditional test.
+- Remove print statements from c++ code.
 
 
 POSSIBLE DIRECTIONS

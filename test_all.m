@@ -27,13 +27,14 @@ test_scores_to_tpr();
 test_compare_curves();
 test_is_topol_sorted();
 test_check_cond_sets();
+test_count_ind_cond_sets();
 %test_compute_edge_scores();
 disp('NOT TESTING COMPUTE EDGE SCORES');
 %test_add_edge_scores();
 disp('NOT TESTING ADD EDGE SCORES');
 
 % plot
-test_plot_dist();
+test_density_est();
 
 % sb
 test_sb_expectation();
