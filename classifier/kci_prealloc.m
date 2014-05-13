@@ -12,7 +12,7 @@ end
 for i = 1 : num_vars
     P1 = P_comp(emp(i, :)');
     for k = 1:num_vars
-        Kx = Kxz_comp(emp(k, :)', emp([i], :)');
+        Kx = Kxz_comp(emp(k, :)', emp(i, :)');
         Kxz(:, :, k, i, i) = P1 * Kx * P1';        
         Kyz(:, :, k, i, i) = P1 * K(:, :, k) * P1';
     end    
@@ -24,6 +24,7 @@ for i = 1 : num_vars
             Kyz(:, :, k, i, j) = P1 * K(:, :, k) * P1';
         end
     end
+    printf(2, 'finished i = %d\n', i);
 end
 ret = struct('K', K, 'Kxz', Kxz, 'Kyz', Kyz);
 

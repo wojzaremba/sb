@@ -17,7 +17,7 @@ data = samples(bnet, N);
 
 maxS = 2;
 E = compute_edge_scores(data, opt, maxS);
-triples = gen_triples(K, maxS);
+triples = gen_triples(K, [0 : maxS]);
 
 T = -Inf*ones(K);
 

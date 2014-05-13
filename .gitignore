@@ -16,3 +16,4 @@ results/
 .DS_Store
 gobnilp/in/*
 gobnilp/out/*
+refs/*

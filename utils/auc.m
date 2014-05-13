@@ -17,7 +17,7 @@ for i = 1:size(X,2)
         if (length(y) >= 2)
             y(end+1) = y(end);
             x = [x(x <= xmax); xmax];
-            AUC(i,j) = trapz(x,y)/xmax;
+            AUC(i,j) = trapz(x,y);
             flag(i,j) = 0;
         end
     end

@@ -21,7 +21,7 @@ K = length(bnet.dag);
 arity = get_arity(bnet);
 
 max_S = 1;
-triples = gen_triples(K, max_S);
+triples = gen_triples(K, [0 : max_S]);
 
 num_experiments = 30;
 num_samples = 200;

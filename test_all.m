@@ -32,6 +32,9 @@ disp('NOT TESTING COMPUTE EDGE SCORES');
 %test_add_edge_scores();
 disp('NOT TESTING ADD EDGE SCORES');
 
+% plot
+test_plot_dist();
+
 % sb
 test_sb_expectation();
 test_sb_variance();

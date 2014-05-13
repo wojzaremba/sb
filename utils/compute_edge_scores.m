@@ -6,7 +6,7 @@ K = size(emp, 1);
 % initialize edge scores
 R = zeros(K);
 
-triples = gen_triples(K, maxS);
+triples = gen_triples(K, [0 : maxS]);
 
 prealloc = opt.prealloc(emp, opt);
 for t = 1:length(triples)

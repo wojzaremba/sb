@@ -3,7 +3,7 @@ bnet = mk_bnet4();
 K = length(bnet.dag);
 arity = get_arity(bnet);
 
-triples = gen_triples(K, 2);
+triples = gen_triples(K, [0 : 2]);
 
 N = 1000;
 s = samples(bnet,N);

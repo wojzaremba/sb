@@ -29,11 +29,11 @@ if evals_only
 else
    % Use eig function unless fraction of eigenvalues required is tiny
    if (N/size(x, 2)) > 0.04
-     printf(2, 'netlab pca: using eig\n');
+     printf(3, 'netlab pca: using eig\n');
       [temp_evec, temp_evals] = eig(x);
    else
       options.disp = 0;
-      printf(2, 'netlab pca: using eigs\n');
+      printf(3, 'netlab pca: using eigs\n');
       [temp_evec, temp_evals] = eigs(x, N, 'LM', options);
    end
    temp_evals = diag(temp_evals);
@@ -50,7 +50,7 @@ if ~evals_only
     evec = temp_evec(:, 1:N);
     return
   else
-    printf(2, 'netlab pca: sorting evec\n');
+    printf(3, 'netlab pca: sorting evec\n');
     % Need to reorder the eigenvectors
     for i=1:N
       evec(:,i) = temp_evec(:,perm(i));

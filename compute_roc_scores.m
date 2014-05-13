@@ -5,7 +5,7 @@ debug = 0;
 
 num_classifiers = length(options);
 dag = get_dag(bn_opt);
-triples = gen_triples(length(dag), rp.maxS);
+triples = gen_triples(length(dag), [0 : rp.maxS]);
 [no_edge, rp] = get_no_edge(dag, triples, rp);
 time_classifier = zeros(1, num_classifiers);
 

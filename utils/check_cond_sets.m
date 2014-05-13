@@ -2,7 +2,7 @@ function all_okay = check_cond_sets(dag, maxS)
 
 n = size(dag, 1);
 
-triples = gen_triples(n, maxS);
+triples = gen_triples(n, [0 : maxS]);
 all_okay = true;
 
 for t = 1:length(triples)
