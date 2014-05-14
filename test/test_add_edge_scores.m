@@ -22,8 +22,8 @@ fclose(fid);
 
 baseline_file = 'asia1000_bic_sb_cpp.score';
 
-command = sprintf('diff --side-by-side test/%s %s', baseline_file, my_file);
-tassert(system(command) == 0);
+command = sprintf('diff --side-by-side test/asia1000/%s %s', baseline_file, my_file);
+assert(system(command) == 0);
 
 % my_fid = fopen(my_file,'r');
 % fid = fopen(baseline_file,'r');

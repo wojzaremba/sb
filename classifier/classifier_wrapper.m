@@ -1,4 +1,4 @@
-function rho = classifier_wrapper(emp, triple, f, opt, prealloc)
+function [rho, info] = classifier_wrapper(emp, triple, f, opt, prealloc)
 % CLASSIFIER_WRAPPER calls the classifier f, once for each conditioning set
 % listed in triples.cond_set.  Chooses the rho corresponding to the
 % strongest evidence for independence among all conditioning sets tested.
@@ -23,13 +23,15 @@ for c = 1:length(triple.cond_set)
         info.cond_set = triple.cond_set{c};
         info.i = triple.i;
         info.j = triple.j;
+        info.rho = new_rho;
     end
    
 %     if (rho <= 1e-4) % XXX I think I should take this out when I do structure learning
 %         break
 %     end
-    assert(rho >= 0)
+    
 end
+assert(rho >= 0)
 
 
 

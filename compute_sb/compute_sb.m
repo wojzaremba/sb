@@ -2,7 +2,7 @@ function [rho, info] = compute_sb(counts,eta,alpha)
 
     check_counts = true;
     total = sum(counts(:));
-    info = struct('low_counts', false, 'check_counts', check_counts, 'total', total);
+    info = struct('low_counts', false, 'check_counts', check_counts, 'total', total, 'V_eq_0', false);
 
 
     if ((check_counts) && (total <= 50))
@@ -10,17 +10,17 @@ function [rho, info] = compute_sb(counts,eta,alpha)
         rho = ones(length(eta),length(alpha));
         info.low_counts = true;
     else
-        [rho, info] = compute_rho(counts,eta,alpha);
+        [rho, info] = compute_rho(counts,eta,alpha, info);
     end
 
 end
 
-function [rho, info] = compute_rho(counts, eta, alpha)
+function [rho, info] = compute_rho(counts, eta, alpha, info)
     
     rho = NaN * ones(length(eta), length(alpha));
     for i = 1 : length(alpha);
         info.E = sb_expectation(counts, alpha(i));
-        info.V = sb_variance(counts, alpha(i));
+        [info.V info.first info.second] = sb_variance(counts, alpha(i));
         if info.V ~= 0
             rho(:,i) = 1 - gamcdf(eta, (info.E^2) / info.V, info.V / info.E);
         else

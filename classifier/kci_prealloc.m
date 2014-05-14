@@ -1,4 +1,5 @@
 function ret = kci_prealloc(emp, options)
+printf(2, 'kci_prealloc...\n');
 lambda = 1E-3;
 T = size(emp, 2);
 num_vars = size(emp, 1); 

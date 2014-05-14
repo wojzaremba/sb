@@ -1,4 +1,4 @@
-function [varI] = sb_variance(D,prior)
+function [varI, first, second] = sb_variance(D, prior)
 %Computes the approximate variance of the posterior
 %distribution of mutual information assuming a uniform prior, as presented
 %in Hutter 2001, equation 3.  Note that this uses natural log, as specified
@@ -11,7 +11,7 @@ function [varI] = sb_variance(D,prior)
 %prior = 1;
 D = D + prior*ones(k,l);
 n = sum(D(:));
-nn = n + 1; % either normalize by n or n+1, following either Hutter 2001 or 2004 paper, respectively
+nn = n; % either normalize by n or n+1, following either Hutter 2001 or 2004 paper, respectively
 
 % compute first term
 first = 0;
