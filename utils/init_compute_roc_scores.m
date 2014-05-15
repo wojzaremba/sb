@@ -1,9 +1,7 @@
-function [bn_opt, runparams, options] = init_compute_roc_scores(network, arity, type, variance, N, num_exp, maxS, plot_flag, save_flag, f_sel)   
-
-    % check that we are in the sb directory
-    fulldir = strsplit('/',pwd);
-    assert(strcmpi(fulldir{end},'sb'));
+function [bn_opt, runparams, options] = init_compute_roc_scores(network, arity, type, variance, N, num_exp, maxS, plot_flag, save_flag, f_sel)
     
+    check_dir();
+
     rp = struct();
     rp.cpd_type = strtok(type, '_');
     rp.file_name = sprintf('%s_%s_arity%d_N%d',network, rp.cpd_type, arity, N);

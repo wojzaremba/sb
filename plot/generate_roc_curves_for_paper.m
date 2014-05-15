@@ -16,4 +16,4 @@ save_flag = true;
 f_sel = 1:2;
 
 [bn_opt, rp, opt] = init_compute_roc_scores(network, arity, type, variance, N, num_exp, maxS, plot_flag, save_flag, f_sel);
-[scores_child, rp_child] = compute_roc_scores(bn_opt, rp, opt);
+[scores, rp] = compute_roc_scores(bn_opt, rp, opt);

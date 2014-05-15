@@ -28,6 +28,9 @@ test_compare_curves();
 test_is_topol_sorted();
 test_check_cond_sets();
 test_count_ind_cond_sets();
+
+% edge scores
+test_network_pvals();
 %test_compute_edge_scores();
 disp('NOT TESTING COMPUTE EDGE SCORES');
 %test_add_edge_scores();
@@ -35,6 +38,7 @@ disp('NOT TESTING ADD EDGE SCORES');
 
 % plot
 test_density_est();
+test_plot_empirical_pvals();
 
 % sb
 test_sb_expectation();
