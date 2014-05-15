@@ -35,6 +35,7 @@ test_network_pvals();
 disp('NOT TESTING COMPUTE EDGE SCORES');
 %test_add_edge_scores();
 disp('NOT TESTING ADD EDGE SCORES');
+test_fit_pval_dist();
 
 % plot
 test_density_est();
