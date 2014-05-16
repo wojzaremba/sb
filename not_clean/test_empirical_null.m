@@ -15,8 +15,8 @@ N = 400;
 v = 0.05;
 maxS = 2;
 
-bnet = make_bnet(struct('network', 'child', 'moralize', false, 'arity', 1, 'type', 'quadratic_ggm', 'variance', v););
-kci_opt = struct( 'pval', false, 'kernel', GaussKernel());
+bnet = make_bnet(struct('network', 'child', 'moralize', false, 'arity', 1, 'type', 'quadratic_ggm', 'variance', v));
+kci_opt = struct( 'pval', true, 'kernel', GaussKernel());
 triples = gen_triples(size(bnet.dag, 1), 0:maxS);
 p = [];
 ind = [];
@@ -42,7 +42,7 @@ z = norminv(p);
 ind = logical(ind);
 
 clear pre
-save child_null_400_rho
+save child_null_400_pval
 
 end
 
