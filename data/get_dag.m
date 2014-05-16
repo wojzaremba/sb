@@ -204,6 +204,10 @@ elseif strcmpi(opt.network, 'kite')
     dag(2,3) = 1;
     dag(3,4) = 1;
     
+elseif strcmpi(opt.network, 'empty')
+    opt = init_n(opt, 8);
+    dag = zeros(opt.n);
+  
 else
     error('Unexpected network name');
 end
