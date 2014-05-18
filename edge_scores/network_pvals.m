@@ -1,27 +1,24 @@
-function [z, ind, edge] = network_pvals(network, type, variance, N, ...
+function [z, ind, edge, rho] = network_pvals(network, type, variance, N, ...
     maxS, pval, save_flag)
 
 bnet = make_bnet(struct('network', network, 'moralize', false, ...
     'arity', 1, 'type', type, 'variance', variance));
 kci_opt = struct( 'pval', pval, 'kernel', GaussKernel());
 triples = gen_triples(size(bnet.dag, 1), 0:maxS);
-p = [];
-ind = [];
-edge = [];
-
 data = normalize_data(samples(bnet, N));
 [D, pre] = preallocate(data, kci_opt);
 
 tic;
+p = ones(size(bnet.dag, 1)) * Inf;
+ind = ones(size(bnet.dag, 1)) * Inf;
+rho = ones(size(bnet.dag, 1)) * Inf;
+edge = bnet.dag;
 for t = 1 : length(triples)
     i = triples{t}.i;
     j = triples{t}.j;
-    for c = 1 : length(triples{t}.cond_set)
-        p = [p compute_p(D, [i j triples{t}.cond_set{c}], kci_opt, pre)];
-        ind = [ind dsep(i, j, triples{t}.cond_set{c}, bnet.dag)];
-        edge = [edge logical(bnet.dag(i,j) || bnet.dag(j,i))];
-        printf(2, '  %d %d cond set %d \n', i, j, c);
-    end
+    [p(i, j), info] = classifier_wrapper(D{1}, triples{t}, @kci_classifier, kci_opt, pre{1});
+    rho(i,j) = info.rho;
+    ind(i, j) = dsep(i, j, info.cond_set, bnet.dag);
     printf(2, 'DONE WITH %d %d\n', i, j);
 end
 printf(2, 'total time = %f sec.\n', toc);
@@ -30,8 +27,10 @@ printf(2, 'total time = %f sec.\n', toc);
 % also be uniformly distributed under the null, hence z should still be
 % N(0,1)
 z = norminv(p); 
-ind = logical(ind);
-edge = logical(edge);
+ind = logical(ind(~isnan(z)));
+edge = edge(~isnan(z));
+rho = rho(~isnan(z));
+z = z(~isnan(z));
 
 if save_flag
     clear pre
