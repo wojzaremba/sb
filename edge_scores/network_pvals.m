@@ -1,7 +1,8 @@
-function [z, ind] = network_pvals(network, type, variance, N, maxS, ...
-    pval, save_flag)
+function [z, ind, edge] = network_pvals(network, type, variance, N, ...
+    maxS, pval, save_flag)
 
-bnet = make_bnet(struct('network', network, 'moralize', false, 'arity', 1, 'type', type, 'variance', variance));
+bnet = make_bnet(struct('network', network, 'moralize', false, ...
+    'arity', 1, 'type', type, 'variance', variance));
 kci_opt = struct( 'pval', pval, 'kernel', GaussKernel());
 triples = gen_triples(size(bnet.dag, 1), 0:maxS);
 p = [];
@@ -30,6 +31,7 @@ printf(2, 'total time = %f sec.\n', toc);
 % N(0,1)
 z = norminv(p); 
 ind = logical(ind);
+edge = logical(edge);
 
 if save_flag
     clear pre
@@ -38,7 +40,7 @@ if save_flag
     else
         pstr = 'rho';
     end
-    command = sprintf('save edge_scores/out/%s_%d_%s', network, N, pstr);
+    command = sprintf('save edge_scores/network_pval_mats/%s_%d_%s', network, N, pstr);
     eval(command);
 end
 

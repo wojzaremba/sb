@@ -6,17 +6,26 @@ if ~exist('numpts','var')
     numpts = 30;
 end
 
-[x1, idx] = unique(x1);
-y1 = y1(idx);
-[x2, idx] = unique(x2);
-y2 = y2(idx);
+epsilon = 0.01;
 
-xmin = max(min(x1), min(x2));
-xmax = min(max(x1), max(x2));
+if ~isequal(x1, x2)
+    
+    [x1, idx] = unique(x1);
+    y1 = y1(idx);
+    [x2, idx] = unique(x2);
+    y2 = y2(idx);
+    
+    xmin = max(min(x1), min(x2));
+    xmax = min(max(x1), max(x2));
+    
+    X = linspace(xmin, xmax, numpts);
+    
+    Y1 = interp1(x1, y1, X);
+    Y2 = interp1(x2, y2, X);
+    
+else
+    Y1 = y1;
+    Y2 = y2;
+end
 
-X = linspace(xmin, xmax, numpts);
-
-Y1 = interp1(x1, y1, X);
-Y2 = interp1(x2, y2, X);
-
-first_greater = all(Y1 >= Y2);
+first_greater = all(Y1 >= (Y2 - epsilon));
