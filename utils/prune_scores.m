@@ -1,4 +1,5 @@
 function S = prune_scores(S)
+printf(2, 'prune_scores..\n');
 
 % naive approach
 for i = 1:length(S)
@@ -20,4 +21,5 @@ for i = 1:length(S)
     end
     keep = setdiff(1:ni,unique(to_remove));
     S{i} = S{i}(keep);
+    printf(2, 'finished i = %d\n', i);
 end

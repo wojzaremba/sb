@@ -1,4 +1,4 @@
-function h = plot_roc(scores,opt)
+function [h, fpr, tpr] = plot_roc(scores, opt)
 
 num_classifiers = length(opt);
 % ts = sprintf(['%s network with %s CPDs, N=%d, %d experiments,\n '...
@@ -20,6 +20,7 @@ for c = 1:num_classifiers
     plot(fpr(2),tpr(2),'r*');
     AUC = sprintf('%0.2f', auc(fpr, tpr));
     name{c} = [opt{c}.name ', AUC=' AUC];
+    fprintf('For %s, largest threshold with FPR < 0.05: %f\n', opt{c}.name, opt{c}.thresholds(max(find(fpr < 0.05))));
 end
 
 h(num_classifiers + 1) = plot(linspace(0,1),linspace(0,1),'k--',...

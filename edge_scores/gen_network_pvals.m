@@ -1,15 +1,15 @@
 function [z, ind, edge, rho] = gen_network_pvals()
 
 % network params
-network = 'child';
+network = 'asia';
 type = 'quadratic_ggm';
 variance = 0.05;
 
 % run params
-N = 200;
+N = 1000;
 maxS = 2;
 pval = true;
-save_flag = true;
+save_flag = false;
 
 if save_flag
     check_dir();

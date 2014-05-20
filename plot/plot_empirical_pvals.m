@@ -18,8 +18,8 @@ third_color = 'r--';
 if ~isempty(find(isinf(z), 1))
     printf(2, '  throwing out %d inf values\n', length(find(isinf(z))));
     ind = ind(~isinf(z));
-    z = z(~isinf(z));
     edge = edge(~isinf(z));
+    z = z(~isinf(z));
 end
 
 % subset z
@@ -51,9 +51,11 @@ opt.color = 'b-';
 opt.scale = edge_prop;
 y3 = plot_dist(z_edge, method, opt);
 
-opt.color = 'm-';
-opt.scale = indirect_prop;
-y4 = plot_dist(z_indirect, method, opt);
+if indirect_prop ~= 0
+    opt.color = 'm-';
+    opt.scale = indirect_prop;
+    y4 = plot_dist(z_indirect, method, opt);
+end
 
 legend('full', 'indep', 'edge', 'indirect dep');
 

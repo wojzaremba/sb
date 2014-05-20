@@ -1,4 +1,4 @@
-function [z, ind, edge, rho] = network_pvals(network, type, variance, N, ...
+function [z, ind, edge, rho, k] = network_pvals(network, type, variance, N, ...
     maxS, pval, save_flag)
 
 bnet = make_bnet(struct('network', network, 'moralize', false, ...
@@ -6,7 +6,7 @@ bnet = make_bnet(struct('network', network, 'moralize', false, ...
 kci_opt = struct( 'pval', pval, 'kernel', GaussKernel());
 triples = gen_triples(size(bnet.dag, 1), 0:maxS);
 data = normalize_data(samples(bnet, N));
-[D, pre] = preallocate(data, kci_opt);
+pre = kci_prealloc(data, kci_opt);
 
 tic;
 p = ones(size(bnet.dag, 1)) * Inf;
@@ -16,7 +16,7 @@ edge = bnet.dag;
 for t = 1 : length(triples)
     i = triples{t}.i;
     j = triples{t}.j;
-    [p(i, j), info] = classifier_wrapper(D{1}, triples{t}, @kci_classifier, kci_opt, pre{1});
+    [p(i, j), info] = classifier_wrapper(data, triples{t}, @kci_classifier, kci_opt, pre); 
     rho(i,j) = info.rho;
     ind(i, j) = dsep(i, j, info.cond_set, bnet.dag);
     printf(2, 'DONE WITH %d %d\n', i, j);
@@ -31,6 +31,7 @@ ind = logical(ind(~isnan(z)));
 edge = edge(~isnan(z));
 rho = rho(~isnan(z));
 z = z(~isnan(z));
+k = length(triples{1}.cond_set);
 
 if save_flag
     clear pre
@@ -47,39 +48,40 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [D, pre] = preallocate(data, kci_opt)
-
-boot_flag = false;
-
-if boot_flag
-    assert(0);
-    printf(2, 'bootstrapping..\n');
-    D = cell(nboot, 1);
-    pre = cell(nboot, 1);
-    N = size(data, 2);    
-    for b = 1 : nboot
-        y = randsample(N, N, true); 
-        D{b} = data(:, y);
-        pre{b} = kci_prealloc(D{b}, kci_opt);
-    end
-else
-    printf(2, 'not bootstrapping.\n');
-    D{1} = data;
-    pre{1} = kci_prealloc(D{1}, kci_opt);
-end
-
-end
-
-function p = compute_p(D, trip, opt, pre)
-
-for b = 1 : length(D)
-   p = kci_classifier(D{b}, trip, opt, pre{b}); 
-end
-if length(p) > 1
-    z = norminv(p);
-    [~, p] = kstest(z);
-end
-
-end
+% function [D, pre] = preallocate(data, kci_opt)
+% 
+% boot_flag = false;
+% 
+% if boot_flag
+%     assert(0);
+%     printf(2, 'bootstrapping..\n');
+%     D = cell(nboot, 1);
+%     pre = cell(nboot, 1);
+%     N = size(data, 2);    
+%     for b = 1 : nboot
+%         y = randsample(N, N, true); 
+%         D{b} = data(:, y);
+%         pre{b} = kci_prealloc(D{b}, kci_opt);
+%     end
+% else
+%     printf(2, 'not bootstrapping.\n');
+%     D{1} = data;
+%     pre{1} = kci_prealloc(D{1}, kci_opt);
+% end
+% 
+% end
+% 
+% function [p, info] = compute_p(D, trip, opt, pre)
+% 
+% info = {};
+% for b = 1 : length(D)
+%    [p(b), info{b}] = kci_classifier(D{b}, trip, opt, pre{b}); 
+% end
+% if length(p) > 1
+%     z = norminv(p);
+%     [~, p] = kstest(z);
+% end
+% 
+% end
 
 

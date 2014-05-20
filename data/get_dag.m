@@ -5,7 +5,6 @@ if ~isfield(opt, 'moralize')
 end
 
 if isnumeric(opt.network)
-
     dag = opt.network;
     
 elseif strcmpi(opt.network, 'sachs')
@@ -187,9 +186,10 @@ elseif strcmpi(opt.network,'vstruct')
     
     opt = init_n(opt, 3);
     dag = zeros(opt.n);
-    dag(1,3) = 1;
-    dag(2,3) = 1;
-    
+    for i = 1:opt.n - 1
+        dag(i, opt.n) = 1;
+    end
+
 elseif strcmpi(opt.network, 'Y')
     opt = init_n(opt, 4);
     dag = zeros(opt.n);
