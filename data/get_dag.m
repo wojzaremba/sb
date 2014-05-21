@@ -1,4 +1,4 @@
-function dag = get_dag(opt)
+function [dag, opt] = get_dag(opt)
 
 if ~isfield(opt, 'moralize')
     opt.moralize = false;
@@ -213,10 +213,12 @@ else
 end
 
 if opt.moralize
-    %dag = moralize_dag(dag);
+    dag = moralize_dag(dag);
     %assert(isequal(dag, moralize_dag(dag)));
     assert(is_topol_sorted(dag));
 end
+
+opt.maxpa = get_maxpa(dag);
 
 end
 
@@ -224,5 +226,9 @@ function opt = init_n(opt, default)
     if ~isfield(opt, 'n')
         opt.n = default;
     end
+end
+
+function pa = get_maxpa(dag)
+    pa = max(sum(dag, 1));
 end
     

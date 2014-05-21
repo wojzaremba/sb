@@ -1,8 +1,8 @@
-function bnet = make_bnet(opt)
+function [bnet, opt] = make_bnet(opt)
 
 %randn('seed',1);
 %rand('seed',1);
-dag = get_dag(opt);
+[dag, opt] = get_dag(opt);
 
 n = size(dag, 1);
 node_sizes = opt.arity * ones(1,n);
@@ -42,3 +42,4 @@ function w = mk_weights(numpa)
     degree = 2;
     w = randn(numpa, degree);
 end
+

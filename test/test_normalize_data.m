@@ -9,7 +9,7 @@ s = normalize_data(s);
 assert(norm(mean(s,2)) < 1e-13);
 assert(norm(std(s,[],2) - ones(size(s,1),1)) < 1e-13)
 
-s2 = normalize_data(s);
+s2 = normalize_data(s, false);
 assert(norm(s2-s) < 1e-4);
 
 

@@ -4,8 +4,8 @@ randn('seed', 1);
 rand('seed', 1);
 
 N = 100;
-maxK = 1;
-n = 3;
+maxK = 10;
+n = 5;
 
 bn_opt = struct('variance', 0.01, 'network', 'vstruct', 'arity', 1,... 
 'type', 'quadratic_ggm', 'moralize', false, 'n', n);
@@ -20,7 +20,7 @@ pre = opt.prealloc(emp, opt);
 
 % check that D reflects that conditioning on more variables will make the
 % score more favorable
-assert( D(3, 3, 3) > D(3, 1, 2));
+assert( D(n, n, n) > D(n, 1, 2));
 
 % check that the scores are in order of decreasing parent size
 for i = 1 : length(S)

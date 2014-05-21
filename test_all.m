@@ -7,6 +7,8 @@ dbstop if error
 %end2end
 test_compute_roc_scores();
 test_learn_mrf();
+fprintf('not testing bn_learn\n');
+%test_bn_learn();
 
 % utils
 test_enumerate_assignments();

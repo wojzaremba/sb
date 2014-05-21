@@ -1,8 +1,16 @@
 function [G, solving_time] = run_gobnilp(S)
 
 % check that we are in the sb directory
-fulldir = strsplit('/',pwd);
-assert(strcmpi(fulldir{end},'sb'));
+check_dir();
+
+% check that S does not contain inf's
+for i = 1:length(S)
+    for j = 1:length(S{i})
+        if isinf(S{i}{j}.score)
+           a = 2+2; 
+        end
+    end
+end
 
 % define file names
 gobnilp_in_file = sprintf('gobnilp/in/gobnilp-%s', strrep(strrep(datestr(clock), ' ', '_'), ':', '_'));
