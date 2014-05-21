@@ -1,4 +1,4 @@
-function [SHD, T1, T2, bn_opt, rp, c_opt] = bn_learn(network, arity, ...
+function [SHD, T1, T2, bn_opt, rp, c_opt, data] = bn_learn(network, arity, ...
     type, variance, Nvec, num_exp, maxS, plot_flag, save_flag, f_sel)
 
 % initialize
@@ -22,8 +22,13 @@ for exp = 1:rp.num_exp
                 repmat('no', ~opt.edge));
             [S, T1{t}(N_idx, exp)] = compute_score(opt);
             [G, T2{t}(N_idx, exp)] = run_gobnilp(S);
-            pred_Pdag = dag_to_cpdag(G)
+            pred_Pdag = dag_to_cpdag(G);
             SHD{t}(N_idx, exp) = shd(true_Pdag,pred_Pdag);
+            if ~isequal(true_Pdag, pred_Pdag)
+                fprintf('predicted PDAG:\n');
+                pred_Pdag
+                true_Pdag
+            end
             fprintf('hamming distance = %d\n', SHD{t}(N_idx, exp));
         end
     end
@@ -71,13 +76,13 @@ assert(isequal(size(SHD{1}), [length(rp.Nvec), rp.num_exp]));
         ylim([0 yl(2)]);
         xlabel('number of samples');
         ylabel('structural hamming distance');
-        title(sprintf('SHD vs. N, %s network', rp.network), 'fontsize', 14);
+        title(sprintf('SHD vs. N, %s network, %d experiments', rp.network, exp), 'fontsize', 14);
         
         subplot(1, 2, 2);
         legend(h2, leg2);
         xlabel('number of samples');
         ylabel('runtime (sec)');
-        title(sprintf('Runtime vs. N, %s network', rp.network), 'fontsize', 14);
+        title(sprintf('Runtime vs. N, %s network, %d experiments', rp.network, exp), 'fontsize', 14);
     end
 
     function [S, T] = compute_score(opt)
@@ -134,9 +139,8 @@ assert(isequal(size(SHD{1}), [length(rp.Nvec), rp.num_exp]));
         %fprintf('WARNING: bn_opt.arity = 3\n');
         % XXX add check whether type is cts or discrete, change arity to
         % either 1 or rp.arity accordingly
-        fprintf('WARNING: changing bn_opt.n = 8\n');
         bn_opt = struct('network', network, 'arity', 1, 'type', type, ...
-            'variance', variance, 'n', 8, 'moralize', false);
+            'variance', variance, 'moralize', false);
         [bnet, bn_opt] = make_bnet(bn_opt);
 
         
