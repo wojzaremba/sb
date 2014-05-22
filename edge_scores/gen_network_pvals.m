@@ -6,7 +6,7 @@ type = 'quadratic_ggm';
 variance = 0.05;
 
 % run params
-N = 1000;
+N = 300;
 maxS = 2;
 pval = true;
 save_flag = false;
