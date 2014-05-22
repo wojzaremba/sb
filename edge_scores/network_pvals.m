@@ -1,4 +1,4 @@
-function [z, ind] = network_pvals(network, type, variance, N, maxS, ...
+function [z, ind, edge] = network_pvals(network, type, variance, N, maxS, ...
     pval, save_flag)
 
 bnet = make_bnet(struct('network', network, 'moralize', false, 'arity', 1, 'type', type, 'variance', variance));
@@ -38,7 +38,7 @@ if save_flag
     else
         pstr = 'rho';
     end
-    command = sprintf('save edge_scores/out/%s_%d_%s', network, N, pstr);
+    command = sprintf('save edge_scores/network_pval_mats/%s_%d_%s2', network, N, pstr);
     eval(command);
 end
 
