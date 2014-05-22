@@ -31,7 +31,7 @@ for c = 1:length(triple.cond_set)
 %     end
     
 end
-assert(rho >= 0)
+%assert(rho >= 0)
 
 
 

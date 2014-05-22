@@ -1,11 +1,10 @@
-function dag = get_dag(opt)
+function [dag, opt] = get_dag(opt)
 
 if ~isfield(opt, 'moralize')
     opt.moralize = false;
 end
 
 if isnumeric(opt.network)
-
     dag = opt.network;
     
 elseif strcmpi(opt.network, 'sachs')
@@ -187,9 +186,10 @@ elseif strcmpi(opt.network,'vstruct')
     
     opt = init_n(opt, 3);
     dag = zeros(opt.n);
-    dag(1,3) = 1;
-    dag(2,3) = 1;
-    
+    for i = 1:opt.n - 1
+        dag(i, opt.n) = 1;
+    end
+
 elseif strcmpi(opt.network, 'Y')
     opt = init_n(opt, 4);
     dag = zeros(opt.n);
@@ -213,10 +213,12 @@ else
 end
 
 if opt.moralize
-    %dag = moralize_dag(dag);
+    dag = moralize_dag(dag);
     %assert(isequal(dag, moralize_dag(dag)));
     assert(is_topol_sorted(dag));
 end
+
+opt.maxpa = get_maxpa(dag);
 
 end
 
@@ -224,5 +226,9 @@ function opt = init_n(opt, default)
     if ~isfield(opt, 'n')
         opt.n = default;
     end
+end
+
+function pa = get_maxpa(dag)
+    pa = max(sum(dag, 1));
 end
     

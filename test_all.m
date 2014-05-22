@@ -7,6 +7,8 @@ dbstop if error
 %end2end
 test_compute_roc_scores();
 test_learn_mrf();
+fprintf('not testing bn_learn\n');
+%test_bn_learn();
 
 % utils
 test_enumerate_assignments();
@@ -28,6 +30,8 @@ test_compare_curves();
 test_is_topol_sorted();
 test_check_cond_sets();
 test_count_ind_cond_sets();
+test_normcdf_min();
+test_compute_rho_scores();
 
 % edge scores
 test_network_pvals();

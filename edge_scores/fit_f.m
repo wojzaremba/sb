@@ -1,7 +1,6 @@
 function [f, x, z, bw, uu] = fit_f(z_or_filename, plot_flag, cv_flag)
-% fit a density to the empirical distribution of pvals. Uses kernel smoothing and CV of log-likelihood over kernel bandwidths.
-
-close all
+% fit a density to the empirical distribution of pvals. Uses kernel
+% smoothing and CV of log-likelihood over kernel bandwidths.
 
 if ischar(z_or_filename)
     check_dir();
@@ -20,7 +19,9 @@ if ~exist('cv_flag', 'var')
 end
 
 % just throw out infinite values (and transpose)
-printf(2, '  throwing out %d inf values\n', length(find(isinf(z))));
+if length(find(isinf(z))) > 0  
+    printf(2, '  throwing out %d inf values\n', length(find(isinf(z))));
+end
 z = z(~isinf(z))';
 
 % histogram plus density with default bandwidth

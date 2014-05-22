@@ -70,6 +70,9 @@ CPD.mean = randn(ss, dpsz);
 CPD.cov = 100*repmat(eye(ss), [1 1 dpsz]);    
 %CPD.weights = randn(ss, cpsz, dpsz);
 CPD.weights = randn(cpsz, CPD.degree);
+while (sum(abs(CPD.weights) < 0.3) > 0)
+    CPD.weights = randn(cpsz, CPD.degree);
+end
 %CPD.cov_type = 'full';
 %CPD.tied_cov = 0;
 %CPD.clamped_mean = 0;

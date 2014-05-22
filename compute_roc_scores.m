@@ -1,14 +1,12 @@
 function [scores, rp] = compute_roc_scores(bn_opt, rp, options)
 
-global debug
-debug = 0;
-
 num_classifiers = length(options);
 dag = get_dag(bn_opt);
-triples = gen_triples(length(dag), [0 : rp.maxS]);
+triples = gen_triples(length(dag), 0:rp.maxS);
 [no_edge, rp] = get_no_edge(dag, triples, rp);
 time_classifier = zeros(1, num_classifiers);
 
+scores = cell(num_classifiers, 1);
 for c = 1 : num_classifiers
     scores{c} = zeros([2 2 length(options{c}.thresholds)]);
 end
@@ -48,7 +46,7 @@ for exp = 1 : rp.num_exp
     
     if rp.plot_flag
         clf 
-        plot_roc(scores, options, rp);
+        plot_roc(scores, options);
         pause(0.5);
     end
     

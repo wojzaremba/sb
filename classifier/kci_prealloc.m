@@ -2,7 +2,7 @@ function ret = kci_prealloc(emp, options)
 printf(2, 'kci_prealloc...\n');
 
 if ~isfield(options, 'pval')
-    pval = true;
+    options.pval = true;
 end
 
 lambda = 1E-3;
@@ -15,6 +15,7 @@ Kxz = zeros(T, T, num_vars, num_vars, num_vars);
 Kyz = zeros(T, T, num_vars, num_vars, num_vars);
 
 if options.pval
+    fprintf('  computing eig decompositions\n');
     K_eigval = zeros(num_eig, num_vars);
     K_eigvec = zeros(T, num_eig, num_vars);
     Kxz_eigval = zeros(num_eig, num_vars, num_vars, num_vars);
@@ -67,6 +68,8 @@ if options.pval
     ret.Kyz_eigval = Kyz_eigval;
     ret.Kyz_eigvec = Kyz_eigvec;
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function ret = P_comp(z)
 Kz = options.kernel.k(z, z);

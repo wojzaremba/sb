@@ -126,4 +126,5 @@ else
 end
 
 info.Sta = Sta;
+info.Sta_unnorm = Sta_unnormalized;
 info.pval = pval;
