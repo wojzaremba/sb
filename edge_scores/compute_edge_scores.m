@@ -27,7 +27,7 @@ for t = 1:length(triples)
 end
 
 %E = -log(R);
-R = my_sigmoid(R_norm, 0.05, 20);
+%R = my_sigmoid(R_norm, 0.05, 20);
 E = 1 ./ R_norm;
 
 

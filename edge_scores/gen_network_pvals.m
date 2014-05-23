@@ -1,11 +1,12 @@
 function [z, ind, edge, rho, set_size, k] = gen_network_pvals()
 
 % network params
-network = 'asia';
+network = 'child';
 type = 'quadratic_ggm';
 variance = 0.05;
 
 % run params
+<<<<<<< HEAD
 N = 700;
 maxS = 2;
 pval = true;

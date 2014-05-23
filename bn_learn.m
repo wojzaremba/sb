@@ -1,9 +1,9 @@
 function [SHD, T1, T2, bn_opt, rp, c_opt, data] = bn_learn(network, arity, ...
-    type, variance, Nvec, num_exp, maxS, plot_flag, save_flag, f_sel)
+    type, variance, Nvec, num_exp, maxS, psi, plot_flag, save_flag, f_sel)
 
 % initialize
 [bn_opt, bnet, rp, c_opt, true_Pdag, SHD, T1, T2] = init(network, arity, ...
-    type, variance, Nvec, num_exp, maxS, plot_flag, save_flag, f_sel);
+    type, variance, Nvec, num_exp, maxS, psi, plot_flag, save_flag, f_sel);
 
 for exp = 1:rp.num_exp
     fprintf('exp %d...\n',exp);
@@ -32,6 +32,10 @@ for exp = 1:rp.num_exp
             fprintf('hamming distance = %d\n', SHD{t}(N_idx, exp));
         end
     end
+    
+    
+    bnet = make_bnet(bn_opt);
+    
     
     if rp.plot_flag
         update_plot(exp);
@@ -119,7 +123,7 @@ assert(isequal(size(SHD{1}), [length(rp.Nvec), rp.num_exp]));
 
     function [bn_opt, bnet, rp, class_opt, true_Pdag, SHD, T1, T2] = ...
             init(network, arity, type, variance, Nvec, num_exp, maxS, ...
-            plot_flag, save_flag, f_sel)
+            psi, plot_flag, save_flag, f_sel)
         
         check_dir();
         rp = struct();
@@ -131,7 +135,7 @@ assert(isequal(size(SHD{1}), [length(rp.Nvec), rp.num_exp]));
         rp.Nvec = Nvec;
         rp.num_exp = num_exp;
         rp.maxS = maxS;
-        rp.psi = 1;
+        rp.psi = psi;
         rp.plot_flag = plot_flag;
         rp.save_flag = save_flag;
         rp.f_sel = f_sel;

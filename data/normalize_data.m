@@ -1,6 +1,7 @@
 function s = normalize_data(s, remove_outliers)
 
 if ~exist('remove_outliers', 'var')
+    %fprintf('nor removing outliers by default\n');
     remove_outliers = true;
 end
 

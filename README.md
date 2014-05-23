@@ -9,6 +9,8 @@ TODO
 - Remove print statements from c++ code.
 - Improve discretization- use method which maximizes mutual information.
 - Add various score options to run structure learning.
+- Regenerate ROC curves with outliers removed.
+- Take another look at test-compute-roc-curves- why is the discrete data performing better?  Doesn't make sense to me.
 
 
 

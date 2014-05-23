@@ -12,7 +12,7 @@ if ~exist('plot_flag', 'var')
 end
 base_color = 'k-';
 ind_color = 'r-';
-third_color = 'r--';
+third_color = 'b-';
     
 % throw out infinite values
 if ~isempty(find(isinf(z), 1))
@@ -39,25 +39,27 @@ assert(ind_prop <= no_edge_prop && no_edge_prop <= 1);
 
 opt = struct('nbins', 30, 'color', base_color, 'plot_flag', plot_flag);
 
-
+% all
 [y1, x] = plot_dist(z, method, opt);
 
+% ind
 opt.scale = ind_prop;
 opt.color = ind_color;
 opt.x = x;
 [y2] = plot_dist(zind, method, opt);
 
+% direct dep
 opt.color = 'b-';
 opt.scale = edge_prop;
 y3 = plot_dist(z_edge, method, opt);
 
-if indirect_prop ~= 0
-    opt.color = 'm-';
-    opt.scale = indirect_prop;
-    y4 = plot_dist(z_indirect, method, opt);
-end
+% if indirect_prop ~= 0
+%     opt.color = 'm-';
+%     opt.scale = indirect_prop;
+%     y4 = plot_dist(z_indirect, method, opt);
+% end
 
-legend('full', 'indep', 'edge', 'indirect dep');
+legend('full', 'indep', 'edge'); %, 'indirect dep');
 
 
 % opt.scale = edge_prop;
