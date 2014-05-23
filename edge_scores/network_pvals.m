@@ -1,4 +1,4 @@
-function [z, ind, edge, rho, k] = network_pvals(network, type, variance, N, ...
+function [z, ind, edge, rho, set_size, k] = network_pvals(network, type, variance, N, ...
     maxS, pval, save_flag)
 
 bnet = make_bnet(struct('network', network, 'moralize', false, ...
@@ -12,6 +12,7 @@ tic;
 p = ones(size(bnet.dag, 1)) * Inf;
 ind = ones(size(bnet.dag, 1)) * Inf;
 rho = ones(size(bnet.dag, 1)) * Inf;
+set_size = ones(size(bnet.dag, 1)) * Inf;
 edge = bnet.dag;
 for t = 1 : length(triples)
     i = triples{t}.i;
@@ -19,6 +20,7 @@ for t = 1 : length(triples)
     [p(i, j), info] = classifier_wrapper(data, triples{t}, @kci_classifier, kci_opt, pre); 
     rho(i,j) = info.rho;
     ind(i, j) = dsep(i, j, info.cond_set, bnet.dag);
+    set_size(i,j) = length(info.cond_set);
     printf(2, 'DONE WITH %d %d\n', i, j);
 end
 printf(2, 'total time = %f sec.\n', toc);
@@ -30,6 +32,7 @@ z = norminv(p);
 ind = logical(ind(~isnan(z)));
 edge = edge(~isnan(z));
 rho = rho(~isnan(z));
+set_size = set_size(~isnan(z));
 z = z(~isnan(z));
 k = length(triples{1}.cond_set);
 
@@ -40,7 +43,10 @@ if save_flag
     else
         pstr = 'rho';
     end
-    command = sprintf('save edge_scores/network_pval_mats/%s_%d_%s', network, N, pstr);
+    datestr = get_date();
+    dir_name = sprintf('edge_scores/pval_mats/%s', datestr);
+    system(['mkdir -p ' dir_name]); 
+    command = sprintf('save %s/%s_%d_%s', dir_name, network, N, pstr);
     eval(command);
 end
 
