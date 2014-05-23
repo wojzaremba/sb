@@ -5,12 +5,13 @@ network = 'asia';
 arity = 4;
 type = 'quadratic_ggm';
 variance = 0.05;
-Nvec = 300;
+Nvec = 100;
 num_exp = 10;
-maxS = 1;
+maxS = 2;
+psi = 1;
 plot_flag = true;
 save_flag = false;
-f_sel = 1:3;
+f_sel = 3;
 
 [SHD, T1, T2] = bn_learn(network, arity, type, variance, Nvec, num_exp, ...
-    maxS, plot_flag, save_flag, f_sel);
+    maxS, psi, plot_flag, save_flag, f_sel);

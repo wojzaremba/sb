@@ -5,8 +5,12 @@ si = size(pre.K, 3);
 
 % compute scores
 D = ones(si, si, si) * Inf;
+sum0 = 0;
+sum1 = 0;
+sum2 = 0;
 for i = 1:si
     D(i, i, i) = norm(pre.K(:, :, i));
+    sum0 = sum0 + D(i, i, i);
     for j = 1:si        
         if (i == j)
             continue;
@@ -17,10 +21,40 @@ for i = 1:si
             end
             K = pre.Kyz(:, :, i, j, k);
             D(i, j, k) = norm(K(:));
-            D(i, k, j) = D(i, j, k);            
+            D(i, k, j) = D(i, j, k);  
+            if (j == k)
+                sum1 = sum1 + D(i, j, k);
+            else
+                sum2 = sum2 + D(i, j, k);
+            end
         end
     end
 end
+
+% divide by mean over all conditioning set sizes
+% E = D(D ~= Inf);
+% m = mean(E(:)) / 40;
+% D = D ./ m;
+% for i = 1:si
+%     D(i, i, i) = D(i, i, i) / sum0;
+%         for j = 1:si        
+%         if (i == j)
+%             continue;
+%         end
+%         for k = j:si
+%             if (i == k)
+%                 continue;
+%             end 
+%             if (j == k)
+%                 D(i, j, k) = D(i, j, k) / sum1;
+%             else
+%                 D(i, j, k) = D(i, j, k) / sum2;
+%             end
+%         end
+%     end
+%     
+% end
+
 
 % save to structure
 S = cell(si, 1);

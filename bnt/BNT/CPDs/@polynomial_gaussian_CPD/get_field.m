@@ -1,4 +1,4 @@
-function val = get_params(CPD, name)
+function val = get_field(CPD, name)
 % GET_PARAMS Get the parameters (fields) for a gaussian_CPD object
 % val = get_params(CPD, name)
 %
