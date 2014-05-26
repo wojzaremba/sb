@@ -19,10 +19,9 @@ pre = opt.prealloc(emp, opt);
 
 % check that D reflects that conditioning on more of the correct 
 % variables will make the score more favorable
-% " > " means "is worse than"
-assert( D(3, 3, 3) > D(3, 1, 2)); 
-assert((D(3, 1, 1)) > D(3, 1, 2));
-assert((D(3, 2, 2)) > D(3, 1, 2));
+assert( D(3, 3, 3) > D(3, 1, 2) ); 
+assert( D(3, 1, 1) > D(3, 1, 2) );
+assert( D(3, 2, 2) > D(3, 1, 2) );
 
 % check that the scores are in order of decreasing parent size
 for i = 1 : length(S)
