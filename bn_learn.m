@@ -1,8 +1,8 @@
-function [SHD, T1, T2, bn_opt, rp, c_opt, data] = bn_learn(network, arity, ...
+function [SHD, T1, T2, bn_opt, rp, c_opt, data] = bn_learn(network, ...
     type, variance, Nvec, num_exp, maxS, psi, plot_flag, save_flag, f_sel)
 
 % initialize
-[bn_opt, bnet, rp, c_opt, true_Pdag, SHD, T1, T2] = init(network, arity, ...
+[bn_opt, bnet, rp, c_opt, true_Pdag, SHD, T1, T2] = init(network, ...
     type, variance, Nvec, num_exp, maxS, psi, plot_flag, save_flag, f_sel);
 
 for exp = 1:rp.num_exp
@@ -13,13 +13,13 @@ for exp = 1:rp.num_exp
         N = rp.Nvec(N_idx);
         fprintf('N = %d\n', N);
         data = normalize_data(samples(bnet, N));
-        data_d = discretize_data(data, rp.arity); 
         
         % learn one structure using each score in c_opt
         for t = 1:length(c_opt)
             opt = c_opt{t};
             fprintf('score = %s, %s sparsity boost\n', opt.score, ...
                 repmat('no', ~opt.edge));
+            emp = discretize_data(data, opt.arity);
             [S, T1{t}(N_idx, exp)] = compute_score(opt);
             [G, T2{t}(N_idx, exp)] = run_gobnilp(S);
             pred_Pdag = dag_to_cpdag(G);
@@ -32,11 +32,9 @@ for exp = 1:rp.num_exp
             fprintf('hamming distance = %d\n', SHD{t}(N_idx, exp));
         end
     end
-    
-    
+
     bnet = make_bnet(bn_opt);
-    
-    
+  
     if rp.plot_flag
         update_plot(exp);
         pause(2);
@@ -46,9 +44,7 @@ end
 assert(isequal(size(SHD{1}), [length(rp.Nvec), rp.num_exp]));
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     function update_plot(exp)
         clf;
         h1 = [];
@@ -62,7 +58,7 @@ assert(isequal(size(SHD{1}), [length(rp.Nvec), rp.num_exp]));
             hold on
             shd = SHD{c}(:, 1:exp);
             h1(end+1) = plot(rp.Nvec, mean(shd, 2), opt.color, 'linewidth', 2);
-            leg1{end+1} = sprintf('%s, %s edge scores', opt.score, s);
+            leg1{end+1} = sprintf('%s, %s edge scores, arity %d', opt.score, s, opt.arity);
             
             subplot(1, 2, 2)
             hold on
@@ -70,8 +66,8 @@ assert(isequal(size(SHD{1}), [length(rp.Nvec), rp.num_exp]));
             t2 = T2{c}(:, 1:exp);
             h2(end+1) = plot(rp.Nvec, mean(t1, 2), opt.color, 'linewidth', 2);
             h2(end+1) = plot(rp.Nvec, mean(t2, 2), [opt.color '-'], 'linewidth', 2);
-            leg2{end+1} = sprintf('%s, %s edge, score time', opt.score, s);
-            leg2{end+1} = sprintf('%s, %s edge, structure search', opt.score, s);
+            leg2{end+1} = sprintf('%s, %s edge, arity %d, score time', opt.score, s, opt.arity);
+            leg2{end+1} = sprintf('%s, %s edge, arity %d, structure search', opt.score, s, opt.arity);
         end
         
         subplot(1, 2, 1);
@@ -89,16 +85,16 @@ assert(isequal(size(SHD{1}), [length(rp.Nvec), rp.num_exp]));
         title(sprintf('Runtime vs. N, %s network, %d experiments', rp.network, exp), 'fontsize', 14);
     end
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     function [S, T] = compute_score(opt)
         tic;
         
-        % choose discrete or cts data
-        if opt.arity > 1
-            emp = data_d;
-        else
-            emp = data;
+        if ~opt.edge
+            if isfield(opt, 'pval')
+                opt.pval = false;
+            end
         end
-        
+               
         % preallocate
         pre = opt.prealloc(emp, opt);
         
@@ -112,24 +108,24 @@ assert(isequal(size(SHD{1}), [length(rp.Nvec), rp.num_exp]));
         end
         
         if opt.edge
-            E = compute_edge_scores(emp, opt, rp.maxS);
+            E = compute_edge_scores(emp, opt, rp.maxS, pre);
             S = add_edge_scores(S, E, rp.psi);
         end;
         S1 = S;
         S = prune_scores(S);
-        fprintf('pruning scores changed S? %d\n', isequal(S, S1));
+        fprintf('  pruning scores changed S? %d\n', ~isequal(S, S1));
         T = toc;   
     end
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     function [bn_opt, bnet, rp, class_opt, true_Pdag, SHD, T1, T2] = ...
-            init(network, arity, type, variance, Nvec, num_exp, maxS, ...
+            init(network, type, variance, Nvec, num_exp, maxS, ...
             psi, plot_flag, save_flag, f_sel)
         
         check_dir();
         rp = struct();
         
         rp.network = network;
-        rp.arity = arity;
         rp.type = type;
         rp.variance = variance;
         rp.Nvec = Nvec;
@@ -140,26 +136,27 @@ assert(isequal(size(SHD{1}), [length(rp.Nvec), rp.num_exp]));
         rp.save_flag = save_flag;
         rp.f_sel = f_sel;
         
-        %fprintf('WARNING: bn_opt.arity = 3\n');
-        % XXX add check whether type is cts or discrete, change arity to
-        % either 1 or rp.arity accordingly
         bn_opt = struct('network', network, 'arity', 1, 'type', type, ...
-            'variance', variance, 'moralize', false);
+            'variance', variance, 'moralize', false, 'n', 8);
         [bnet, bn_opt] = make_bnet(bn_opt);
 
         
         full_opt = {struct('classifier', @sb_classifier, 'params', ...
-            struct('eta', 0.01, 'alpha', 1.0), 'arity', rp.arity, ...
+            struct('eta', 0.01, 'alpha', 1.0), 'arity', 4, ...
             'prealloc', @dummy_prealloc, 'score', 'bic', 'edge', false, ...
-            'color','b-'), ...
+            'color','b--'), ...
             struct('classifier', @sb_classifier, 'params', ...
-            struct('eta', 0.01, 'alpha', 1.0), 'arity', rp.arity, ...
+            struct('eta', 0.01, 'alpha', 1.0), 'arity', 4, ...
             'prealloc', @dummy_prealloc, 'score', 'bic', 'edge', true, ...
-            'color','g-'), ...
-            struct( 'classifier', @kci_classifier,'pval', false, ...
+            'color','g--'), ...
+            struct( 'classifier', @kci_classifier,'pval', true, ...
             'kernel', GaussKernel(),  'arity', 1, ...
             'prealloc', @kci_prealloc, 'score', 'rho', 'edge', true, ...
             'maxK', 5, 'color', 'm-')};
+            struct( 'classifier', @kci_classifier,'pval', true, ...
+            'kernel', GaussKernel(),  'arity', 4, ...
+            'prealloc', @kci_prealloc, 'score', 'rho', 'edge', true, ...
+            'maxK', 5, 'color', 'm--')};
         class_opt = full_opt(f_sel);
         
         if rp.plot_flag
@@ -170,7 +167,6 @@ assert(isequal(size(SHD{1}), [length(rp.Nvec), rp.num_exp]));
         SHD = cell(length(class_opt), 1); % hamming distance
         T1 = cell(length(class_opt), 1); % score time
         T2 = cell(length(class_opt), 1); % structure search
-        
     end
 
 end

@@ -8,9 +8,13 @@ D = ones(si, si, si) * Inf;
 sum0 = 0;
 sum1 = 0;
 sum2 = 0;
+num0 = 0;
+num1 = 0;
+num2 = 0;
 for i = 1:si
     D(i, i, i) = norm(pre.K(:, :, i));
     sum0 = sum0 + D(i, i, i);
+    num0 = num0 + 1;
     for j = 1:si        
         if (i == j)
             continue;
@@ -24,8 +28,10 @@ for i = 1:si
             D(i, k, j) = D(i, j, k);  
             if (j == k)
                 sum1 = sum1 + D(i, j, k);
+                num1 = num1 + 1;
             else
                 sum2 = sum2 + D(i, j, k);
+                num2 = num2 + 1;
             end
         end
     end
@@ -35,25 +41,24 @@ end
 % E = D(D ~= Inf);
 % m = mean(E(:)) / 40;
 % D = D ./ m;
-% for i = 1:si
-%     D(i, i, i) = D(i, i, i) / sum0;
-%         for j = 1:si        
-%         if (i == j)
-%             continue;
-%         end
-%         for k = j:si
-%             if (i == k)
-%                 continue;
-%             end 
-%             if (j == k)
-%                 D(i, j, k) = D(i, j, k) / sum1;
-%             else
-%                 D(i, j, k) = D(i, j, k) / sum2;
-%             end
-%         end
-%     end
-%     
-% end
+for i = 1:si
+    D(i, i, i) = num0 * D(i, i, i) / sum0;
+    for j = 1:si
+        if (i == j)
+            continue;
+        end
+        for k = j:si
+            if (i == k)
+                continue;
+            end
+            if (j == k)
+                D(i, j, k) = num1 * D(i, j, k) / sum1;
+            else
+                D(i, j, k) = num2 * D(i, j, k) / sum2;
+            end
+        end
+    end
+end
 
 
 % save to structure
@@ -89,6 +94,7 @@ for i = 1:length(S)
     end
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [d, j, k] = get_maxK_elts(D, maxK, i)
 %pass squeeze D(i, :, :)
 
@@ -124,25 +130,6 @@ printf(2, 'taking %d two-parent sets\n', length(d));
 end
 
 end
-
-% take 1      
-%         [~, order] = sort(D(i, j, j+1:end));
-%         for k = 1 : maxK
-%             o = order(k);
-%             if (D(i, j, o) ~= Inf)
-%                 S{i}{end + 1} = struct('score', -D(i, j, o), 'parents', unique([j, o]));
-%             end
-%         end
-
-% take 2
-%     for j = 1:si
-%         for k = j+1:si
-%             if ((j == i) || (k == i)) % don't condition i on i
-%                 continue;
-%             end
-%             S{i}{end+1} = struct('score', -D(i, j, k), 'parents', [j k]);
-%         end
-%     end
 
 
 

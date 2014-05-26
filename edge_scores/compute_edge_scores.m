@@ -1,13 +1,7 @@
 function [E, info] = compute_edge_scores(emp, opt, maxS, pre)
 
-% number of variables
-K = size(emp, 1);
-
-% initialize edge scores
-R_norm = zeros(K);
-%R_unnorm = zeros(K);
-
-triples = gen_triples(K, [0 : maxS]);
+R = zeros(size(emp, 1));
+triples = gen_triples(size(emp, 1), 0:maxS);
 info = cell(length(triples), 1);
 
 if ~exist('pre', 'var')
@@ -19,16 +13,28 @@ if ~exist('pre', 'var')
 end
 
 for t = 1:length(triples)
-    i = triples{t}.i;
-    j = triples{t}.j;
-    [R_norm(i,j), info{t}] = classifier_wrapper(emp, ...
+    [R(triples{t}.i,triples{t}.j), info{t}] = classifier_wrapper(emp, ...
         triples{t}, opt.classifier, opt, pre);  
-    %R_unnorm(i,j) = info.Sta_unnorm;
 end
 
-%E = -log(R);
-%R = my_sigmoid(R_norm, 0.05, 20);
-E = 1 ./ R_norm;
+if (isfield(opt, 'pval') && opt.pval)
+    % fit mixture model over pvals
+    zz = norminv(R); 
+    z = zz(~isnan(zz) & ~isinf(zz));
+    gmix = fitgmdist(z, 2, 'Regularize', 0.01);
+    disp(gmix);
+    
+    % convert pvals to p(H1)
+    P = posterior(gmix, z);
+    [~, idx] = max(gmix.mu);
+    
+    % place these values in appropriate position in R matrix 
+    E = zz;
+    E(find(~isnan(zz) & ~isinf(zz))) = -log(P(:, idx))
+else
+    %R = my_sigmoid(R, 0.05, 20);
+    E = -log(R);
+end
 
 
 

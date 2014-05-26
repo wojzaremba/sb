@@ -5,10 +5,9 @@ rand('seed', 1);
 
 N = 100;
 maxK = 10;
-n = 5;
 
-bn_opt = struct('variance', 0.01, 'network', 'vstruct', 'arity', 1,... 
-'type', 'quadratic_ggm', 'moralize', false, 'n', n);
+bn_opt = struct('variance', 0.01, 'network', 'Y', 'arity', 1,... 
+'type', 'quadratic_ggm', 'moralize', false);
 bnet = make_bnet(bn_opt);
 
 opt = struct( 'pval', false, 'kernel', GaussKernel(), 'classifier', ...
@@ -18,9 +17,12 @@ emp = normalize_data(samples(bnet,N));
 pre = opt.prealloc(emp, opt);
 [S, D] = compute_rho_scores(pre, maxK);
 
-% check that D reflects that conditioning on more variables will make the
-% score more favorable
-assert( D(n, n, n) > D(n, 1, 2));
+% check that D reflects that conditioning on more of the correct 
+% variables will make the score more favorable
+% " > " means "is worse than"
+assert( D(3, 3, 3) > D(3, 1, 2)); 
+assert((D(3, 1, 1)) > D(3, 1, 2));
+assert((D(3, 2, 2)) > D(3, 1, 2));
 
 % check that the scores are in order of decreasing parent size
 for i = 1 : length(S)
