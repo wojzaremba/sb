@@ -1,4 +1,13 @@
-function G = mmhc(data, varNValues, arity)
+function [G, T] = mmhc(data, nstates_or_arity)
+
+tic; 
+nvars = size(data, 2);
+if length(nstates_or_arity) > 1
+    nstates = nstates_or_arity;
+else
+    arity = nstates_or_arity;
+    nstates = arity*ones(1, nvars);
+end
 
 import org.mensxmachina.stats.tests.ci.kci.kcipvalueestimator;
 import org.mensxmachina.stats.tests.ci.dummycitrcapplier; 
@@ -19,11 +28,10 @@ CITDSepDeterminer = citdsepdeterminer(CITRCApplier, CITPValueEstimator);
 CITCACalculator = citcacalculator(CITRCApplier, CITPValueEstimator);
 
 % create max-min local-to-global learner without symmetry correction
-num_vars = length(varNValues);
 MMLGLearner = mmlglearner(...
     CITDSepDeterminer, ...
     CITCACalculator, ...
-    'maxSepsetCard', min(10, num_vars - 2), ...
+    'maxSepsetCard', min(10, nvars - 2), ...
     'symCorrEnabled', false);
 
 % learn skeleton
@@ -37,7 +45,7 @@ if exist('arity', 'var')
 end
 
 % create local scorer
-LocalScorer = bdeulocalscorer(data, varNValues);
+LocalScorer = bdeulocalscorer(data, nstates);
 
 % create candidate parent matrix
 cpm = tril(skeleton + skeleton');
@@ -48,3 +56,4 @@ HillClimber = hillclimber(LocalScorer, 'CandidateParentMatrix', cpm);
 % learn structure
 structure = HillClimber.learnstructure();
 G = full(structure);
+T = toc;

@@ -1,34 +1,31 @@
 function CPD = polynomial_gaussian_CPD(bnet, self, varargin)
-% POLYNOMIAL_GAUSSIAN_CPD Make a conditional "polynomial" Gaussian distrib, i.e. the mean of the child is a polynomial function of the mean of the parents, plus some Gaussian noise.
-%
-% CPD = polynomial_gaussian_CPD(bnet, node, ...) will create a CPD with random parameters,
+% POLYNOMIAL_GAUSSIAN_CPD Make a conditional "polynomial" Gaussian distrib,
+% i.e. the mean of the child is a polynomial function of the mean of the
+% parents, plus some Gaussian noise.  
+% CPD = polynomial_gaussian_CPD(bnet, node, ...) will create a CPD with
+% random parameters, 
 % where node is the number of a node in this equivalence class.
 %
 % Only defined for continuous parents.
 
-% To define this CPD precisely, call the continuous (cts) parents (if any) X,
-% the discrete parents (if any) Q, and this node Y. Then the distribution on Y is:
+% To define this CPD precisely, call the continuous (cts) parents (if any)
+% X, 
+% the discrete parents (if any) Q, and this node Y. Then the distribution
+% on Y is: 
 % - no parents: Y ~ N(mu, Sigma)
 % - cts parents : Y|X=x ~ N(mu + W x, Sigma)
 % - discrete parents: Y|Q=i ~ N(mu(i), Sigma(i))
 % - cts and discrete parents: Y|X=x,Q=i ~ N(mu(i) + W(i) x, Sigma(i))
 %
 % The list below gives optional arguments [default value in brackets].
-% (Let ns(i) be the size of node i, X = ns(X), Y = ns(Y) and Q = prod(ns(Q)).)
+% (Let ns(i) be the size of node i, X = ns(X), Y = ns(Y) and Q =
+% prod(ns(Q)).) 
 % Parameters will be reshaped to the right size if necessary.
 %
 % mean       - mu(:,i) is the mean given Q=i [ randn(Y,Q) ]
-% cov        - Sigma(:,:,i) is the covariance given Q=i [ repmat(100*eye(Y,Y), [1 1 Q]) ]
+% cov        - Sigma(:,:,i) is the covariance given Q=i [
+% repmat(100*eye(Y,Y), [1 1 Q]) ] 
 % weights    - W(:,:,i) is the regression matrix given Q=i [ randn(Y,X,Q) ]
-% cov_type   - if 'diag', Sigma(:,:,i) is diagonal [ 'full' ]
-% tied_cov   - if 1, we constrain Sigma(:,:,i) to be the same for all i [0]
-% clamp_mean - if 1, we do not adjust mu(:,i) during learning [0]
-% clamp_cov  - if 1, we do not adjust Sigma(:,:,i) during learning [0]
-% clamp_weights - if 1, we do not adjust W(:,:,i) during learning [0]
-% cov_prior_weight - weight given to I prior for estimating Sigma [0.01]
-% cov_prior_entropic - if 1, we also use an entropic prior for Sigma [0]
-%
-% e.g., CPD = polynomial_gaussian_CPD(bnet, i, 'mean', [0; 0], 'clamp_mean', 1)
 
 if nargin==0
   % This occurs if we are trying to load an object from a file.
@@ -68,75 +65,19 @@ cpsz = sum(psz(CPD.cps));
 CPD.degree = 2;
 CPD.mean = randn(ss, dpsz);
 CPD.cov = 100*repmat(eye(ss), [1 1 dpsz]);    
-%CPD.weights = randn(ss, cpsz, dpsz);
 CPD.weights = randn(cpsz, CPD.degree);
-while (sum(abs(CPD.weights) < 0.3) > 0)
-    CPD.weights = randn(cpsz, CPD.degree);
-end
-%CPD.cov_type = 'full';
-%CPD.tied_cov = 0;
-%CPD.clamped_mean = 0;
-%CPD.clamped_cov = 0;
-%CPD.clamped_weights = 0;
-%CPD.cov_prior_weight = 0.01;
-%CPD.cov_prior_entropic = 0;
+% while (sum(abs(CPD.weights) < 0.3) > 0)
+%     CPD.weights = randn(cpsz, CPD.degree);
+% end
+
 nargs = length(args);
 if nargs > 0
   CPD = set_fields(CPD, args{:});
 end
 
-% Make sure the matrices have 1 dimension per discrete parent.
-% Bug fix due to Xuejing Sun 3/6/01
 CPD.mean = myreshape(CPD.mean, [ss ns(dps)]);
 CPD.cov = myreshape(CPD.cov, [ss ss ns(dps)]);
-%CPD.weights = myreshape(CPD.weights, [ss cpsz ns(dps)]);
-
-% Precompute indices into block structured  matrices
-% to speed up CPD_to_lambda_msg and CPD_to_pi
-%cpsizes = CPD.sizes(CPD.cps);
-%CPD.cps_block_ndx = cell(1, length(cps));
-%for i=1:length(cps)
-%  CPD.cps_block_ndx{i} = block(i, cpsizes);
-%end
-
-%%%%%%%%%%% 
-% Learning stuff
-
-% expected sufficient statistics 
-%CPD.Wsum = zeros(dpsz,1);
-%CPD.WYsum = zeros(ss, dpsz);
-%CPD.WXsum = zeros(cpsz, dpsz);
-%CPD.WYYsum = zeros(ss, ss, dpsz);
-%CPD.WXXsum = zeros(cpsz, cpsz, dpsz);
-%CPD.WXYsum = zeros(cpsz, ss, dpsz);
-
-% For BIC
-%CPD.nsamples = 0;
-%switch CPD.cov_type
-% case 'full',
-%  % since symmetric 
-%    %ncov_params = ss*(ss-1)/2; 
-%    ncov_params = ss*(ss+1)/2; 
-%  case 'diag',
-%    ncov_params = ss;
-%  otherwise
-%    error(['unrecognized cov_type ' cov_type]);
-%end
-% params = weights + mean + cov
-%if CPD.tied_cov
-%  CPD.nparams = ss*cpsz*dpsz + ss*dpsz + ncov_params;
-%else
-%  CPD.nparams = ss*cpsz*dpsz + ss*dpsz + dpsz*ncov_params;
-%end
 CPD.nparams = cpsz*CPD.degree + 2; % weight parameters plus mean and variance
-
-% for speeding up maximize_params
-%CPD.useC = exist('rep_mult');
-%
-%clamped = CPD.clamped_mean & CPD.clamped_cov & CPD.clamped_weights;
-%CPD = set_clamped(CPD, clamped);
-
-%%%%%%%%%%%
 
 function CPD = init_fields()
 % This ensures we define the fields in the same order 
@@ -151,20 +92,6 @@ CPD.degree = [];
 CPD.mean = [];
 CPD.cov = [];
 CPD.weights = [];
-%CPD.clamped_mean = [];
-%CPD.clamped_cov = [];
-%CPD.clamped_weights = [];
-%CPD.cov_type = [];
-%CPD.tied_cov = [];
-%CPD.Wsum = [];
-%CPD.WYsum = [];
-%CPD.WXsum = [];
-%CPD.WYYsum = [];
-%CPD.WXXsum = [];
-%CPD.WXYsum = [];
 CPD.nsamples = [];
 CPD.nparams = [];            
-%CPD.cov_prior_weight = [];
-%CPD.cov_prior_entropic = [];
-%CPD.useC = [];
-%CPD.cps_block_ndx = [];
+

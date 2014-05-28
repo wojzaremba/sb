@@ -41,5 +41,8 @@ end
 function w = mk_weights(numpa)
     degree = 2;
     w = randn(numpa, degree);
+    while (sum(abs(w(:)) < 0.3) > 0)
+        w = randn(numpa, degree);
+    end
 end
 
