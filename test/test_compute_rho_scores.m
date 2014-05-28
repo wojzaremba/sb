@@ -7,7 +7,7 @@ N = 100;
 maxK = 10;
 
 bn_opt = struct('variance', 0.01, 'network', 'Y', 'arity', 1,... 
-'type', 'quadratic_ggm', 'moralize', false);
+'data_gen', 'quadratic_ggm', 'moralize', false);
 bnet = make_bnet(bn_opt);
 
 opt = struct( 'pval', false, 'kernel', GaussKernel(), 'classifier', ...

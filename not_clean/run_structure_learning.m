@@ -5,11 +5,11 @@ Nvec = 50:10:70; %50:100; %400;
 maxS = 2;
 psi = 1;
 
-type = 'quadratic_ggm';
+data_gen = 'quadratic_ggm';
 variance = 0.05;
 
 bn_opt = struct('variance', variance, 'network', network, 'arity', 1,... 
-'type', type, 'moralize', false);
+'data_gen', data_gen, 'moralize', false);
 opt = get_opt(score);
 true_Pdag = dag_to_cpdag(get_dag(bn_opt));
 

@@ -1,39 +1,41 @@
-function [SHD, T, bn_opt, rp, c_opt, data] = bn_learn(network, ...
-    type, variance, Nvec, num_bnet, num_Nrep, maxpa, maxS, maxK, psi, ..., 
-    plot_flag, save_flag, f_sel)
+function [SHD, T, bn_opt, rp, learn_opt, data] = bn_learn(network, ...
+    data_gen, variance, nvec, num_bnet, num_nrep, maxpa, max_condset, ...
+    prune_max, psi, nvars, plot_flag, save_flag, f_sel)
 
 % initialize
-[bn_opt, bnet, rp, c_opt, true_Pdag, SHD, T] = init(network, ...
-    type, variance, Nvec, num_bnet, num_Nrep, maxpa, maxS, maxK, psi, ...
-    plot_flag, save_flag, f_sel);
+[bn_opt, rp, learn_opt] = init(network, data_gen, variance, nvec, num_bnet, ...
+    num_nrep, maxpa, max_condset, prune_max, psi, nvars, plot_flag, save_flag, f_sel);
 
-for bn = 1:rp.num_bnet       
-    for Nrep = 1:rp.num_Nrep
-        for N_idx = 1:length(rp.Nvec)
-            N = rp.Nvec(N_idx);
-            data = normalize_data(samples(bnet, N));
-            for t = 1:length(c_opt)
-                opt = c_opt{t};
-                fprintf('bn %d, N=%d, %s...\n', bn, N, opt.name);
-                [SHD{t}(bn, Nrep, N_idx), T{t}(bn, Nrep, N_idx)] = ...
-                    learn_structure(data, opt, true_Pdag);
-            end
-            
+[bnet, bn_opt] = make_bnet(bn_opt);
+
+SHD = cell(length(learn_opt), 1); % hamming distance
+T = cell(length(learn_opt), 1); % runtime
+
+for b = 1:rp.num_bnet       
+    for r = 1:rp.num_nrep
+        for ni = 1:length(rp.nvec)
+            n = rp.nvec(ni);
+            data = normalize_data(samples(bnet, n));
+            for t = 1:length(learn_opt)
+                opt = learn_opt{t};
+                fprintf('bn %d, N=%d, %s...\n', b, n, opt.name);
+                [SHD{t}(b, r, ni), T{t}(b, r, ni)] = ...
+                    learn_structure(data, opt, rp);
+            end     
         end  
         if rp.plot_flag
-            update_plot(bn, Nrep, rp, c_opt, SHD);
-            pause(2);
+            update_plot(b, r, rp, learn_opt, SHD, T);
         end
     end
     bnet = make_bnet(bn_opt);
 end
-assert(isequal(size(SHD{1}), [rp.num_bnet rp.num_Nrep length(rp.Nvec)]));
+assert(isequal(numel(SHD{1}), rp.num_bnet*rp.num_nrep*length(rp.nvec)));
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    function [SHD, t] = learn_structure(data, opt, true_Pdag)       
+    function [SHD, t] = learn_structure(data, opt, rp)       
         if (strcmpi(opt.method, 'sb3') || strcmpi(opt.method, 'bic'))
             data = discretize_data(data, opt.arity);
-            [S, t1] = compute_score(data, opt);
+            [S, t1] = compute_score(data, opt, rp);
             [G, t2] = run_gobnilp(S);
             t = t1 + t2;
         elseif strcmpi(opt.method, 'mmhc')
@@ -41,37 +43,39 @@ assert(isequal(size(SHD{1}), [rp.num_bnet rp.num_Nrep length(rp.Nvec)]));
         else
             error('unexpected opt.method');
         end
-        SHD = compute_shd(G, true_Pdag);      
+        SHD = compute_shd(G, rp.true_pdag);      
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    function SHD = compute_shd(G, true_Pdag)
+    function SHD = compute_shd(G, true_pdag)
         pred_Pdag = dag_to_cpdag(G);
-        SHD = shd(true_Pdag,pred_Pdag);
-        if ~isequal(true_Pdag, pred_Pdag)
+        SHD = shd(true_pdag,pred_Pdag);
+        if ~isequal(true_pdag, pred_Pdag)
+            fprintf('predicted G:\n');
+            disp(G);
             fprintf('predicted PDAG:\n');
             disp(pred_Pdag);
             fprintf('true PDAG: \n');
-            disp(true_Pdag);
+            disp(true_pdag);
         end
         fprintf('hamming distance = %d\n', SHD);
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    function update_plot(bn, Nrep, rp, c_opt, SHD, T)
+    function update_plot(b, r, rp, learn_opt, SHD, T)
         clf;
         [h1, h2, leg] = deal([], [], {});
-        for c = 1 : length(c_opt)
-            leg{end+1} = c_opt{c}.name;
+        for c = 1 : length(learn_opt)
+            leg{end+1} = learn_opt{c}.name;
             
             subplot(1, 2, 1); hold on
-            ham = SHD{c}(1:bn, 1:Nrep, :);
-            h1(end+1) = plot(rp.Nvec, squeeze(mean(mean(ham, 1), 2)), ...
-                c_opt{c}.color, 'linewidth', 2);
+            ham = SHD{c}(1:b, 1:r, :);
+            h1(end+1) = plot(rp.nvec, squeeze(mean(mean(ham, 1), 2)), ...
+                learn_opt{c}.color, 'linewidth', 2);
             
             subplot(1, 2, 2); hold on
-            tt = T{c}(1:bn, 1:Nrep, :);
-            h2(end+1) = plot(rp.Nvec, squeeze(mean(mean(tt, 1), 2)), ...
-                c_opt{c}.color, 'linewidth', 2);
+            tt = T{c}(1:b, 1:r, :);
+            h2(end+1) = plot(rp.nvec, squeeze(mean(mean(tt, 1), 2)), ...
+                learn_opt{c}.color, 'linewidth', 2);
         end
         
         subplot(1, 2, 1);
@@ -81,14 +85,15 @@ assert(isequal(size(SHD{1}), [rp.num_bnet rp.num_Nrep length(rp.Nvec)]));
         xlabel('number of samples');
         ylabel('structural hamming distance');
         title(sprintf('SHD vs. N, %s network, %d parameter settings, %d reps', ...
-            rp.network, bn, Nrep), 'fontsize', 14);
+            rp.network, b, r), 'fontsize', 14);
         
         subplot(1, 2, 2);
         legend(h2, leg);
         xlabel('number of samples');
         ylabel('runtime (sec)');
         title(sprintf('Runtime vs. N, %s network, %d parameter settings, %d reps', ...
-            rp.network, bn, Nrep), 'fontsize', 14);
+            rp.network, b, r), 'fontsize', 14);
+        pause(2);
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -105,13 +110,13 @@ assert(isequal(size(SHD{1}), [rp.num_bnet rp.num_Nrep length(rp.Nvec)]));
         if strcmpi(opt.method, 'bic')
             S = compute_bic(data, opt.arity, rp.maxpa);
         elseif strcmpi(opt.method, 'sb3')
-            S = compute_rho_scores(pre, opt.maxK);
+            S = compute_rho_scores(pre, opt.prune_max);
         else
             error('unexpected value for score');
         end
         
         if opt.edge
-            E = compute_edge_scores(data, opt, rp.maxS, pre);
+            E = compute_edge_scores(data, opt, rp.max_condset, pre);
             S = add_edge_scores(S, E, rp.psi);
         end;
         S = prune_scores(S);
@@ -119,30 +124,31 @@ assert(isequal(size(SHD{1}), [rp.num_bnet rp.num_Nrep length(rp.Nvec)]));
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    function [bn_opt, bnet, rp, class_opt, true_Pdag, SHD, T] = ...
-            init(network, type, variance, Nvec, num_bnet, num_Nrep, ...
-            maxpa, maxS, maxK, psi, plot_flag, save_flag, f_sel)
+    function [bn_opt, rp, learn_opt] = init(network, data_gen, v, nvec, ...
+            num_bnet, num_nrep, maxpa, max_condset, prune_max, psi, nvars, plot_flag, ...
+            save_flag, f_sel)
         
         check_dir();
         rp = struct();
         
         rp.network = network;
-        rp.type = type;
-        rp.variance = variance;
-        rp.Nvec = Nvec;
+        rp.data_gen = data_gen;
+        rp.variance = v;
+        rp.nvec = nvec;
         rp.num_bnet = num_bnet;
-        rp.num_Nrep = num_Nrep;
+        rp.num_nrep = num_nrep;
         rp.maxpa = maxpa;
-        rp.maxS = maxS;
-        rp.maxK = maxK;
+        rp.max_condset = max_condset;
+        rp.prune_max = prune_max;
         rp.psi = psi;
         rp.plot_flag = plot_flag;
         rp.save_flag = save_flag;
         rp.f_sel = f_sel;
         
-        bn_opt = struct('network', network, 'arity', 1, 'type', type, ...
-            'variance', variance, 'moralize', false, 'n', 8);
-        [bnet, bn_opt] = make_bnet(bn_opt);
+        bn_opt = struct('network', network, 'arity', 1, 'data_gen', data_gen, ...
+            'variance', v, 'moralize', false, 'n', nvars);
+        
+        rp.true_pdag = dag_to_cpdag(get_dag(bn_opt));
 
         full_opt = {
             struct('method', 'mmhc', 'arity', 3, 'edge', false, ...
@@ -150,23 +156,23 @@ assert(isequal(size(SHD{1}), [rp.num_bnet rp.num_Nrep length(rp.Nvec)]));
             struct('method', 'sb3', 'classifier', @kci_classifier, ...
                 'kernel', GaussKernel(),  'arity', 1, ...
                 'prealloc', @kci_prealloc, 'pval', false, ...
-                'edge', true, 'maxK', rp.maxK, 'color', 'm-'), ...
+                'edge', true, 'prune_max', rp.prune_max, 'color', 'm-'), ...
             struct( 'method', 'sb3', 'classifier', @kci_classifier, ...
                 'kernel', GaussKernel(),  'arity', 1, ...
                 'prealloc', @kci_prealloc, 'pval', true, ...
-                'edge', true, 'maxK', rp.maxK, 'color', 'r-'), ...
+                'edge', true, 'prune_max', rp.prune_max, 'color', 'r-'), ...
             struct('method', 'bic','classifier', @sb_classifier, ...
                 'params', struct('eta', 0.01, 'alpha', 1.0), ...
                 'prealloc', @dummy_prealloc, 'arity', 4, ...
                 'edge', false, 'color','b-')};
-        class_opt = full_opt(f_sel);
+        learn_opt = full_opt(f_sel);
         
         if rp.plot_flag
             figure
         end
         
-        for c = 1:length(class_opt)
-            o = class_opt{c};
+        for c = 1:length(learn_opt)
+            o = learn_opt{c};
             if o.arity == 1
                 str = ', cts data';
             else
@@ -178,12 +184,9 @@ assert(isequal(size(SHD{1}), [rp.num_bnet rp.num_Nrep length(rp.Nvec)]));
             if isfield(o, 'pval')
                 str = [str sprintf(', %s pval', repmat('no', ~o.pval))];
             end            
-            class_opt{c}.name = sprintf('%s%s', o.method, str);
+            learn_opt{c}.name = sprintf('%s%s', o.method, str);
         end
-        
-        true_Pdag = dag_to_cpdag(get_dag(bn_opt));
-        SHD = cell(length(class_opt), 1); % hamming distance
-        T = cell(length(class_opt), 1); % runtime
+
     end
 
 end

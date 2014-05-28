@@ -9,7 +9,7 @@ if isnumeric(opt.network)
     
 elseif strcmpi(opt.network, 'sachs')
    % consensus network according to Kevin Murphy's paper
-    n = 11;
+    opt.n = 11;
     
     Raf = 1;
     Mek = 2;
@@ -23,7 +23,7 @@ elseif strcmpi(opt.network, 'sachs')
     P38 = 10;
     JNK = 11;
     
-    dag = zeros(n);
+    dag = zeros(opt.n);
     dag(Raf, Mek) = 1;
     dag(Mek, Erk) = 1;
     dag(PLCg, [PIP2, PKC]) = 1;
@@ -50,7 +50,7 @@ elseif strcmpi(opt.network, 'large')
     
 elseif strcmpi(opt.network,'child')
    
-    opt = init_n(opt, 20);
+    opt.n = 20;
     
     BirthAsphyxia = 1;
     Disease = 2;
@@ -90,7 +90,7 @@ elseif strcmpi(opt.network,'child')
     
 elseif strcmpi(opt.network, 'asia')
     
-    opt = init_n(opt, 8);
+    opt.n = 8;
     
     Smoking = 1;
     Bronchitis = 2;
@@ -111,7 +111,7 @@ elseif strcmpi(opt.network, 'asia')
         
 elseif (strcmpi(opt.network, 'ins') || strcmpi(opt.network, 'insurance'))
     
-    opt = init_n(opt, 27);
+    opt.n = 27;
     
     Age = 1;            %
     SocioEcon = 2;      %
@@ -175,9 +175,7 @@ elseif (strcmpi(opt.network, 'ins') || strcmpi(opt.network, 'insurance'))
 elseif strcmpi(opt.network,'chain')
     
     opt = init_n(opt, 4);
-    
     dag = zeros(opt.n);
-    
     for i = 1:(opt.n-1)
         dag(i,i+1) = 1;
     end

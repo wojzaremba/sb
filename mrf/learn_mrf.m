@@ -13,7 +13,7 @@ end
 
 randn('seed',1);
 
-bn_opt = struct('variance', v, 'network', network, 'arity', 1, 'type', 'quadratic_ggm', 'moralize', false, 'n', n);
+bn_opt = struct('variance', v, 'network', network, 'arity', 1, 'data_gen', 'quadratic_ggm', 'moralize', false, 'n', n);
 bnet = make_bnet(bn_opt);
 mdag = moralize_dag(bnet.dag);
 printf(2, '  number of edges in dag: %d, mdag: %d\n', sum(sum(bnet.dag)), sum(sum(mdag)));
