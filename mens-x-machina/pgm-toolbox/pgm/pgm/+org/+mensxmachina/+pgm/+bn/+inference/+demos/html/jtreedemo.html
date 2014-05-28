@@ -1,0 +1,260 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Bayesian network inference using the junction-tree algorithm</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-07-14"><meta name="DC.source" content="jtreedemo.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Bayesian network inference using the junction-tree algorithm</h1><!--introduction--><p>This demo illustrates Bayesian network inference using the junction-tree algorithm. The example is due to Kevin Murphy (<a href="http://bnt.googlecode.com/svn/trunk/docs/usage.html">http://bnt.googlecode.com/svn/trunk/docs/usage.html</a>) and uses the <i>sprinkler</i> Bayesian network from <i>Artificial Intelligence: A Modern Approach (1st Edition)</i>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Creating the network</a></li><li><a href="#2">Viewing the network structure</a></li><li><a href="#3">Creating an inference Engine</a></li><li><a href="#4">Computing a marginal probability distribution</a></li><li><a href="#5">Updating the evidence</a></li><li><a href="#6">Computing the marginal probability distribution given the new evidence</a></li></ul></div><h2>Creating the network<a name="1"></a></h2><p>First we create the sprinkler network.</p><pre class="codeinput">import <span class="string">org.mensxmachina.pgm.bn.tabular.sprinkler</span>;
+
+<span class="comment">% create the network</span>
+BayesNet = org.mensxmachina.pgm.bn.tabular.sprinkler
+</pre><pre class="codeoutput">BayesNet = 
+
+    structure
+
+   (1,2)        1
+   (1,3)        1
+   (2,4)        1
+   (3,4)        1
+
+
+    Conditional probability distributions
+
+        cloudy = false     cloudy = true
+                   0.5               0.5
+
+                      sprinkler = false     sprinkler = true
+    cloudy = false                  0.5                  0.5
+    cloudy =  true                  0.9                  0.1
+
+                      rain = false     rain = true
+    cloudy = false             0.8             0.2
+    cloudy =  true             0.2             0.8
+
+                                       wetGrass = false     wetGrass = true
+    sprinkler = false, rain = false                   1                   0
+    sprinkler =  true, rain = false                 0.1                 0.9
+    sprinkler = false, rain =  true                 0.1                 0.9
+    sprinkler =  true, rain =  true                0.01                0.99
+
+</pre><h2>Viewing the network structure<a name="2"></a></h2><p>We view the network structure.</p><pre class="codeinput">import <span class="string">org.mensxmachina.pgm.bn.viewers.biograph.biographbayesnetviewer</span>;
+
+<span class="comment">% create Bayesian network Viewer</span>
+Viewer = biographbayesnetviewer(BayesNet);
+
+<span class="comment">% view the network structure</span>
+Viewer.viewbayesnetstructure();
+</pre><img vspace="5" hspace="5" src="jtreedemo_01.png" alt=""> <h2>Creating an inference Engine<a name="3"></a></h2><p>Probabilistic inference is performed by an "inference Engine". An inference Engine computes the marginal probability distribution of members of a set of variables given evidence.</p><p>The junction-tree inference Engine needs to be supplied a Bayesian network, and the evidence and weight for each variable in the network.</p><p>The evidence for each variable is a likelihood, which is a special case of a potential. A potential over a set of variables is a function that maps each variable-value combination to a nonnegative number. A likelihood is a potential over a single variable that maps each variable value to a number in range [0, 1]. A likelihood of 1 for a single value x of variable X and 0 for all the other values of X encodes the fact that X = x. A likelihood of 1 for every value of X denotes that the value of X is unknown.</p><p>The likelihood of each variable must be compatible with the CPD of that variable in the network. Since all CPDs in our network are tabular CPDs, we create a tabular likelihood for each variable. Our evidence encodes the fact that wetGrass = true and the values of cloudy, sprinkler and rain are unknown.</p><p>For finite-domain variables, the weight of a variable is the number of values of that variable.</p><pre class="codeinput">import <span class="string">org.mensxmachina.stats.cpd.tabular.tabpotential</span>;
+import <span class="string">org.mensxmachina.pgm.bn.inference.jtree.jtreeinfengine</span>;
+
+<span class="comment">% create variable values -- same for all variables</span>
+varValues = nominal([1; 2], {<span class="string">'false'</span>, <span class="string">'true'</span>}, [1 2]);
+
+<span class="comment">% create evidence for each variable</span>
+CloudyEvidence = tabpotential({<span class="string">'cloudy'</span>}, {varValues}, [1; 1])
+SprinklerEvidence = tabpotential({<span class="string">'sprinkler'</span>}, {varValues}, [1; 1])
+RainEvidence = tabpotential({<span class="string">'rain'</span>}, {varValues}, [1; 1])
+WetGrassEvidence = tabpotential({<span class="string">'wetGrass'</span>}, {varValues}, [0; 1])
+
+<span class="comment">% put the evidence together</span>
+evidence = {CloudyEvidence, SprinklerEvidence, RainEvidence, WetGrassEvidence};
+
+<span class="comment">% create variable weights - same for all variables</span>
+varWeights = [2 2 2 2];
+
+<span class="comment">% create the Engine</span>
+Engine = jtreeinfengine(BayesNet, evidence, varWeights);
+</pre><pre class="codeoutput">CloudyEvidence = 
+    cloudy = false    1
+    cloudy =  true    1
+
+SprinklerEvidence = 
+    sprinkler = false    1
+    sprinkler =  true    1
+
+RainEvidence = 
+    rain = false    1
+    rain =  true    1
+
+WetGrassEvidence = 
+    wetGrass = false    0
+    wetGrass =  true    1
+
+</pre><h2>Computing a marginal probability distribution<a name="4"></a></h2><p>We compute Pr(sprinkler|wetGrass = true), that is, the probability of the sprinkler being on when the grass is wet.</p><pre class="codeinput"><span class="comment">% get the marginal distribution of variable 2 (sprinkler)</span>
+M = marginal(Engine, 2)
+</pre><pre class="codeoutput">M = 
+        sprinkler = false     sprinkler = true
+                  0.57024              0.42976
+
+</pre><h2>Updating the evidence<a name="5"></a></h2><p>We update the evidence of the Engine to encode the fact that also rain = true.</p><pre class="codeinput"><span class="comment">% change the evidence for variable 3 (rain)</span>
+evidence{3} = tabpotential({<span class="string">'rain'</span>}, {varValues}, [0; 1]);
+
+<span class="comment">% update the evidence</span>
+Engine.evidence = evidence;
+</pre><h2>Computing the marginal probability distribution given the new evidence<a name="6"></a></h2><p>Finally, we compute Pr(sprinkler|wetGrass = true, rain = true), that is, the probability of the sprinkler being on when the grass is wet and it is raining. We see that the fact that it is raining has reduced the probability that the sprinkler is on.</p><pre class="codeinput"><span class="comment">% get the new marginal distribution of variable 2 (sprinkler)</span>
+M = marginal(Engine, 2)
+</pre><pre class="codeoutput">M = 
+        sprinkler = false     sprinkler = true
+                   0.8055               0.1945
+
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.13<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Bayesian network inference using the junction-tree algorithm
+% This demo illustrates Bayesian network inference using the junction-tree
+% algorithm. The example is due to Kevin Murphy
+% (http://bnt.googlecode.com/svn/trunk/docs/usage.html) and uses the
+% _sprinkler_ Bayesian network from _Artificial Intelligence: A Modern
+% Approach (1st Edition)_.
+
+%% Creating the network
+% First we create the sprinkler network.
+
+import org.mensxmachina.pgm.bn.tabular.sprinkler;
+
+% create the network
+BayesNet = org.mensxmachina.pgm.bn.tabular.sprinkler
+
+%% Viewing the network structure
+% We view the network structure.
+
+import org.mensxmachina.pgm.bn.viewers.biograph.biographbayesnetviewer;
+
+% create Bayesian network Viewer
+Viewer = biographbayesnetviewer(BayesNet);
+
+% view the network structure
+Viewer.viewbayesnetstructure();
+
+%% Creating an inference Engine
+% Probabilistic inference is performed by an "inference Engine". An
+% inference Engine computes the marginal probability distribution of
+% members of a set of variables given evidence.
+% 
+% The junction-tree inference Engine needs to be supplied a Bayesian
+% network, and the evidence and weight for each variable in the network.
+%
+% The evidence for each variable is a likelihood, which is a special case
+% of a potential. A potential over a set of variables is a function that
+% maps each variable-value combination to a nonnegative number. A
+% likelihood is a potential over a single variable that maps each variable
+% value to a number in range [0, 1]. A likelihood of 1 for a single value x
+% of variable X and 0 for all the other values of X encodes the fact that X
+% = x. A likelihood of 1 for every value of X denotes that the value of X
+% is unknown.
+%
+% The likelihood of each variable must be compatible with the CPD of that
+% variable in the network. Since all CPDs in our network are tabular CPDs,
+% we create a tabular likelihood for each variable. Our evidence encodes
+% the fact that wetGrass = true and the values of cloudy, sprinkler and
+% rain are unknown.
+% 
+% For finite-domain variables, the weight of a variable is the number of
+% values of that variable.
+
+import org.mensxmachina.stats.cpd.tabular.tabpotential;    
+import org.mensxmachina.pgm.bn.inference.jtree.jtreeinfengine;
+
+% create variable values REPLACE_WITH_DASH_DASH same for all variables
+varValues = nominal([1; 2], {'false', 'true'}, [1 2]);
+
+% create evidence for each variable
+CloudyEvidence = tabpotential({'cloudy'}, {varValues}, [1; 1])
+SprinklerEvidence = tabpotential({'sprinkler'}, {varValues}, [1; 1])
+RainEvidence = tabpotential({'rain'}, {varValues}, [1; 1])
+WetGrassEvidence = tabpotential({'wetGrass'}, {varValues}, [0; 1])  
+
+% put the evidence together
+evidence = {CloudyEvidence, SprinklerEvidence, RainEvidence, WetGrassEvidence};
+
+% create variable weights - same for all variables
+varWeights = [2 2 2 2];
+
+% create the Engine
+Engine = jtreeinfengine(BayesNet, evidence, varWeights);
+
+%% Computing a marginal probability distribution
+% We compute Pr(sprinkler|wetGrass = true), that is, the probability of the
+% sprinkler being on when the grass is wet.
+
+% get the marginal distribution of variable 2 (sprinkler)
+M = marginal(Engine, 2)
+
+%% Updating the evidence
+% We update the evidence of the Engine to encode the fact that also rain =
+% true.
+
+% change the evidence for variable 3 (rain)
+evidence{3} = tabpotential({'rain'}, {varValues}, [0; 1]);
+
+% update the evidence
+Engine.evidence = evidence;
+
+%% Computing the marginal probability distribution given the new evidence
+% Finally, we compute Pr(sprinkler|wetGrass = true, rain = true), that is,
+% the probability of the sprinkler being on when the grass is wet and it is
+% raining. We see that the fact that it is raining has reduced the
+% probability that the sprinkler is on.
+
+% get the new marginal distribution of variable 2 (sprinkler)
+M = marginal(Engine, 2)
+##### SOURCE END #####
+--></body></html>

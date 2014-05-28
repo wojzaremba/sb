@@ -3,14 +3,13 @@ function [S, D] = compute_rho_scores(pre, maxK)
 % number of variables
 si = size(pre.K, 3);
 
+% number of data points
+n = size(pre.K, 1);
+
 % compute scores
 D = ones(si, si, si) * Inf;
-sum0 = 0;
-sum1 = 0;
-sum2 = 0;
-num0 = 0;
-num1 = 0;
-num2 = 0;
+[sum0, sum1, sum2, num0, num1, num2] = deal(0);
+
 for i = 1:si
     D(i, i, i) = norm(pre.K(:, :, i));
     sum0 = sum0 + D(i, i, i);
@@ -36,29 +35,31 @@ for i = 1:si
         end
     end
 end
+D = D ./ sqrt(n);
 
 % divide by mean over all conditioning set sizes
 % E = D(D ~= Inf);
 % m = mean(E(:)) / 40;
 % D = D ./ m;
-for i = 1:si
-    D(i, i, i) = num0 * D(i, i, i) / sum0;
-    for j = 1:si
-        if (i == j)
-            continue;
-        end
-        for k = j:si
-            if (i == k)
-                continue;
-            end
-            if (j == k)
-                D(i, j, k) = num1 * D(i, j, k) / sum1;
-            else
-                D(i, j, k) = num2 * D(i, j, k) / sum2;
-            end
-        end
-    end
-end
+fprintf('warning- not dividing rho scores by mean\n');
+% for i = 1:si
+%     D(i, i, i) = num0 * D(i, i, i) / sum0;
+%     for j = 1:si
+%         if (i == j)
+%             continue;
+%         end
+%         for k = j:si
+%             if (i == k)
+%                 continue;
+%             end
+%             if (j == k)
+%                 D(i, j, k) = num1 * D(i, j, k) / sum1;
+%             else
+%                 D(i, j, k) = num2 * D(i, j, k) / sum2;
+%             end
+%         end
+%     end
+% end
 
 
 % save to structure

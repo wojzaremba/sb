@@ -71,6 +71,7 @@ test_cc_classifier();
 % structure learning
 test_run_gobnilp();
 test_compute_bic();
+test_mmhc();
 
 
 disp('Passed all tests!');

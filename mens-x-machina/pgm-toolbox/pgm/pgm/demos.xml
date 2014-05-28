@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<demos>
+   <name>Probabilistic Graphical Model</name>
+   <type>toolbox</type>
+   <icon>$toolbox/matlab/icons/matlabicon.gif</icon>
+   <description isCdata="no">
+     <p>Mens X Machina Probabilistic Graphical Model Toolbox aims to provide a comprehensive set of tools for Bayesian networks and other probabilistic graphical models.</p>
+    </description>
+    
+    <website>
+    <a href="http://www.mensxmachina.org/pgm-toolbox">
+    Toolbox page at mensxmachina.org</a>
+    </website>
+    
+   <demoitem>
+      <label>Creating, viewing and sampling a Bayesian network</label>
+      <file>+org/+mensxmachina/+pgm/+bn/+demos/html/bayesnetdemo.html</file>
+   </demoitem>
+
+   <demoitem>
+      <label>Bayesian network inference using the junction-tree algorithm</label>
+      <file>+org/+mensxmachina/+pgm/+bn/+inference/+demos/html/jtreedemo.html</file>
+   </demoitem>
+
+   <demoitem>
+      <label>Applying the MMPC, MMPC-skeleton and MMHC algorithms</label>
+      <file>+org/+mensxmachina/+pgm/+bn/+learning/+demos/html/mmhcdemo.html</file>
+   </demoitem>
+
+</demos>
