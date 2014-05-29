@@ -2,14 +2,11 @@ Sparsity Boost
 ==============
 
 TODO
-- Generalize distp
-- Take out unnecessary multiplications by H in kci classifier, since H is idempotent, hence Tr(HAH HBH) = Tr(AHBH).
-- Get tests working for compute edge scores and add edge scores.
+- Consider caching Tr(Ky(:)).  Then, if I don't use the pvalues, I can use the that H is idempotent to compute Tr(HAH HBH) = Tr(AHBH), i.e. I only need to compute KxH, etc. 
 - Take out unnecessary calculations in computing KCI p-value when performing unconditional test.
 - Remove print statements from c++ code.
 - Improve discretization- use method which maximizes mutual information.
 - Regenerate ROC curves with outliers removed.
-- Take another look at test-compute-roc-curves- why is the discrete data performing better?  Doesn't make sense to me.
 
 DATASETS
 - T-cell (downloaded, preprocessed)

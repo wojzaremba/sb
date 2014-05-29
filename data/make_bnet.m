@@ -42,5 +42,7 @@ function w = mk_weights(numpa)
     while (sum(abs(w(:)) < 0.3) > 0)
         w = randn(numpa, degree);
     end
+    fprintf('WEIGHTS ARE:\n');
+    w
 end
 

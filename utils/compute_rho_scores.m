@@ -1,4 +1,4 @@
-function [S, D] = compute_rho_scores(pre, maxK)
+function [S, D] = compute_rho_scores(pre, maxK, nfunc)
 
 % number of variables
 si = size(pre.K, 3);
@@ -23,7 +23,7 @@ for i = 1:si
                 continue;
             end
             K = pre.Kyz(:, :, i, j, k);
-            D(i, j, k) = norm(K(:));
+            D(i, j, k) = norm(K(:));   %<- the only important line of code in this whole function
             D(i, k, j) = D(i, j, k);  
             if (j == k)
                 sum1 = sum1 + D(i, j, k);
@@ -35,13 +35,14 @@ for i = 1:si
         end
     end
 end
-D = D ./ sqrt(n);
+fprintf('Dividing rho scores by %s(n)\n', func2str(nfunc));
+D = D ./ nfunc(n); %<- okay this one is important too.
+
 
 % divide by mean over all conditioning set sizes
 % E = D(D ~= Inf);
 % m = mean(E(:)) / 40;
 % D = D ./ m;
-fprintf('warning- not dividing rho scores by mean\n');
 % for i = 1:si
 %     D(i, i, i) = num0 * D(i, i, i) / sum0;
 %     for j = 1:si

@@ -1,41 +1,44 @@
-function [SHD, T, bn_opt, rp, learn_opt, data] = bn_learn(network, ...
+function [SHD, T, bn_opt, rp, learn_opt, bnet, emp] = bn_learn(network, ...
     data_gen, variance, nvec, num_bnet, num_nrep, maxpa, max_condset, ...
-    prune_max, psi, nvars, plot_flag, save_flag, f_sel)
+    prune_max, psi, nfunc, nvars, plot_flag, save_flag, f_sel)
 
 % initialize
 [bn_opt, rp, learn_opt] = init(network, data_gen, variance, nvec, num_bnet, ...
-    num_nrep, maxpa, max_condset, prune_max, psi, nvars, plot_flag, save_flag, f_sel);
+    num_nrep, maxpa, max_condset, prune_max, psi, nfunc, nvars, plot_flag, save_flag, f_sel);
 
-[bnet, bn_opt] = make_bnet(bn_opt);
+[bnet{1}, bn_opt] = make_bnet(bn_opt);
 
 SHD = cell(length(learn_opt), 1); % hamming distance
 T = cell(length(learn_opt), 1); % runtime
+emp = cell(rp.num_bnet, rp.num_nrep, length(rp.nvec));
 
 for b = 1:rp.num_bnet       
     for r = 1:rp.num_nrep
         for ni = 1:length(rp.nvec)
             n = rp.nvec(ni);
-            data = normalize_data(samples(bnet, n));
+            emp{b, r, ni} = normalize_data(samples(bnet{b}, n));
+            data = emp{b, r, ni};
             for t = 1:length(learn_opt)
                 opt = learn_opt{t};
                 fprintf('bn %d, N=%d, %s...\n', b, n, opt.name);
                 [SHD{t}(b, r, ni), T{t}(b, r, ni)] = ...
-                    learn_structure(data, opt, rp);
+                    learn_structure(data, opt, rp, n);
             end     
         end  
         if rp.plot_flag
             update_plot(b, r, rp, learn_opt, SHD, T);
         end
     end
-    bnet = make_bnet(bn_opt);
+    bnet{b+1} = make_bnet(bn_opt);
 end
 assert(isequal(numel(SHD{1}), rp.num_bnet*rp.num_nrep*length(rp.nvec)));
+bnet = bnet{1:end-1};
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    function [SHD, t] = learn_structure(data, opt, rp)       
+    function [SHD, t] = learn_structure(data, opt, rp, n)       
         if (strcmpi(opt.method, 'sb3') || strcmpi(opt.method, 'bic'))
             data = discretize_data(data, opt.arity);
-            [S, t1] = compute_score(data, opt, rp);
+            [S, t1] = compute_score(data, opt, rp, n);
             [G, t2] = run_gobnilp(S);
             t = t1 + t2;
         elseif strcmpi(opt.method, 'mmhc')
@@ -69,11 +72,13 @@ assert(isequal(numel(SHD{1}), rp.num_bnet*rp.num_nrep*length(rp.nvec)));
             
             subplot(1, 2, 1); hold on
             ham = SHD{c}(1:b, 1:r, :);
+            ham
             h1(end+1) = plot(rp.nvec, squeeze(mean(mean(ham, 1), 2)), ...
                 learn_opt{c}.color, 'linewidth', 2);
             
             subplot(1, 2, 2); hold on
             tt = T{c}(1:b, 1:r, :);
+            tt
             h2(end+1) = plot(rp.nvec, squeeze(mean(mean(tt, 1), 2)), ...
                 learn_opt{c}.color, 'linewidth', 2);
         end
@@ -97,7 +102,7 @@ assert(isequal(numel(SHD{1}), rp.num_bnet*rp.num_nrep*length(rp.nvec)));
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    function [S, T] = compute_score(data, opt, rp)
+    function [S, T] = compute_score(data, opt, rp, n)
         tic;    
         if ~opt.edge && isfield(opt, 'pval')
             opt.pval = false;
@@ -110,14 +115,14 @@ assert(isequal(numel(SHD{1}), rp.num_bnet*rp.num_nrep*length(rp.nvec)));
         if strcmpi(opt.method, 'bic')
             S = compute_bic(data, opt.arity, rp.maxpa);
         elseif strcmpi(opt.method, 'sb3')
-            S = compute_rho_scores(pre, opt.prune_max);
+            S = compute_rho_scores(pre, opt.prune_max, rp.nfunc);
         else
             error('unexpected value for score');
         end
         
         if opt.edge
             E = compute_edge_scores(data, opt, rp.max_condset, pre);
-            S = add_edge_scores(S, E, rp.psi);
+            S = add_edge_scores(S, E, rp.psi, n);
         end;
         S = prune_scores(S);
         T = toc;   
@@ -125,7 +130,7 @@ assert(isequal(numel(SHD{1}), rp.num_bnet*rp.num_nrep*length(rp.nvec)));
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     function [bn_opt, rp, learn_opt] = init(network, data_gen, v, nvec, ...
-            num_bnet, num_nrep, maxpa, max_condset, prune_max, psi, nvars, plot_flag, ...
+            num_bnet, num_nrep, maxpa, max_condset, prune_max, psi, nfunc, nvars, plot_flag, ...
             save_flag, f_sel)
         
         check_dir();
@@ -141,6 +146,7 @@ assert(isequal(numel(SHD{1}), rp.num_bnet*rp.num_nrep*length(rp.nvec)));
         rp.max_condset = max_condset;
         rp.prune_max = prune_max;
         rp.psi = psi;
+        rp.nfunc = nfunc;
         rp.plot_flag = plot_flag;
         rp.save_flag = save_flag;
         rp.f_sel = f_sel;
@@ -154,11 +160,11 @@ assert(isequal(numel(SHD{1}), rp.num_bnet*rp.num_nrep*length(rp.nvec)));
             struct('method', 'mmhc', 'arity', 3, 'edge', false, ...
                 'color', 'g-'), ...
             struct('method', 'sb3', 'classifier', @kci_classifier, ...
-                'kernel', GaussKernel(),  'arity', 1, ...
+                'kernel', GaussKernel(),  'arity', 1, 'nfunc', nfunc, ...
                 'prealloc', @kci_prealloc, 'pval', false, ...
                 'edge', true, 'prune_max', rp.prune_max, 'color', 'm-'), ...
             struct( 'method', 'sb3', 'classifier', @kci_classifier, ...
-                'kernel', GaussKernel(),  'arity', 1, ...
+                'kernel', GaussKernel(),  'arity', 1, 'nfunc', nfunc, ...
                 'prealloc', @kci_prealloc, 'pval', true, ...
                 'edge', true, 'prune_max', rp.prune_max, 'color', 'r-'), ...
             struct('method', 'bic','classifier', @sb_classifier, ...
@@ -185,6 +191,13 @@ assert(isequal(numel(SHD{1}), rp.num_bnet*rp.num_nrep*length(rp.nvec)));
                 str = [str sprintf(', %s pval', repmat('no', ~o.pval))];
             end            
             learn_opt{c}.name = sprintf('%s%s', o.method, str);
+        end
+        
+        if rp.save_flag
+            check_dir();
+            dir_name = sprintf('results/%s', get_date());
+            system(['mkdir -p ' dir_name]);
+            rp.matfile = sprintf('%s/%s_%s.mat', dir_name, rp.network, func2str(rp.nfunc));
         end
 
     end

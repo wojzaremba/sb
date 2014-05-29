@@ -5,6 +5,7 @@ rand('seed', 1);
 
 N = 100;
 maxK = 10;
+nfunc = @sqrt;
 
 bn_opt = struct('variance', 0.01, 'network', 'Y', 'arity', 1,... 
 'data_gen', 'quadratic_ggm', 'moralize', false);
@@ -15,7 +16,7 @@ opt = struct( 'pval', false, 'kernel', GaussKernel(), 'classifier', ...
 
 emp = normalize_data(samples(bnet,N));
 pre = opt.prealloc(emp, opt);
-[S, D] = compute_rho_scores(pre, maxK);
+[S, D] = compute_rho_scores(pre, maxK, nfunc);
 
 % check that D reflects that conditioning on more of the correct 
 % variables will make the score more favorable
