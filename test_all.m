@@ -35,9 +35,7 @@ test_dsep_cond_sets();
 
 % edge scores
 test_network_pvals();
-test_compute_edge_scores();
-%test_add_edge_scores();
-disp('NOT TESTING ADD EDGE SCORES');
+test_edge_scores();
 test_fit_f();
 test_fit_f0();
 

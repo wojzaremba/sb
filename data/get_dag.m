@@ -205,7 +205,11 @@ elseif strcmpi(opt.network, 'kite')
 elseif strcmpi(opt.network, 'empty')
     opt = init_n(opt, 8);
     dag = zeros(opt.n);
-  
+    
+elseif strcmpi(opt.network, 'clique')
+    opt = init_n(opt, 5);
+    dag = zeros(opt.n);
+    dag = induce_clique(dag, 1:opt.n);
 else
     error('Unexpected network name');
 end
