@@ -18,10 +18,10 @@ save_flag = false;
 f_sel = 4;
 
 % learning parameters
-maxpa = 2; % max number of parents to allow in learned network
-max_condset = 2; % max conditioning set size
-prune_max = 5; % number of scores to keep in pruning
-psi = 0.1; % coefficient for edge scores
+maxpa = 2;              % max number of parents to allow in learned network
+max_condset = 2;        % max conditioning set size
+prune_max = 5;          % number of scores to keep in pruning
+psi = 0.1;              % coefficient for edge scores
 
 % test BIC
 SHD = bn_learn(network, data_gen, variance, nvec, num_bnet, num_nrep, ...

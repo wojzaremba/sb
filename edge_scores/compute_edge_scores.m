@@ -22,7 +22,6 @@ if (isfield(opt, 'pval') && opt.pval)
     zz = norminv(R); 
     z = zz(~isnan(zz) & ~isinf(zz));
     gmix = fitgmdist(z, 2, 'Regularize', 0.01);
-    disp(gmix);
     plot_fit(gmix, z);
     
     % convert pvals to p(H1)
@@ -31,10 +30,16 @@ if (isfield(opt, 'pval') && opt.pval)
     
     % place these values in appropriate position in R matrix 
     E = zz;
+    % positive and inf means that original statistic shows strong evidence
+    % of dependence, hence no sparsity boost 
+    E(find(isinf(E) & E > 0)) = 0; 
+    % otherwise, use -log(pvalues) coming from the mixture of
+    % Gaussians
     E(find(~isnan(zz) & ~isinf(zz))) = -log(P(:, idx));
 else
     R = my_sigmoid(R, 0.05, 20);
-    E = 1 ./ R; %-log(R); 
+    E = (1 ./ R) - 1;
+    E(find(tril(E))) = -Inf;
 end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

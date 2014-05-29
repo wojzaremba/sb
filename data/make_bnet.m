@@ -1,7 +1,5 @@
 function [bnet, opt] = make_bnet(opt)
 
-%randn('seed',1);
-%rand('seed',1);
 [dag, opt] = get_dag(opt);
 
 n = size(dag, 1);

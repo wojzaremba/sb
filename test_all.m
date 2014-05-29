@@ -31,11 +31,11 @@ test_check_cond_sets();
 test_count_ind_cond_sets();
 test_normcdf_min();
 test_compute_rho_scores();
+test_dsep_cond_sets();
 
 % edge scores
 test_network_pvals();
-%test_compute_edge_scores();
-disp('NOT TESTING COMPUTE EDGE SCORES');
+test_compute_edge_scores();
 %test_add_edge_scores();
 disp('NOT TESTING ADD EDGE SCORES');
 test_fit_f();

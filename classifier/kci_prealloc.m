@@ -15,7 +15,7 @@ Kxz = zeros(T, T, num_vars, num_vars, num_vars);
 Kyz = zeros(T, T, num_vars, num_vars, num_vars);
 
 if options.pval
-    fprintf('  computing eig decompositions\n');
+    printf(2, '  computing eig decompositions\n');
     K_eigval = zeros(num_eig, num_vars);
     K_eigvec = zeros(T, num_eig, num_vars);
     Kxz_eigval = zeros(num_eig, num_vars, num_vars, num_vars);

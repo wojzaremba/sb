@@ -1,7 +1,8 @@
 disp('test_make_bnet...');
 
 v = 0.05;
-opt = struct('variance', v, 'network', 'asia', 'arity', 1, 'data_gen', 'linear_ggm', 'moralize', false);
+opt = struct('variance', v, 'network', 'asia', 'arity', 1, 'data_gen', ...
+    'linear_ggm', 'moralize', false);
 
 bnet1 = mk_asia_linear_gauss(v);
 bnet2 = make_bnet(opt);
