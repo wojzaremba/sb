@@ -1,0 +1,1 @@
+These tests require LaTeX to be installed.

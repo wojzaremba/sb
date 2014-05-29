@@ -75,7 +75,8 @@ if ~isempty(args) & ~isstr(args{1})
   T = myreshape(args{1}, fam_sz);
   dim = length(fam_sz);
   % check that last dimension (corresponding to the X in P(X|Y)) sums to 1
-  assert(norm(sum(T,dim) - ones(size(sum(T,dim)))) < 1e-12);
+  check_diff = sum(T,dim) - ones(size(sum(T,dim)));
+  assert(norm(check_diff(:)) < 1e-12);
   CPD.CPT = T;
   args = [];
 end

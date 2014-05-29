@@ -1,13 +1,12 @@
 function s = discretize_data(s, num_bins, method)
 
-if ~exist('method', 'var')
-    fprintf('using uniform discretization\n');
-    method = 'uniform';
-end
-
 if num_bins ~= 1 %if num_bins == 1, just return continuous data
-
-
+    
+    if ~exist('method', 'var')
+        fprintf('using uniform discretization\n');
+        method = 'uniform';
+    end
+    
     small = 1e-10;
     for i = 1:size(s,1)
         smin = min(s(i,:));

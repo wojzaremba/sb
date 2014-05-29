@@ -45,7 +45,7 @@
 \newtheorem{lem}[thm]{Lemma}
 %\newtheorem{definition}{Definition}
 
-\title{Kernelized Independence Tests for Bayesian Network Structure Learning}
+\title{Nonparametric Bayesian Network Structure Learning Over Continuous Variables}
 
 \author{
 Rachel Hodos
@@ -80,56 +80,31 @@ Computer Science, NYU \\
 
 \begin{abstract}
 
-We present an approach to learning the structure of probabilistic graphical models that is applicable both to directed and undirected models.  We use kernelized conditional independence (KCI) tests, taking advantage of two key properties of this test: 1) the ability to condition on many variables, and 2) the ability to detect nonlinear dependence relationships between variables.  We present simple constraint-based algorithms for BN and MRF structure learning, and also a score-based approach.  We show experiments on synthetic data that demonstrate the superior statistical complexity and runtime of our algorithms compared with existing structure learning algorithms.  Finally, we apply our algorithms to single-cell gene expression data to learn a yeast cell-cycle gene network.
+Most approaches in Bayesian network structure learning either require discrete variables or assume that relationships between variables are linear.  Here we propose a novel scoring function which can handle discrete or continuous variables directly, and which does not make any parametric assumptions.  The scoring function is based on kernelized regression and the kernel conditional independence (KCI) test presented in \cite{zhang2012kernel}.  On synthetic data, we compare MAP structures learned from our score vs. the BIC score, and also to the MMHC algorithm using the KCI test.  We also show results on real data from three different domains, and compare results to the previously mentioned baselines as well as a state-of-the-art approach in parametric Copula BN learning.
 
 \end{abstract}
 
 
 \section{Introduction}
-It is well known that Bayesian network structure learning for general distributions is 
-intractable \cite{chickering1996learning}. However, often
-for real data distributions, we are still able to 
-recover the Bayesian network structure. This implies that real data
-distributions have some special properties, which can simplify the process
-of structure recovery.  This  process is almost always
-based on computing local statistics, and then 
-reasoning about global structure \cite{jaakkola2010learning, tsamardinos2006max}. 
+It is well known that Bayesian network structure learning for general distributions is intractable \cite{chickering1996learning}. However, often for real data distributions, we are still able to recover the Bayesian network structure. This implies that real data distributions have some special properties, which can simplify the process of structure recovery.  This  process is almost always based on computing local statistics, and then reasoning about global structure \cite{jaakkola2010learning, tsamardinos2006max}. 
 
-
-Examples of local statistics are measures of the model complexity (e.g. number of parameters in case of BIC\cite{schwarz1978estimating}), and conditional independence tests e.g. based on mutual information.  We focus in this work on how to best measure dependency between nodes
-in empirical CPDs from Bayesian network. We are mainly interest
-in developing techniques applicable to discovery of structure
-in gene expression data. This implies that each random variable
-can either 1) take many values (when expression values are discretized), or 2) have continuous
-values. The first case poses challenges if one wants to estimate conditional distributions in order to perform CI tests, a.k.a the curse of dimensionality.  The second case also makes conditioning difficult- how should one properly condition on a continuous variable?  One solution is perform linear regression on the conditioning variable (this is the approach taken by partial correlation), however, we would not like to restrict ourselves to linear relationships.  Furthermore, an property of the vast majority of gene expression datasets is that there are much fewer samples than there are variables, e.g. 20000 variables, and 100 samples.   We focus our attention on addressing Bayesian network structure learning
+Examples of local statistics are measures of the model complexity (e.g. number of parameters in case of BIC\cite{schwarz1978estimating}), and conditional independence tests e.g. based on mutual information.  We focus in this work on how to best measure dependency between nodes in empirical CPDs from Bayesian network. We are mainly interest in developing techniques applicable to discovery of structure in gene expression data. This implies that each random variable can either 1) take many values (when expression values are discretized), or 2) have continuous values. The first case poses challenges if one wants to estimate conditional distributions in order to perform CI tests, a.k.a the curse of dimensionality.  The second case also makes conditioning difficult- how should one properly condition on a continuous variable?  One solution is perform linear regression on the conditioning variable (this is the approach taken by partial correlation), however, we would not like to restrict ourselves to linear relationships.  Furthermore, an property of the vast majority of gene expression datasets is that there are much fewer samples than there are variables, e.g. 20000 variables, and 100 samples.   We focus our attention on addressing Bayesian network structure learning
 in such a regime. 
 
-
-Our main contribution is in designing efficient dependency test
-for Bayesian networks. It is kernelized conditional independence (KCI) with
-kernels sensitive to the particular types of dependence relations present in our domain of interest. We show
-that kernelized partial correlation with proper kernel in ``gene expression''
-regime is almost always better than any other previously considered
-dependency test. 
+Our main contribution is in designing efficient dependency test for Bayesian networks. It is kernelized conditional independence (KCI) with kernels sensitive to the particular types of dependence relations present in our domain of interest. We show that kernelized partial correlation with proper kernel in ``gene expression'' regime is almost always better than any other previously considered dependency test. 
 
 
 \section{Related work}
 
 \subsection{Scoring Functions}
-There has been extensive research in the area of scoring functions for
-Bayesian network structure learning. An appropriate scoring function is very important, e.g. if one simply maximized the likelihood, one would almost always recover the complete graph structure (the intuition is that a finite sample of two variables, even if independent, will almost always appear at least a little bit dependent).  Hence regularization is crucial.  There are two general types of regularization terms:(1) based purely on model complexity, and more recently (2) data-dependent regularization terms \cite{brenner2013sparsityboost}.
+There has been extensive research in the area of scoring functions for Bayesian network structure learning. An appropriate scoring function is very important, e.g. if one simply maximized the likelihood, one would almost always recover the complete graph structure (the intuition is that a finite sample of two variables, even if independent, will almost always appear at least a little bit dependent).  Hence regularization is crucial.  There are two general types of regularization terms:(1) based purely on model complexity, and more recently (2) data-dependent regularization terms \cite{brenner2013sparsityboost}.
 
 To the first group belongs one of the most widely used scoring functions, which is Bayesian Information Criterion (BIC) \cite{schwarz1978estimating}.  Another popular score is the Bayesian Dirichlet score, (BDe), There are couple of others like Hannan–Quinn information criterion (HQC) \cite{hannan1979determination},
 or Bayesian model comparison (BMC). A major drawback of scoring functions based purely on model complexity is that they have constant power regardless of the amount of data.  Hence even if there is strong evidence, e.g. that an edge should not be in the graph, such scoring functions won't take this into account.
 
 
 \begin{comment}
-Variety of such scoring functions calculate dependency between nodes conditioned on
-potential parents \cite{de2006scoring}. Usual measures of dependency are
-based on mutual information, conditional independence test, or 
-are fully Bayesian. Fully Bayesian methods assume probability 
-distribution over CPDs of independent variables,
-and dependent variables.
+Variety of such scoring functions calculate dependency between nodes conditioned on potential parents \cite{de2006scoring}. Usual measures of dependency are based on mutual information, conditional independence test, or are fully Bayesian. Fully Bayesian methods assume probability distribution over CPDs of independent variables, and dependent variables.
 
 We should discuss:
 \begin{itemize}
@@ -160,11 +135,13 @@ Independence tests used in Bayesian networks
 \subsection{Bayesian networks over continuous variables}
 The simplest and most widely used Bayesian network models over continuous variables are linear Gaussian models, where each variable is sampled from a linear combination of its parents' states, plus some Gaussian noise.  This restricts the local relationships to be linear, and hence a more general model is desirable in many settings.
 
-One important technique for modeling non-Gaussian continuous BNs is kernel density estimation (KDE).  For example, \cite{john1995estimating} introduced the {\it Flexible Bayes} model, using KDE to enable the Naive Bayes classifier to use non-Gaussian continuous features.  \cite{perez2009bayesian} extends this framework to more generally structured classifiers beyond Naive Bayes.  Both of these methods assume that the conditioning variable is discrete, and hence conditioning is performed in the straightforward way.  Other techniques must be applied when the conditioning variables are continuous.  \cite{hofmann1996discovering} use KDE to model the CPDs by estimating the joint distribution over parents and child, and dividing by an estimate of the parents' distribution.  They performed a greedy hill-climbing procedure, optimizing cross-validated log-likelihood regularized by an edge penalty.  \cite{hansen2004nonparametric} describes an approach that has the same flavor as the KCI test used in this work, where the conditional density is estimated by regressing on the conditioning variable and then using kernels to estimate the density over the residuals.  In all of these techniques, the choice of kernel width is key to getting a good estimate, and many techniques have been proposed to make such a choice.  \cite{john1995estimating} propose a heuristic kernel width $\sigma = \frac{1}{\sqrt n}$, i.e. the density estimation becomes more local as the number of data points increases.  Alternatively, \cite{holmes2012fast}, propose cross-validation of the log-likelihood.  Another issue with these techniques is that the nonparametric density estimates incur a computational cost at the time of classification, since all data points used for training must be stored in order to compute the likelihood of a new data point.  However there are ways to address this, e.g. \cite{gurwicz2004rapid} use splines to approximate and evaluate the densities much more efficiently.  
+One important technique for modeling non-Gaussian continuous BNs is kernel density estimation (KDE).  For example, \cite{john1995estimating} introduced the {\it Flexible Bayes} model, using KDE to enable the Naive Bayes classifier to use non-Gaussian continuous features.  \cite{perez2009bayesian} extends this framework to more generally structured classifiers beyond Naive Bayes.  Both of these methods assume that the conditioning variable is discrete, and hence conditioning is performed in the straightforward way.  Other techniques must be applied when the conditioning variables are continuous.  \cite{hofmann1996discovering} use KDE to model the CPDs by estimating the joint distribution over parents and child, and dividing by an estimate of the parents' distribution.  They performed a greedy hill-climbing procedure, optimizing cross-validated log-likelihood regularized by an edge penalty.  \cite{hansen2004nonparametric} describes a conditional KDE procedure that has the same flavor as the KCI test used in this work, where the conditional density is estimated by regressing on the conditioning variable and then using kernels to estimate the density over the residuals.  In all of these techniques, the choice of kernel width is key to getting a good estimate, and many techniques have been proposed to make such a choice.  \cite{john1995estimating} propose a heuristic kernel width $\sigma = \frac{1}{\sqrt n}$, i.e. the density estimation becomes more local as the number of data points increases.  Alternatively, \cite{holmes2012fast}, propose cross-validation of the log-likelihood.  Another issue with these techniques is that the nonparametric density estimates incur a computational cost at the time of classification, since all data points used for training must be stored in order to compute the likelihood of a new data point.  However there are ways to address this, e.g. \cite{gurwicz2004rapid} use splines to approximate and evaluate the densities much more efficiently.  One final kernel-based approach worth mentioning is that of \cite{bach2002learning}, where kernels are used to learn hybrid Bayesian networks (i.e. variables can be either continuous or discrete), where all variables are treated as Gaussian in feature space.  They demonstrate how one could use this approach within a greedy hill-climbing procedure, as well as in a constraint-based approach.
 
-There are also many approaches that do not use kernels.  \cite{imoto2001estimation}, use nonlinear regression to estimate gene networks, and this is extended in \cite{imoto2003bayesian} to use non-parametric heteroscedastic regression.  \cite{ickstadt2010nonparametric} define what they call Nonparametric Bayesian Networks, where they assume the data are sampled from a mixture of Gaussian Graphical Models.
+There are also many approaches that do not use kernels.  \cite{imoto2001estimation}, use nonlinear regression to estimate gene networks, and this is extended in \cite{imoto2003bayesian} to use non-parametric heteroscedastic regression.  \cite{ickstadt2010nonparametric} define what they call Nonparametric Bayesian Networks, where they assume the data are sampled from a mixture of Gaussian Graphical Models. \cite{elidan2007ideal} present a general method for speeding structure search for continuous variable networks with common parametric distributions. 
 
-There is also some interesting work using copulas, e.g. \cite{hanea2006hybrid}, \cite{hanea2008mixed}, and \cite{hanea2010mining}, but these papers focus on statistical inference and parameter estimation.  In terms of model selection, \cite{elidan2010copula} uses a standard score-and-search approach using the BIC score.  \cite{bauer2012pair} extend the popular constraint-based PC algorithm to use a conditional independence test fitting for their model, using parametric estimation of conditional distributions based on vine copula models.
+There is also some interesting work using copulas, e.g. {\bf just list the canonical paper introducing copula BNs}  \cite{hanea2006hybrid}, \cite{hanea2008mixed}, and \cite{hanea2010mining}, but these papers focus on statistical inference and parameter estimation.  In terms of model selection, \cite{elidan2010copula} uses a standard score-and-search approach using the BIC score.  \cite{bauer2012pair} extend the popular constraint-based PC algorithm to use a conditional independence test fitting for their model, using parametric estimation of conditional distributions based on vine copula models.  \cite{elidan2012lightning} and \cite{tenzer2013speedy} leverage a one-to-one relationship between Spearmen's rho correlation and the log-likelihood term for an edge addition (asymptotically true for tree-structured networks) in order to learn copula networks efficiently.  In the first paper, they use a heuristic to extend the method to non-tree structured networks.  In the second paper, they only considered tree-structured BNs, but allowed each copula to have a different parameteric form, whereas in the first paper all copulas were restricted to the same parametric family.  In both works they optimize using the BIC score. {\bf verify my description with Gal Elidan.}
+
+We are proposing a method which uses continuous data but does not estimate the conditional distributions- i.e. we are decoupling the problem of structure learning with parameter learning.  The work of \cite{margaritis2005distribution} also falls into this category, although they take a constraint-based approach, applying the PC algorithm to continuous data via a non-parametric, discretization-based independence test.
 
 \section{Independence testing} 
 {\bf Notation} 
@@ -309,26 +286,21 @@ KCI for non-characteristic kernel & $\color{Maroon}\times$  & $\color{LimeGreen}
 KCI for characteristic kernel & $\color{LimeGreen}\checkmark$  & $\color{LimeGreen} \checkmark $ & $\color{LimeGreen}\times$ & $\color{LimeGreen}\checkmark$ \\
 \hline
 \end{tabular}
-\caption{Comparison of properties for various independence tests. Consistency means if test 
-  would give correct answer with infinite amount of data. Smooth prior (Section \ref{sec:prior}) indicates if tests
-  treats ''near by`` values in similar way. Controllable smooth prior tells if we
-  can vary what we consider to be smooth. Value based conditioning (Section \ref{sec:curse}) 
-  say if test can avoid constructing conditional probabilities tables, which are expensive, and
-  badly estimable.}
+\caption{Comparison of properties for various independence tests. Consistency means if test would give correct answer with infinite amount of data. Smooth prior (Section \ref{sec:prior}) indicates if tests treats ''near by`` values in similar way. Controllable smooth prior tells if we can vary what we consider to be smooth. Value based conditioning (Section \ref{sec:curse}) say if test can avoid constructing conditional probabilities tables, which are expensive, and badly estimable.}
   
 \label{tab:compar}
 \end{table}
 
-\section{Kernelized conditional density estimation}
-We use kernelized conditional density estimation (KCDE) to compute the likelihood term of the scoring function.  
 
 \section{Experiments}
 
 
-\subsection{Synthetic data}
+\subsection{Synthetic data experiments}
 
-\subsubsection{Bayesian networks}
-In order to evaluate the power of the KCI test in the context of Bayesian network structure learning, we generated synthetic data from several Bayesian networks, and then computed each statistic, taking the min over various conditioning sets in the same way that they would be incorporated into the SparsityBoost framework.  Let f be the function which computes a statistic of interest. Then for each pair $X_i$ and $X_j$ we compute:  \begin{eqnarray*} T_f(i,j) &:=& \min_{S \in \Omega_{ij} } f(X_i,X_j | S; D) \\ \Omega_{ij} &:=& \{ S \in \mathbf{X} / \{i,j\} : |S| \leq 2 \} \end{eqnarray*}  Taking the minimum over all sets in $\Omega_{ij}$ corresponds to taking the strongest evidence of independence over all conditioning sets (that we choose to consider), since it is enough to find one conditioning set which renders $X_i$ and $X_j$ independent in order to conclude that edge $\{i,j\}$ should not be present.  We treat f as a classifier by thresholding at various values throughout the range, and then evaluate the true and false positive rates (with respect to all pairs of variables in the network) in order to generate ROC curves.  Here we define positive to mean independence, hence the point (0,0) in the plots corresponds to a classifier which always claims dependence, and likewise (1,1) corresponds to a classifier which always claims independence.
+\subsubsection{ROC curves}
+In order to evaluate the power of the KCI test in comparison with other conditional independence statistics, we generated synthetic continuous data from several toy Bayesian networks, and then computed each statistic, taking the strongest evidence for independence over various conditioning sets in the same way that is done in the SparsityBoost framework.  Let f be the function which computes a statistic of interest. Then for each pair $X_i$ and $X_j$ we compute:  \begin{eqnarray*} T_f(i,j) &:=& \min_{S \in \Omega_{ij} } f(X_i,X_j | S; D) \\ \Omega_{ij} &:=& \{ S \in \mathbf{X} / \{i,j\} : |S| \leq 2 \} \end{eqnarray*}  Taking the minimum over all sets in $\Omega_{ij}$ corresponds to taking the strongest evidence of independence over all conditioning sets (that we choose to consider), since it is enough to find one conditioning set which renders $X_i$ and $X_j$ independent in order to conclude that edge $\{i,j\}$ should not be present.  We treat f as a classifier by thresholding at various values throughout the range, and then evaluate the true and false positive rates (with respect to all pairs of variables in the network) in order to generate ROC curves.  Here we define positive to mean independence, hence the point (0,0) in the plots corresponds to a classifier which always claims dependence, and likewise (1,1) corresponds to a classifier which always claims independence.
+
+The data are generated as continuous variables with random quadratic relationships plus Gaussian noise.  More precisely, source nodes are drawn from $N(0, 0.1)$, and then variable with parents is defined as $X_i = \sum_{X_j \in Pa(X_i)} \alpha_j X_j^2 + \beta_j X_j + \epsilon $ where $\alpha_j$ and $\beta_j$ are drawn randomly from $N(0, 1)$ with the added constraint that they have magnitude greater than 0.3, and $\epsilon$ is the noise component, drawn from $N(0, 0.05)$.  
 
 \begin{figure}[h]
 \centering
@@ -339,26 +311,76 @@ In order to evaluate the power of the KCI test in the context of Bayesian networ
     \subfigure{
       \includegraphics[width=0.45\linewidth]{img/insurance.eps} 
     }
-\caption{ROC curves for evaluating various statistic's accuracy and sensitivity in classifying joint distributions generated from the ``child'' network structure (left) and ``insurance'' network structure (right).  All calculations were performed using N=100 data points, and each curve corresponds to an average over 20 repetitions (independent data samples).  Each variable is sampled from a random quadratic function of its parents values, plus Gaussian noise, as described in the text.  The solid curves correspond to classification using the original, continuous data, whereas the dashed curves were generated using data that was discretized into 3 bins for each variable.  The red asterisk on each curve corresponds to a threshold value of 1e-3 (the smallest one greater than zero tested).  Hence one can see that even though partial correlation using continuous data performs better than the classifiers that use discrete data, it has a high FPR even with an extremely small threshold, reflecting the fact that correlation is not consistent; a distribution with zero correlation could still be dependent. }
+\caption{ROC curves for classifying joint distributions generated from the ``child'' network structure (left) and ``insurance'' network structure (right).  All calculations were performed using N=100 data points, and each curve corresponds to an average over 20 repetitions (independent data samples).  Each variable is sampled from a random quadratic function of its parents values, plus Gaussian noise, as described in the text.  The solid curves correspond to classification using the original, continuous data, whereas the dashed curves were generated using data that were discretized into 3 uniformly-spaced bins for each variable.  The red asterisk on each curve corresponds to a threshold value of 1e-3 (the smallest one greater than zero tested).  Hence one can see that even though partial correlation using continuous data performs better than the classifiers that use discrete data, it has a high FPR even with an extremely small threshold, reflecting the fact that correlation is not consistent, i.e. a distribution with zero correlation could still be dependent.}
 \label{fig:ROC}
 \end{figure}
 
-\subsubsection{Markov Random Fields}
+\subsubsection{Structure recovery}
+We generated continuous synthetic data from three toy Bayesian networks, where each variable follows a random quadratic relationship with each of its parents, as described in the above section.  We then compared several algorithms' ability to recover the structure from which the synthetic data were generated (up to the Markov equivalence class).  We used three baselines for comparison.  The first is the MAP solution of the BIC score.  This of course requires discretization.  The results shown use four uniformly-spaced bins.  We also did some experiments using only three bins, and also tried quantile bin spacing (i.e. bins chosen so that marginals are uniform), and found that four uniformly-spaced bins generally performed better.  The MAP solution for both the BIC score and our novel score is found using the integer linear programming approach introduced in \cite{jaakkola2010learning}.  We use the GOBNILP 1.3 implementation \cite{cussens2012bayesian}, built upon the SCIP framework \cite{achterberg2009scip}.  The second baseline is the Max-Min Hill Climbing (MMHC) procedure \cite{tsamardinos2006max}, using KCI for the conditional independence test.  The third baseline is learning a simple linear Gaussian Bayesian network (GBN), i.e. assuming that each variable is a linear combination of its parents plus some Gaussian noise, i.e. $X_i =  \sum_{X_j \in Pa(X_i)} \beta_j X_j + \epsilon,$ where $\epsilon$ is $N(0, \sigma^2)$.  
 
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|l|}
+\hline
+Network Name & \# of nodes & \# of edges & max in-degree & Reference                         \\ \hline
+Asia         & 8           & 8           & 2             & \cite{lauritzen1988local}        \\ \hline
+Child        & 20          & 25          & 2             & \cite{spiegelhalter1992learning} \\ \hline
+Insurance    & 27          & 52          & 3             & \cite{binder1997adaptive}        \\ \hline
+\end{tabular}
+\caption{Network structures used for synthetic data experiments.}
+\label{networks}
+\end{table}
 
-\subsection{Gene expression data}
+The networks used are presented in Table \ref{networks}. For each network structure, we performed the following experiment.  For each value of $N$, the number of observations, we generated 10 random networks, i.e. parameter sets $(\vec{\alpha}, \vec{\beta})_k, k \in 1, \ldots, 10$.  For each of these networks, we sampled 3 independent datasets, each with $N$ data points.  We then threw out any observations where any of the variables were outside of the median $\pm$ three standard deviations.  The data were then normalized (to have mean 0, standard deviation 1), and discretized if necessary, then fed into each structure learning algorithm.  The resulting structures were compared with the true structures at the level of the Markov equivalence class, computing structural hamming distance (SHD), which counts the number of edge additions, deletions, and reversals.  Runtimes are also shown.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.1\linewidth]{img/synth_data_dummy.eps} 
+\caption{{\bf[DUMMY FIGURES]} Structure learning results on synthetic data generated from toy Bayesian networks.  Details in text.}
+\label{fig:synth}
+\end{figure}
+
+\subsection{Real data experiments}
+\subsubsection{Description of datasets}
+We analyzed results on three real world datasets coming from three very different domains:
+\begin{itemize}
+\item{\bf Wine Quality} From the UCI repository.  4898 observations of 11 variables measuring various physicochemical properties of wine, along with a quality variable, ranking each wine from 1 to 10. Each observation corresponds to a different wine.  \cite{cortez2009modeling}
+\item{\bf Dow Jones} 1508 daily adjusted changes from the years 2001 to 2005 of the Dow Jones 30 index stocks.  Two stocks (KFT and TRV) were not included due to some days that they were not traded, in order to avoid imputation issues.
+\item{\bf T-cell} 3000 single-cell measurements of 11 proteins and phospholipid abundances in human normal-blood T-cells. \cite{sachs2005causal}
+\end{itemize}
+The first two datasets were chosen for comparison against the results in \cite{elidan2012lightning}, while the third was chosen since we hope that our method will prove to be useful for analyzing molecular biological datasets, since these measurements are often continuous and have limited sample numbers, and the underlying network structure is often unknown but sought after.
+
+\subsubsection{Experiment setup and results}
+We split each dataset into training and test.  Within each of these two sets, we drew random subsets of size N.  We then preprocessed the data in the same way as described above, removing outliers, normalizing, and discretizing if necessary.  We used the same algorithms as described above for comparison, however since there is no gold standard network for these datasets, we compared the results based on the likelihood of 100 test data points for each learned structure.  We computed the likelihood in two different ways- first by discretizing and computing the likelihood based on the ML parameters, and second, using the spline-based KDE described in \cite{gurwicz2004rapid}. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.1\linewidth]{img/real_data_dummy.eps} 
+\caption{{\bf[DUMMY FIGURES]} Structure learning results on real world datasets.  Details in text.}
+\label{fig:real}
+\end{figure}
+
+There is in fact some notion of a gold standard network for the T-cell dataset.  A network is published in \cite{sachs2005causal} which is considered to represent the consensus among biologists in the field regarding this system.  This network should be taken with a grain of salt, however, since e.g. a direct link in the consensus network may actually correspond to an unexpected  indirect relationship.  Nevertheless, we compare our results and previous results to this consensus network in Figure \ref{fig:sachs}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.1\linewidth]{img/dummy_sachs.eps} 
+\caption{{\bf[DUMMY FIGURE]} Our results compared with the consensus network on the T-cell dataset.}
+\label{fig:sachs}
+\end{figure}
+
 
 \section{Discussion}
 
 \appendix
 \section{Computing confidence of independence}
-We want the SparsityBoost term in the scoring function to emphasize the cases where there is strong evidence that an edge should not be present (i.e. conditional independence), while effectively disregarding cases with strong evidence of dependence between pairs of variables.  This is because we do not search over all possible conditioning sets, and hence just because we have evidence that $X_i$ and $X_j$ are dependent for a particular conditioning set does not prove that edge $E_{ij} \in G^*$.  Hence we define the SparsityBoost term for edge $E_{ij}$ and conditioning set C to be $$sb(E_{ij} | C; D) = -\log p(H_1),$$ where $H_1$ is the alternative hypothesis of dependence.   This satisfies our requirements, since when $p(H_1)$ is small (and hence $p(H_0)$ is large), $sb$ is large, and vice versa, when $p(H_1)$ is small, $sb$ is small.  
+We want the SparsityBoost term in the scoring function to emphasize the cases where there is strong evidence that an edge should not be present (i.e. conditional independence), while effectively disregarding cases with evidence of dependence between pairs of variables.  This is because we do not search over all possible conditioning sets, and hence just because we have evidence that $X_i$ and $X_j$ are dependent for a particular conditioning set does not prove that edge $E_{ij} \in G^*$.  Hence we define the SparsityBoost term for edge $E_{ij}$ and conditioning set C to be $$sb(E_{ij} | C; D) = -\log(1 - p(H_0)),$$ where $H_0$ is the null hypothesis of independence.  This satisfies our requirements, since when $p(H_0)$ is large, $sb$ is large, and vice versa.
 
-Note that it is not straightforward to use an independence test to claim with confidence that $H_0$ is true.  Any test with a null hypothesis of independendence allows one to reject the independence model with some degree of confidence given a small enough p-value, but on the other hand, a large p-value does not mean that one can be confident that the model is actually independent.  For example, a large p-value could just mean that the test is underpowered to detect any alternative models.  To address this, we follow \cite{efron2004large} and compute $p(H_1)$ as follows.
+Note that it is not straightforward to use an independence test to claim with confidence that $H_0$ is true.  Any test with a null hypothesis of independendence allows one to reject the independence model with some degree of confidence given a small enough p-value, but on the other hand, a large p-value does not mean that one can be confident that the model is actually independent.  For example, a large p-value could just mean that the test is underpowered to detect any alternative models.  To address this, we follow \cite{efron2004large} and compute $p(H_0)$ as follows.
 
-Suppose that we perform K conditional independence tests with null hypotheses $H_0^1, H_0^2, \ldots, H_0^K$, giving the statistics $T_1, T_2, \ldots, T_K$ and corresponding p-values, $P_1, P_2, \ldots P_K$, where $P_i = P(T_i \geq t_i | H_0^i)$.  Then is it well-known that $Z_i = \Phi^{-1}(P_i) ~ N(0,1)$.  Now if we assume that 
+Suppose that we perform K conditional independence tests with null hypotheses $H_0^1, H_0^2, \ldots, H_0^K$, giving the statistics $T_1, T_2, \ldots, T_K$ and corresponding p-values, $P_1, P_2, \ldots P_K$, where $P_i = P(T_i \geq t_i | H_0^i)$.  Then is it well-known that $Z_i = \Phi^{-1}(P_i) ~ N(0,1),$ where $\Phi$ is the cumulative distribution function for a standard normal variate.  Now if we assume that 
 
-We use the fact that we are performing many conditional independence tests to construct an empirical distribution over the (normalized) test statistic, z, and then further represent this distribution as a mixture over $H_0$ and $H_1$, i.e. $$f(z) = f_0(z)p_0 + f_1(z)(1 - p_0).$$
+We use the fact that we are performing many conditional independence tests to construct an empirical distribution over the (normalized) test statistic, Z, and then further represent this distribution as a mixture over $H_0$ and $H_1$, i.e. $$f(z) = f_0(z)p_0 + f_1(z)(1 - p_0).$$
 
 
 

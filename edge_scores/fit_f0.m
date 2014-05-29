@@ -12,7 +12,7 @@ f2fit = f(idx2fit);
 
 % fit a quadratic to log(f) in this range
 [a, S] = polyfit(x2fit, log(f2fit), 2);
-assert(S.normr < 0.1);
+assert(S.normr < 0.5); % pretty lenient
 sigma = 1 / sqrt(-2*a(1));
 
 % plot

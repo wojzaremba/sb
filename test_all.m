@@ -5,11 +5,9 @@ debug = 0;
 dbstop if error
 
 %end2end
-fprintf('not testing compute roc scores (need to figure out why linear kernel, continuous data is performing poorly!)\n');
-%test_compute_roc_scores();
+test_compute_roc_scores();
 test_learn_mrf();
-fprintf('not testing bn_learn\n');
-%test_bn_learn();
+test_bn_learn();
 
 % utils
 test_enumerate_assignments();
@@ -33,13 +31,11 @@ test_check_cond_sets();
 test_count_ind_cond_sets();
 test_normcdf_min();
 test_compute_rho_scores();
+test_dsep_cond_sets();
 
 % edge scores
 test_network_pvals();
-%test_compute_edge_scores();
-disp('NOT TESTING COMPUTE EDGE SCORES');
-%test_add_edge_scores();
-disp('NOT TESTING ADD EDGE SCORES');
+test_edge_scores();
 test_fit_f();
 test_fit_f0();
 
@@ -71,6 +67,7 @@ test_cc_classifier();
 % structure learning
 test_run_gobnilp();
 test_compute_bic();
+test_mmhc();
 
 
 disp('Passed all tests!');

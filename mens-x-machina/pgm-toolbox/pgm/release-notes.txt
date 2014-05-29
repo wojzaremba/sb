@@ -1,0 +1,280 @@
+----------------------------------------------------
+Mens X Machina Probabilistic Graphical Model Toolbox
+Release Notes
+----------------------------------------------------
+
+
+
+
+
+-------------
+Version 0.9.3
+-------------
+
+------------------------
+New Features and Changes
+------------------------
+
+This version is a complete rewrite of the previous one. There are a lot of new features and changes, the most important ones being the following. You can use CTRL+F to find the changes affecting a specific function, script, or class.
+
+Graph manipulation
+------------------
+
+- Function org.mensxmachina.pgm.isdsep has been moved to package org.mensxmachina.graph in Mens X Machina Common Toolbox.
+
+Compatibility Considerations:
+- Calls to org.mensxmachina.commons.graph.* must be replaced by calls to org.mensxmachina.graph.*.
+
+Hypothesis tests
+----------------
+
+- Packages org.mensxmachina.pgm.custom, org.mensxmachina.pgm.indtestp, org.mensxmachina.pgm.indtestpower and org.mensxmachina.pgm.indtestpowermaxk have been removed.
+- Function org.mensxmachina.pgm.indtestp.chi2indtestpopt have been replaced by new classes
+org.mensxmachina.stats.tests.ci.chi2.pearsonschi2testpvalueestimator (Pearson's-Chi-square-test-of-conditional-independence p-value estimator) and org.mensxmachina.stats.tests.ci.chi2.gtestpvalueestimator (G-test-p-value estimator) in Mens X Machina Common Toolbox. When the degrees of freedom of a test are zero, these classes calculate the p-value of the test as 1 and the test statistic as 0.
+- Function org.mensxmachina.pgm.indtestp.fisherzindtestpopt has been replaced by new class  org.mensxmachina.stats.tests.ci.fishersz.fishersztestpvalueestimator (Fisher's-Z-test-of-conditional-independence-p-value estimator) in Mens X Machina Common Toolbox.
+- Functions org.mensxmachina.pgm.indtestpower.chi2indtesthspopt and org.mensxmachina.pgm.indtestpowermaxk.chi2indtesthspmaxkopt has been replaced by new class org.mensxmachina.stats.tests.ci.chi2.heuristic.heuristicapplier (heuristic-power-rule applier) in Mens X Machina Common Toolbox.
+- Functions org.mensxmachina.pgm.indtestpower.dummyindtestpwropt and org.mensxmachina.pgm.indtestpowermaxk.dummyindtestpwrmaxkopt has been replaced by new class org.mensxmachina.stats.tests.ci.dummycitrcapplier (dummy-conditional-independence-test-reliability-criterion applier) in Mens X Machina Common Toolbox.
+- Functions org.mensxmachina.pgm.indtestp.indtestpopt, org.mensxmachina.pgm.indtestpower.indtestpwropt and org.mensxmachina.pgm.indtestpowermaxk.indtestpwrmaxkopthave have been removed.
+
+Compatibility Considerations:
+- Calls to org.mensxmachina.pgm.indtestp.chi2indtestpopt must be replaced by calls to org.mensxmachina.stats.tests.ci.chi2.pearsonschi2testpvalueestimator/citpvalue or org.mensxmachina.stats.tests.ci.chi2.gtestpvalueestimator/citpvalue.
+- Calls to org.mensxmachina.pgm.indtestp.fisherzindtestpopt must be replaced by calls to org.mensxmachina.stats.tests.ci.fishersz.fishersztestpvalueestimator.
+- Calls to org.mensxmachina.pgm.indtestp.indtestpopt must be replaced by appropriate calls to org.mensxmachina.stats.tests.ci.chi2.pearsonschi2testpvalueestimator/citpvalue, org.mensxmachina.stats.tests.ci.chi2.gtestpvalueestimator/citpvalue, and org.mensxmachina.stats.tests.ci.fishersz.fishersztestpvalueestimator/citpvalue.
+- Calls to org.mensxmachina.pgm.indtestpower.chi2indtesthspopt must be replaced by calls to org.mensxmachina.stats.tests.ci.dummycitrcapplier/isreliablecit.
+- Calls to org.mensxmachina.pgm.indtestpower.dummyindtestpwropt must be replaced by calls to org.mensxmachina.stats.tests.ci.chi2.heuristic.heuristicapplier/isreliablecit.
+- Calls to org.mensxmachina.pgm.indtestpower.indtestpwropt must be replaced by appropriate calls to org.mensxmachina.stats.tests.ci.chi2.heuristic.heuristicapplier/isreliablecit and org.mensxmachina.stats.tests.ci.dummycitrcapplier/isreliablecit.
+- Calls to org.mensxmachina.pgm.indtestpowermaxk.chi2indtesthspmaxkopt must be replaced by calls to org.mensxmachina.stats.tests.ci.dummycitrcapplier/bestmaxcondsetcard.
+- Calls to org.mensxmachina.pgm.indtestpowermaxk.dummyindtestpwrmaxkopt must be replaced by calls to org.mensxmachina.stats.tests.ci.chi2.heuristic.heuristicapplier/bestmaxcondsetcard.
+- Calls to org.mensxmachina.pgm.indtestpowermaxk.indtestpwrmaxkopt must be replaced by appropriate calls to org.mensxmachina.stats.tests.ci.chi2.heuristic.heuristicapplier/bestmaxcondsetcard and org.mensxmachina.stats.tests.ci.dummycitrcapplier/bestmaxcondsetcard.
+
+Bayesian network representation
+-------------------------------
+
+- Function org.mensxmachina.pgm.bn.converters.dsl.bayesnet2dslnodes (convert Bayesian network to DSL nodes) has been added.
+- Class org.mensxmachina.pgm.BayesianNetwork has been renamed to org.mensxmachina.pgm.bn.bayesnet and completely rewritten.
+- Classes org.mensxmachina.pgm.CategoricalBayesianNetwork and GaussianBayesianNetwork have been removed.
+- Function org.mensxmachina.pgm.bifread has been moved to package org.mensxmachina.pgm.bn.io.bif and no longer accepts argument ClassNames; all variables are now assumed to be nominal.
+- Functions org.mensxmachina.pgm.bnetsave and org.mensxmachina.pgm.bnetsamplesave has been removed.
+- Function org.mensxmachina.pgm.dsl2pgm has been renamed to org.mensxmachina.pgm.bn.converters.dsl.dslnodes2bayesnet.
+- Function org.mensxmachina.pgm.grass has been renamed to org.mensxmachina.pgm.bn.tabular.sprinkler.
+- Script org.mensxmachina.pgm.grassdemo has been renamed to org.mensxmachina.pgm.bn.demos.bayesnetdemo.
+- Function org.mensxmachina.pgm.xmlbifread has been removed.
+- Function org.mensxmachina.pgm.xdslread has been moved to package org.mensxmachina.pgm.bn.io.xdsl. Argument ClassNames has been replaced by new argument useNodeNames, which specifies whether the node names and not the CPT IDs in the XDSL file are used as the variable names. All variables are now assumed to be nominal.
+
+Compatibility Considerations:
+- Code using org.mensxmachina.pgm.BayesianNetwork, org.mensxmachina.pgm.CategoricalBayesianNetwork and GaussianBayesianNetwork must be rewritten to make use of org.mensxmachina.pgm.bn.bayesnet. See also org.mensxmachina.pgm.bn.demos.bayesnetdemo.
+- Calls to org.mensxmachina.pgm.bifread must be replaced by calls to org.mensxmachina.pgm.bn.io.bif.bifread. Use of ClassNames must be abolished and the fact that all variables of the returned Bayesian network are now nominal must be taken into consideration.
+- Calls to org.mensxmachina.pgm.bnetsave and org.mensxmachina.pgm.bnetsamplesave must be replaced by appropriate code.
+- Calls to org.mensxmachina.pgm.dsl2pgm must be replaced by calls to org.mensxmachina.pgm.bn.converters.dsl.dslnodes2bayesnet.
+- Calls to org.mensxmachina.pgm.grass must be replaced by calls to org.mensxmachina.pgm.bn.tabular.sprinkler.
+- Calls to org.mensxmachina.pgm.xmlbifread must be replaced by appropriate code.
+- Calls to org.mensxmachina.pgm.xdslread must be replaced by calls to org.mensxmachina.pgm.bn.io.xdsl.xdslread. Use of ClassNames must be abolished and the fact that all variables of the returned Bayesian network are now nominal must be taken into consideration.
+
+Bayesian network viewing
+------------------------
+
+- Class org.mensxmachina.pgm.bn.viewers.bayesnetviewer (bayesian network viewers) has been added to support Bayesian network viewing.
+- Method org.mensxmachina.pgm.BayesianNetwork/view has been replaced by new class org.mensxmachina.pgm.bn.viewers.biograph.biographbayesnetviewer (biograph-based bayesian-network viewer).
+
+Bayesian network inference
+--------------------------
+
+- Class org.mensxmachina.pgm.bn.inference.jtree.jtreeinfengine (junction-tree inference engine) has been added to support Bayesian network inference with the junction-tree algorithm.
+
+Bayesian network learning
+-------------------------
+
+- Classes org.mensxmachina.pgm.bn.learning.cb.dsepdeterminer (d-separation determiner), org.mensxmachina.pgm.bn.learning.cb.sepsetidentifieddata (sepset-identified data), and org.mensxmachina.pgm.bn.learning.cb.sepsetlogger (sepset logger), org.mensxmachina.pgm.bn.learning.cb.cit.citdsepdeterminer (conditional-independence-test-based d-separation determiner), org.mensxmachina.pgm.bn.learning.cb.cit.citlogger (conditional-independence-test logger), org.mensxmachina.pgm.bn.learning.cb.cit.citperformeddata (conditional-independence-test-performed data), org.mensxmachina.pgm.bn.learning.cb.cit.latpvaluelogger (link-absence-test p-value logger), org.mensxmachina.pgm.bn.learning.cb.cit.dag.dagcitpvalueestimator (DAG-based conditional-independence-p-value estimator), and org.mensxmachina.pgm.bn.learning.cb.dag.dagdsepdeterminer (DAG-based d-separation determiner), have been added to support constraint-based learning.
+- Class org.mensxmachina.pgm.bn.learning.cb.lg.gl.glglearner (generalized local learner) has been added το support Generalized Local Learning.
+- Classes org.mensxmachina.pgm.bn.learning.cb.lg.gl.mm.cacalculator (conditional-association calculator), org.mensxmachina.pgm.bn.learning.cb.lg.gl.mm.cit.citcacalculator (conditional-independence-test-based conditional-association calculator), and org.mensxmachina.pgm.bn.learning.cb.lg.gl.mm.dag.dagcacalculator (DAG-based conditional-association calculator) have been added to support learning with the MMPC algorithm.
+- Classes org.mensxmachina.pgm.bn.learning.cpd.cpdlearner (conditional-probability-distribution learners) and org.mensxmachina.pgm.bn.learning.cpd.bdeu.bdeucpdlearner (BDeu-conditional-probability-distribution learner) have been added to support parameter learning.
+- Class org.mensxmachina.pgm.bn.learning.pc.pclearner (parents-and-children learner) has been added to support parents-and-children learning.
+- Classes org.mensxmachina.pgm.bn.learning.skeleton.cb.pc.generalizedpcskeletonlearner (generalized pc skeleton learner), org.mensxmachina.pgm.bn.learning.skeleton.cb.pc.pcskeletonlearner (pc skeleton learner), and org.mensxmachina.pgm.bn.learning.skeleton.cb.pc.mtpcskeletonlearner (multiple-testing pc skeleton learner) have been added to support learning with the PC algorithm.
+- Class org.mensxmachina.pgm.bn.learning.skeleton.skeletonlearner (skeleton learner) has been added to support skeleton learning.
+- Class org.mensxmachina.pgm.bn.learning.structure.structurelearner (structure learner) has been added to support structure learning.
+- Classes org.mensxmachina.pgm.bn.learning.structure.sns.local.localscorer (local scorer),org.mensxmachina.pgm.bn.learning.structure.sns.local.bdeu.bdeulocalscorer (bdeu local scorers), and org.mensxmachina.pgm.bn.learning.structure.sns.local.hs.hillclimber (hill climber), have been added to support the second phase of the MMHC algorithm.
+- Functions org.mensxmachina.pgm.mmpc, org.mensxmachina.pgm.mmpcnonsym, and org.mensxmachina.pgm.mmpcskeleton have been replaced by new class org.mensxmachina.pgm.bn.learning.cb.lg.gl.mm.mmlglearner (min-max local learner).
+- Functions org.mensxmachina.pgm.mmpcopt, org.mensxmachina.pgm.mmpcnonsymopt, and org.mensxmachina.pgm.mmpcskeletonopt have been removed.
+- Class org.mensxmachina.pgm.bn.learning.cb.lg.gl.mm.mmlglearner does not use information from previously learned TPCs when learning a TPC, in contrast to org.mensxmachina.pgm.mmpc(opt), org.mensxmachina.pgm.mmpcnonsym(opt), and org.mensxmachina.pgm.mmpcskeleton(opt).
+- Script org.mensxmachina.pgm.mmpcdemo has been replaced by org.mensxmachina.pgm.bn.learning.demos.mmhcdemo.
+- Functions org.mensxmachina.pgm.pc*, org.mensxmachina.pgm.plotpc*, org.mensxmachina.pgm.skeleton* and org.mensxmachina.pgm.plotskeleton* have been removed.
+
+Compatibility Considerations:
+- Code using org.mensxmachina.pgm.mmpc(opt), org.mensxmachina.pgm.mmpcnonsym(opt), and org.mensxmachina.pgm.mmpcskeleton(opt) must been rewritten to use org.mensxmachina.pgm.bn.learning.cb.lg.gl.mm.mmlglearner. See also org.mensxmachina.pgm.bn.learning.demos.mmhcdemo.
+- Code using org.mensxmachina.pgm.pc*, org.mensxmachina.pgm.plotpc*, org.mensxmachina.pgm.skeleton* and org.mensxmachina.pgm.plotskeleton* must be replaced by appropriate code. See also org.mensxmachina.pgm.bn.learning.demos.mmhcdemo and package org.mensxmachina.stats.mt.quantities.
+
+Accompanying datasets and networks
+----------------------------------
+
+- Files containing Bayesian networks Andes, Diabetes, Link, Mildew, Munin, Pathfinder, Pigs, Powerplant and Water, as well as files containing a sample from each network, have been added to directory pgm/pgm.
+- Files pgm/pgm/mxm_pgm_*_bnet.mat have been renamed to pgm/pgm/*_bayesnet.mat.
+- Files pgm/pgm/mxm_pgm_*_bnet_sample.mat have been renamed to pgm/pgm/*_bayesnet_sample.mat.
+- Files pgm/pgm/*_bnet.mat now contain an org.mensxmachina.pgm.bn.bayesnet Object named BayesNet.
+- The dataset array a contained in each file pgm/pgm/*_sample.mat has been renamed to Sample. The array may be different from the previous one because a different random number substream was used for each network this time, in order for the observations from different networks to be independent. 
+- The Alarm network included in this version is read from the XDSL file downloaded from the GeNIe & SMILE Network Repository and is slightly different from the previous one.
+
+Compatibility Considerations:
+- No comparisons should be made between results obtained by using different versions of the samples.
+- No comparisons should be made between results obtained by using different versions of the Alarm network.
+
+-----------------------------
+Fixed Bugs and Known Problems
+-----------------------------
+
+- In the previous version the mmpc, mmpcnonsym, mmpcnonsymopt, mmpcopt, mmpcskeleton, and mmpcskeletonopt functions did not calculate the maximal conditioning-set cardinality corresponding to the employed reliability criterion correctly when removing variables from the TPC. This has been fixed in the current version.
+- In the previous version the mmpc, mmpcopt, mmpcskeleton, and mmpcskeletonopt functions reused minimal conditional associations from previous applications of MMPC-nonsym when prioritizing variables in OPEN. This practice has been discontinued in this version because it is not what the actual MMPC algorithm does.
+
+---------------
+Version 0.9.2.3
+---------------
+
+-----------------------------
+Fixed Bugs and Known Problems
+-----------------------------
+
+- In the previous version the mmpc, mmpcnonsym, mmpcnonsymopt, mmpcopt, mmpcskeleton, and mmpcskeletonopt functions actually implemented the Max-Max Heuristic and not the Max-Min one. This has been fixed in the current version. Thanks to Ru He for pointing this out.
+
+
+
+
+
+---------------
+Version 0.9.2.2
+---------------
+
+------------
+New Features
+------------
+
+- The mmpc, mmpcnonsym and mmpcskeleton functions can now accept data in matrix form.
+
+
+
+
+
+---------------
+Version 0.9.2.1
+---------------
+
+-----------------------------
+Fixed Bugs and Known Problems
+-----------------------------
+
+- In the previous version the mmpc, mmpcnonsym, mmpcnonsymopt, mmpcopt, mmpcskeleton, and mmpcskeletonopt functions may return some extra false positives. This has been fixed in the current version.
+- In the previous version the isdsep and isdsepopt functions return incorrect results. This has been fixed in the current version.
+
+
+
+
+
+-------------
+Version 0.9.2
+-------------
+
+------------------------
+New Features and Changes
+------------------------
+
+I/O functions
+-------------
+
+- The new xdslread and xmlbifread functions read categorical Bayesian networks from XDSL and XML/BIF files respectivelly.
+
+Compatibility Considerations:
+
+- The bifread and dsl2pgm (former dslread) functions now fix the probabilities read from files so they sum to 1.
+- The dslread function evolved to dsl2pgm, which converts a Bayesian network in the representation used in the Causal Explorer toolkit by the Discovery Systems Laboratory (DSL) into an Object of the CategoricalBayesianNetwork class.
+
+Skeleton identification utilities
+---------------------------------
+
+- The new skeletonstepup function finds the undirected edge cutoff indices corresponding to thresholds on a skeleton identification error.
+- The new skeletonstepupstats function computes summary statistics, among several runs, of a skeleton identification measure corresponding to thresholds on a skeleton identification error.
+- The new skeletonrlzdfdr, skeletonrlzdfpr, skeletonrlzdpwr functions calculate the realized False Discovery Rate (FDR), False Positive Rate (FPR) and power for each undirected edge or maximal p-value threshold of an output skeleton given the target skeleton.
+- The new skeletonstatstats function computes statistics of undirected edge statistics.
+- The new skeletonrlzdtsr function calculates the realized 'Test Success Rate' (TSR), i.e. the ratio of the number of successful hypothesis tests of conditional independence to the number of all tests considered for each undirected edge of an output skeleton.
+- The new skeletonnfp function calculates the number of false positives for each undirected edge or maximal p-value threshold of an output skeleton given the target skeleton.
+- The new skeletonnp function calculates the number of positives (i.e. discovered undirected edges) for each undirected edge or maximal p-value threshold of an output skeleton.
+
+Compatibility Considerations:
+- The pcauc, pcperf, pcroc, plotpcconfusion, plotpcroc, plotskeletonconfusion and plotskeletonroc, skeletonauc, skeletonperf and skeletonroc functions no longer accept cell arrays as input; use them with cellfun instead.
+- The plotskeletonroc, skeletonauc, skeletonperf and skeletonroc functions no longer accept full matrices; convert to sparse first.
+- The pcauc, pcperf, pcroc, plotpcconfusion and plotpcroc functions no longer accept vertices but sparse matrices instead.
+
+Generalized Local Learning (GLL) functions
+------------------------------------------
+
+- The new mmpcskeletonopt and mmpcopt functions are optimized versions of mmpcskeleton and mmpcopt respectivelly.
+- The new function mmpcnonsym and its optimized version mmpcnonsymopt are non-symmetry corrected versions of mmpc and mmpcopt respectivelly. The mmpcnonsym function is equivalent to mmpc with the 'sym' parameter set to true in previous versions.
+- The 'maxk' parameter of mmpcskeletonopt and mmpcopt can now be Inf too.
+- The new 'PowerFun' and 'PowerParam' parameters of the mmpcskeleton and mmpc functions specify a function that estimates the statistical power of a hypothesis test of conditional independence and the parameters of that test function respectivelly.
+- The new 'Beta' parameter of the mmpcskeleton and mmpc functions specifies a threshold on the statistical power of the hypothesis tests of conditional independence. Tests with insufficient power are ignored.
+- The new 'Stats' output argument of the mmpcskeleton and mmpc functions is a structure with statistics of the skeleton identification process.
+
+Compatibility Considerations:
+- The 'testFun' parameter of mmpc and mmpcskeleton functions is no longer supported; the new 'PowerFun' (see above) and 'PFun' parameter are supported instead. PFun is a handle to a function that returns an estimate of the p-value and the statistic of a hypothesis test of conditional independence.
+- The 'maxkFun' parameter of the mmskeleton and mmpc functions has been renamed to 'PowerMaxKFun'. The specification and the default value of the parameter has also changed; see M-file help for details.
+- The 'testCache' parameter of mmpc and mmpcskeleton functions is no longer supported. No test cache needs to be passed anymore.
+- The specification and the default value of the 'testParam' parameter of mmpc and mmpcskeleton functions have been changed; see M-file help for details.
+- The 'sym' parameter of mmpc and mmpcskeleton functions respectivelly is no longer supported. The current versions of mmpc and mmpcskeleton behave as their previous versions with sym set to true. Use mmpcnonsym to obtain the functionality of the previous versions of mmpc with sym set to false; however, no similar function for mmpcskeleton exists.
+- The 'rl' parameter of mmpc and mmpcskeleton functions is no longer supported. The current versions of mmpc and mmpcskeleton behave as their previous versions with rl set to 1.
+- The 'includeNpc' and 'includeNonEdges' parameters of mmpc and mmpcskeleton functions respectivelly are no longer supported. The current versions of mmpc and mmpcskeleton behave as their previous versions with includeNpc and includeNonEdges respectivelly set to false.
+- The specification and the default value of the 'TestParam' parameter of mmpc and mmpcskeleton have been changed. See M-file help for details.
+- The first output argument of the mmpc function is no longer a vector but a sparse matrix. See M-file help for details.
+- Due to further modifications in the code of mmpc and mmpcskeleton functions, their results may not be the same as the results of their previous versions, even with all the previous changes considered.
+
+Conditional independence test p-value estimator functions
+---------------------------------------------------------
+- The new org.mensxmachina.pgm.indtestp package contains conditional independence test p-value estimator functions, handles to which can be used as values of the new 'PFun' parameter of GLL functions (and any contraint-based learning function bundled in the future).
+- The new chi2indtestpopt, fisherzindtestpopt and indtestpopt functions return the p-value of a Chi-square, a Fisher's Z and a generic test of conditional independence respectivelly.
+
+Conditional independence test power estimator functions
+-------------------------------------------------------
+
+- The new org.mensxmachina.pgm.indtestpower package contains conditional independence test power estimator functions, handles to which can be used as values of the new 'PowerFun' parameter of GLL functions (and any contraint-based learning function bundled in the future).
+- The new chi2indtesthspopt function estimates the power of a Chi-square test of conditional independence based on the heuristic power size (hps) parameter (see M-file help for details).
+- The new dummyindtestpwropt function always returns power 1.
+- The new indtestpwropt function estimates the power of a generic test of conditional independence.
+
+Maximal conditioning set cardinality with sufficient conditional independence test power estimator functions
+------------------------------------------------------------------------------------------------------------
+
+- The new org.mensxmachina.pgm.indtestpowermaxk package contains maximal conditioning set cardinality with sufficient conditional independence test power estimator functions, handles to which can be used as values of the new 'PowerMaxKFun' parameter of GLL functions (and any contraint-based learning function bundled in the future).
+- The new chi2indtesthspmaxkopt function returns an upper bound on the maximal conditioning set cardinality with sufficient Chi-square conditional independence test power based on the heuristic power size (hps) parameter (see M-file help for details).
+- Thew new dummyindtestpwrmaxkopt function returns the maximal conditioning set.
+- The new indtestpwrmaxkopt function estimates the maximal conditioning set cardinality with sufficient power for a generic test of conditional independence.
+
+Template functions
+------------------
+
+- The new org.mensxmachina.pgm.custom package contains templates for your own custom functions, handles to which can be used as values of GLL (and other future) function parameters.
+- The new template_indtestp, template_indtestpower and template_indtestpowermaxk functions are templates for custom conditional independence test p-value, conditional independence test power and maximal conditioning set cardinality with sufficient conditional independence test power estimator functions respectivelly.
+
+Utility functions
+-----------------
+
+- The new isdsep and isdsepopt functions detect nodes that are d-separated from a given set of nodes by another.
+
+Compatibility Considerations:
+
+- The BayesianNetwork class now generates an error if the 'VarNames' property is set a cell of strings with at least one of them not being a valid variable name (checked with the isvarname built-in function).
+- The CategoricalBayesianNetwork class no longer accepts a 'param' argument with sums < 10^-4 along the 1st dimension of each element of param but with sum numlevels(i)*eps(class(param{i})) along the 1st dimension of each element i of params, where numlevels is the 'numlevels' argument of CategoricalBayesianNetwork, thus matching the way the built-in mnrnd function checks its 'p' argument.
+
+Accompanying datasets and networks
+----------------------------------
+
+- MAT files containing BayesianNetwork Objects and samples from the Alarm, Andes, Barley, Hailfinder, Hepar II and Win95pts Bayesian networks have been added.
+
+Compatibility Considerations:
+
+- The mxm_pgm_smokingandcancer_sample.txt, mxm_pgm_cheese_sample.txt, alarm.bif and insurance.bif files have been removed. They can be downloaded from the following online repositories:
+http://www.cs.huji.ac.il/~galel/Repository/ (alarm.bif and insurance.bif)
+http://www.phil.cmu.edu/projects/tetrad_examples/ (mxm_pgm_cheese_sample.txt is cheese.txt from Example 7 and mxm_pgm_smokingandcancer_sample.txt is smokingandcancer.txt from Example 9)
+- The samples contained in previous versions have been moved to a supplementary package called Mens X Machina Probabilistic Graphical Model Samples. Only the first sample of each network has been retained, dropping the '_1' suffix in its filename.
+- The weather function and weatherdemo demo script have been renamed to sprinkler and sprinklerdemo respectivelly.
+
+-----------------------------
+Fixed Bugs and Known Problems
+-----------------------------
+
+- In the previous version the bifread function would not run at all but generate an error instead. This has been fixed in the current version.

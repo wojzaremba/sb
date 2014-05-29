@@ -1,0 +1,274 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Creating, viewing and sampling a Bayesian network</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-07-15"><meta name="DC.source" content="bayesnetdemo.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Creating, viewing and sampling a Bayesian network</h1><!--introduction--><p>This demo illustrates the creation, viewing and sampling of the example <i>sprinkler</i> Bayesian network from <i>Artificial Intelligence: A Modern Approach (1st Edition)</i>. Terms <i>variable</i> and <i>node</i> are used interchangeably.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Creating the structure</a></li><li><a href="#2">Creating the conditional probability distributions</a></li><li><a href="#3">Creating the network</a></li><li><a href="#4">Viewing the structure</a></li><li><a href="#5">Sampling the network</a></li></ul></div><h2>Creating the structure<a name="1"></a></h2><p>The first component of a Bayesian network is its <i>structure</i>, a directed acyclic graph (DAG). In MATLAB&reg;, graphs are represented as sparse matrices. A nonzero element in the matrix denotes an edge in the graph. We create the structure of the sprinkler network. The structure has 4 nodes and edges 1-&gt;2, 1-&gt;3, 2-&gt;4 and 3-&gt;4.</p><pre class="codeinput"><span class="comment">% create structure</span>
+structure = sparse([1 1 2 3], [2 3 4 4], 1, 4, 4);
+</pre><h2>Creating the conditional probability distributions<a name="2"></a></h2><p>The second component of a Bayesian network is the <i>conditional probability distributions</i> (CPDs) of the nodes given values of their parents. In general, a CPD is the probability distribution of a set of <i>response</i> variables given values of a set of <i>explanatory</i> variables. The CPDs in a Bayesian network are CPDs of a single response variable, the explanatory variables being the parents of that variable.</p><p>The variables of the sprinkler network are <i>cloudy</i>, <i>sprinkler</i>, <i>rain</i>, and <i>wetGrass</i>. All of them are binary variables taking values <i>false</i> and <i>true</i>. We represent these values by Statistics Toolbox&#8482; <i>categorical arrays</i> with levels <i>false</i> and <i>true</i>.</p><p>We create a <i>tabular CPD</i> for each variable. Tabular CPDs are encoded as tables. For each tabular CPD, we supply the variable names, the variable values, the <i>CPD-variable types</i> and the values of the CPD. A CPD-variable type is either <tt>Explanatory</tt> or <tt>Response</tt>. The values of a tabular CPD are ND arrays. Each value of the ND array is the probability of the corresponding variable-value combination.</p><pre class="codeinput">import <span class="string">org.mensxmachina.stats.cpd.cpdvartype</span>;
+import <span class="string">org.mensxmachina.stats.cpd.tabular.tabcpd</span>;
+
+<span class="comment">% create variable values -- same for all variables</span>
+varValues = nominal([1; 2], {<span class="string">'false'</span>, <span class="string">'true'</span>});
+
+<span class="comment">% create CPDs</span>
+
+E = cpdvartype.Explanatory;
+R = cpdvartype.Response;
+
+cloudyCpd = tabcpd(<span class="keyword">...</span>
+    {<span class="string">'cloudy'</span>}, <span class="keyword">...</span>
+    {varValues}, <span class="keyword">...</span>
+    R, <span class="keyword">...</span>
+    reshape([0.5 0.5], 2, 1))
+
+sprinklerCpd = tabcpd(<span class="keyword">...</span>
+    {<span class="string">'cloudy'</span>, <span class="string">'sprinkler'</span>}, <span class="keyword">...</span>
+    {varValues, varValues}, <span class="keyword">...</span>
+    [E R], <span class="keyword">...</span>
+    reshape([0.5 0.5; 0.9 0.1], 2, 2))
+
+rainCpd = tabcpd(<span class="keyword">...</span>
+    {<span class="string">'cloudy'</span>, <span class="string">'rain'</span>}, <span class="keyword">...</span>
+    {varValues, varValues}, <span class="keyword">...</span>
+    [E R], <span class="keyword">...</span>
+    reshape([0.8 0.2; 0.2 0.8], 2, 2))
+
+wetGrassCpd = tabcpd(<span class="keyword">...</span>
+    {<span class="string">'sprinkler'</span>, <span class="string">'rain'</span>, <span class="string">'wetGrass'</span>}, <span class="keyword">...</span>
+    {varValues, varValues, varValues}, <span class="keyword">...</span>
+    [E E R], <span class="keyword">...</span>
+    reshape([1 0.1 0.1 0.01 0 0.9 0.9 0.99], 2, 2, 2))
+
+<span class="comment">% put them all together</span>
+cpd = {cloudyCpd, sprinklerCpd, rainCpd, wetGrassCpd};
+</pre><pre class="codeoutput">cloudyCpd = 
+        cloudy = false     cloudy = true
+                   0.5               0.5
+
+sprinklerCpd = 
+                      sprinkler = false     sprinkler = true
+    cloudy = false                  0.5                  0.5
+    cloudy =  true                  0.9                  0.1
+
+rainCpd = 
+                      rain = false     rain = true
+    cloudy = false             0.8             0.2
+    cloudy =  true             0.2             0.8
+
+wetGrassCpd = 
+                                       wetGrass = false     wetGrass = true
+    sprinkler = false, rain = false                   1                   0
+    sprinkler =  true, rain = false                 0.1                 0.9
+    sprinkler = false, rain =  true                 0.1                 0.9
+    sprinkler =  true, rain =  true                0.01                0.99
+
+</pre><h2>Creating the network<a name="3"></a></h2><p>We create the sprinkler network by supplying its structure and its CPDs.</p><pre class="codeinput">import <span class="string">org.mensxmachina.pgm.bn.bayesnet</span>;
+
+<span class="comment">% create Bayesian network</span>
+BayesNet = bayesnet(structure, cpd);
+</pre><h2>Viewing the structure<a name="4"></a></h2><p>Bayesian networks are viewed by <i>Bayesian network viewers</i>. We use a <i>biograph-based Bayesian network viewer</i>, which uses a Bioinformatics Toolbox&#8482; biograph, to view the structure of the sprinkler network.</p><pre class="codeinput">import <span class="string">org.mensxmachina.pgm.bn.viewers.biograph.biographbayesnetviewer</span>;
+
+<span class="comment">% create Bayesian network Viewer</span>
+Viewer = biographbayesnetviewer(BayesNet);
+
+<span class="comment">% view the Bayesian network structure</span>
+Viewer.viewbayesnetstructure();
+</pre><img vspace="5" hspace="5" src="bayesnetdemo_01.png" alt=""> <h2>Sampling the network<a name="5"></a></h2><p>A Bayesian network is itself a CPD and can be sampled. We sample a CPD by supplying a Statistics Toolbox&#8482; dataset array containing values of the explanatory variables of the CPD. The sample is a dataset containing values for the response variables of the CPD.</p><p>We get a random sample with 10 observations from the sprinkler network by supplying an empty 10-by-0 dataset array, since there are no explanatory variables in Bayesian networks.</p><pre class="codeinput"><span class="comment">% get a random sample from the Bayesian network</span>
+D = random(BayesNet, dataset.empty(10, 0))
+</pre><pre class="codeoutput">
+Sampling...
+
+Creating column #1, 'cloudy' (1 of 4, 25.00%)...
+
+Creating column #3, 'rain' (2 of 4, 50.00%)...
+
+Creating column #2, 'sprinkler' (3 of 4, 75.00%)...
+
+Creating column #4, 'wetGrass' (4 of 4, 100.00%)...
+
+D = 
+
+    cloudy    sprinkler    rain     wetGrass
+    true      false        true     true    
+    false     false        false    false   
+    false     false        false    false   
+    false     false        false    false   
+    true      false        true     true    
+    false     true         false    true    
+    false     true         true     true    
+    false     false        false    false   
+    false     false        false    false   
+    false     false        false    false   
+
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.13<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Creating, viewing and sampling a Bayesian network
+% This demo illustrates the creation, viewing and sampling of the example
+% _sprinkler_ Bayesian network from _Artificial Intelligence: A Modern
+% Approach (1st Edition)_. Terms _variable_ and _node_ are used
+% interchangeably.
+
+%% Creating the structure
+% The first component of a Bayesian network is its _structure_, a directed
+% acyclic graph (DAG). In MATLAB(R), graphs are represented as sparse
+% matrices. A nonzero element in the matrix denotes an edge in the graph.
+% We create the structure of the sprinkler network. The structure has 4
+% nodes and edges 1->2, 1->3, 2->4 and 3->4.
+
+% create structure
+structure = sparse([1 1 2 3], [2 3 4 4], 1, 4, 4);
+
+%% Creating the conditional probability distributions
+% The second component of a Bayesian network is the _conditional
+% probability distributions_ (CPDs) of the nodes given values of their
+% parents. In general, a CPD is the probability distribution of a set of
+% _response_ variables given values of a set of _explanatory_ variables.
+% The CPDs in a Bayesian network are CPDs of a single response variable,
+% the explanatory variables being the parents of that variable.
+%
+% The variables of the sprinkler network are _cloudy_, _sprinkler_, _rain_,
+% and _wetGrass_. All of them are binary variables taking values _false_ and
+% _true_. We represent these values by Statistics Toolbox(TM) _categorical
+% arrays_ with levels _false_ and _true_.
+%
+% We create a _tabular CPD_ for each variable. Tabular CPDs are encoded as
+% tables. For each tabular CPD, we supply the variable names, the variable
+% values, the _CPD-variable types_ and the values of the CPD. A
+% CPD-variable type is either |Explanatory| or |Response|. The values of
+% a tabular CPD are ND arrays. Each value of the ND array is the
+% probability of the corresponding variable-value combination.
+
+import org.mensxmachina.stats.cpd.cpdvartype;
+import org.mensxmachina.stats.cpd.tabular.tabcpd;
+
+% create variable values REPLACE_WITH_DASH_DASH same for all variables
+varValues = nominal([1; 2], {'false', 'true'});
+
+% create CPDs
+
+E = cpdvartype.Explanatory;
+R = cpdvartype.Response;
+
+cloudyCpd = tabcpd(...
+    {'cloudy'}, ...
+    {varValues}, ...
+    R, ...
+    reshape([0.5 0.5], 2, 1))
+
+sprinklerCpd = tabcpd(...
+    {'cloudy', 'sprinkler'}, ...
+    {varValues, varValues}, ...
+    [E R], ...
+    reshape([0.5 0.5; 0.9 0.1], 2, 2))
+
+rainCpd = tabcpd(...
+    {'cloudy', 'rain'}, ...
+    {varValues, varValues}, ...
+    [E R], ...
+    reshape([0.8 0.2; 0.2 0.8], 2, 2))
+
+wetGrassCpd = tabcpd(...
+    {'sprinkler', 'rain', 'wetGrass'}, ...
+    {varValues, varValues, varValues}, ...
+    [E E R], ...
+    reshape([1 0.1 0.1 0.01 0 0.9 0.9 0.99], 2, 2, 2))
+
+% put them all together
+cpd = {cloudyCpd, sprinklerCpd, rainCpd, wetGrassCpd};
+
+%% Creating the network
+% We create the sprinkler network by supplying its structure and its CPDs.
+
+import org.mensxmachina.pgm.bn.bayesnet;
+
+% create Bayesian network
+BayesNet = bayesnet(structure, cpd);
+
+%% Viewing the structure
+% Bayesian networks are viewed by _Bayesian network viewers_. We use a
+% _biograph-based Bayesian network viewer_, which uses a Bioinformatics
+% Toolbox(TM) biograph, to view the structure of the sprinkler network.
+
+import org.mensxmachina.pgm.bn.viewers.biograph.biographbayesnetviewer;
+
+% create Bayesian network Viewer
+Viewer = biographbayesnetviewer(BayesNet);
+
+% view the Bayesian network structure
+Viewer.viewbayesnetstructure();
+
+%% Sampling the network
+% A Bayesian network is itself a CPD and can be sampled. We sample a CPD by
+% supplying a Statistics Toolbox(TM) dataset array containing values of
+% the explanatory variables of the CPD. The sample is a dataset containing
+% values for the response variables of the CPD.
+%
+% We get a random sample with 10 observations from the sprinkler network by
+% supplying an empty 10-by-0 dataset array, since there are no explanatory
+% variables in Bayesian networks.
+
+% get a random sample from the Bayesian network
+D = random(BayesNet, dataset.empty(10, 0))
+##### SOURCE END #####
+--></body></html>

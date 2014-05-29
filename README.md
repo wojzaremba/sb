@@ -2,17 +2,25 @@ Sparsity Boost
 ==============
 
 TODO
-- Generalize distp
-- Take out unnecessary multiplications by H in kci classifier, since H is idempotent, hence Tr(HAH HBH) = Tr(AHBH).
-- Get tests working for compute edge scores and add edge scores.
+- Consider caching Tr(Ky(:)).  Then, if I don't use the pvalues, I can use the that H is idempotent to compute Tr(HAH HBH) = Tr(AHBH), i.e. I only need to compute KxH, etc. 
 - Take out unnecessary calculations in computing KCI p-value when performing unconditional test.
 - Remove print statements from c++ code.
 - Improve discretization- use method which maximizes mutual information.
-- Add various score options to run structure learning.
 - Regenerate ROC curves with outliers removed.
-- Take another look at test-compute-roc-curves- why is the discrete data performing better?  Doesn't make sense to me.
 
+DATASETS
+- T-cell (downloaded, preprocessed)
+- Wine
+- Dow Jones
+- Could talke with Rich Bonneau to get other datasets.
+- Also Johnathan Carr.  Should read his paper in Cell.
+- Make sure there's nothing in DREAM that I could use.
 
+BASELINES
+Compare against other nonlinear, continuous methods.  State of the art in:
+- Copula BNs.  Gal Elidan's lightning speed code.
+- KDE- Maybe Bach/Jordan 2002.  But there has to be something more recent.
+- Nonlinear regression.  Not sure which one to use.
 
 POSSIBLE DIRECTIONS
 DEPENDENCY MODEL:

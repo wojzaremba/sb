@@ -1,0 +1,167 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      --><title>fdrdemo</title><meta name="generator" content="MATLAB 7.9"><meta name="date" content="2012-03-01"><meta name="m-file" content="fdrdemo"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Initialize p-values</a></li><li><a href="#2">Control the FWER at level 0.05 using the Bonferroni correction</a></li><li><a href="#3">Estimate the FDR corresponding to each p-value</a></li><li><a href="#4">Control the FDR at level 0.05</a></li></ul></div><h2>Initialize p-values<a name="1"></a></h2><pre class="codeinput"><span class="comment">% Example source:</span>
+<span class="comment">% Y. Benjamini and Y. Hochberg. Controlling the false discovery rate: A</span>
+<span class="comment">% practical and powerful approach to multiple testing. Journal of the Royal</span>
+<span class="comment">% Statistical Society. Series B (Methodological), 57(1):pp. 289-300, 1995.</span>
+
+p = [0.0001, 0.0004, 0.0019, 0.0095, 0.0201, 0.0278, 0.0298, <span class="keyword">...</span>
+     0.0344, 0.0459, 0.324,  0.4262, 0.5719, 0.6528, 0.759, 1.000]
+
+m = length(p)
+</pre><pre class="codeoutput">
+p =
+
+  Columns 1 through 11
+
+    0.0001    0.0004    0.0019    0.0095    0.0201    0.0278    0.0298    0.0344    0.0459    0.3240    0.4262
+
+  Columns 12 through 15
+
+    0.5719    0.6528    0.7590    1.0000
+
+
+m =
+
+    15
+
+</pre><h2>Control the FWER at level 0.05 using the Bonferroni correction<a name="2"></a></h2><pre class="codeinput">t = 0.05/m
+p(p &lt;= t)
+</pre><pre class="codeoutput">
+t =
+
+    0.0033
+
+
+ans =
+
+    0.0001    0.0004    0.0019
+
+</pre><h2>Estimate the FDR corresponding to each p-value<a name="3"></a></h2><pre class="codeinput">import <span class="string">org.mensxmachina.stats.mt.error.fdr.lambda.storey2002.storey2002fdrestimator</span>;
+
+storey2002 = storey2002fdrestimator();
+
+fdr = storey2002.estimate(p)
+</pre><pre class="codeoutput">
+fdr =
+
+  Columns 1 through 11
+
+    0.0015    0.0030    0.0095    0.0356    0.0603    0.0695    0.0639    0.0645    0.0765    0.4860    0.5812
+
+  Columns 12 through 15
+
+    0.7149    0.7532    0.8132    1.0000
+
+</pre><h2>Control the FDR at level 0.05<a name="4"></a></h2><pre class="codeinput">import <span class="string">org.mensxmachina.stats.mt.mtp.error...stepupmptthreshold</span>;
+
+t = stepupmptthreshold(p, fdr, 0.05)
+p(p &lt;= t)
+</pre><pre class="codeoutput">
+t =
+
+    0.0095
+
+
+ans =
+
+    0.0001    0.0004    0.0019    0.0095
+
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.9<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Initialize p-values
+
+% Example source:
+% Y. Benjamini and Y. Hochberg. Controlling the false discovery rate: A
+% practical and powerful approach to multiple testing. Journal of the Royal
+% Statistical Society. Series B (Methodological), 57(1):pp. 289-300, 1995.
+
+p = [0.0001, 0.0004, 0.0019, 0.0095, 0.0201, 0.0278, 0.0298, ...
+     0.0344, 0.0459, 0.324,  0.4262, 0.5719, 0.6528, 0.759, 1.000]
+ 
+m = length(p)
+
+%% Control the FWER at level 0.05 using the Bonferroni correction
+
+t = 0.05/m
+p(p <= t)
+
+%% Estimate the FDR corresponding to each p-value
+
+import org.mensxmachina.stats.mt.error.fdr.lambda.storey2002.storey2002fdrestimator;
+
+storey2002 = storey2002fdrestimator();
+
+fdr = storey2002.estimate(p)
+
+%% Control the FDR at level 0.05
+
+import org.mensxmachina.stats.mt.mtp.error...stepupmptthreshold;
+
+t = stepupmptthreshold(p, fdr, 0.05)
+p(p <= t)
+##### SOURCE END #####
+--></body></html>

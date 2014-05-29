@@ -1,5 +1,5 @@
 function S = prune_scores(S)
-fprintf('prune_scores..\n');
+printf(2, 'prune_scores..\n');
 
 % first remove infs
 for i = 1:length(S)
@@ -8,7 +8,8 @@ for i = 1:length(S)
         if isinf(S{i}{j}.score)
             % check that it's negative
             assert(S{i}{j}.score < 0);
-            fprintf('***Removing infinite score from S\n');
+            printf(2, '  Removing infinite score from S: %d conditioned on %s \n',...
+                i, num2str(S{i}{j}.parents));
         else
             keep = [keep j];
         end
@@ -29,6 +30,9 @@ for i = 1:length(S)
                % if the smaller subset has a better (larger) score, then
                % don't need the larger subset
                if S{i}{j}.score >= S{i}{k}.score
+                   printf(2, ['  Removing finite score from S: %d '...
+                       'conditioned on %s preferred to %s \n'], i, ...
+                       num2str(S{i}{j}.parents), num2str(S{i}{k}.parents));
                    to_remove(end+1) = k;
                end
            end
@@ -64,5 +68,4 @@ end
 %     printf(2, 'finished i = %d\n', i);
 % end
 
-fprintf('..finished pruning scores\n');
 end

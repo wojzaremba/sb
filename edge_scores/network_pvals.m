@@ -1,8 +1,8 @@
-function [z, ind, edge, rho, set_size, k] = network_pvals(network, type, variance, N, ...
+function [z, ind, edge, rho, set_size, k] = network_pvals(network, data_gen, variance, N, ...
     maxS, pval, save_flag)
 
 bnet = make_bnet(struct('network', network, 'moralize', false, ...
-    'arity', 1, 'type', type, 'variance', variance));
+    'arity', 1, 'data_gen', data_gen, 'variance', variance));
 kci_opt = struct( 'pval', pval, 'kernel', GaussKernel());
 triples = gen_triples(size(bnet.dag, 1), 0:maxS);
 data = normalize_data(samples(bnet, N));

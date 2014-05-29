@@ -1,9 +1,9 @@
-function [bn_opt, runparams, options] = init_compute_roc_scores(network, arity, type, variance, N, num_exp, maxS, plot_flag, save_flag, f_sel)
+function [bn_opt, runparams, options] = init_compute_roc_scores(network, arity, data_gen, variance, N, num_exp, maxS, plot_flag, save_flag, f_sel)
     
     check_dir();
 
     rp = struct();
-    rp.cpd_type = strtok(type, '_');
+    rp.cpd_type = strtok(data_gen, '_');
     rp.file_name = sprintf('%s_%s_arity%d_N%d',network, rp.cpd_type, arity, N);
     rp.dir_name = sprintf('results/%s/%s', get_date(), rp.file_name);
     
@@ -18,7 +18,7 @@ function [bn_opt, runparams, options] = init_compute_roc_scores(network, arity, 
     
     rp.network = network;
     rp.arity = arity;
-    rp.type = type;
+    rp.data_gen = data_gen;
     rp.variance = variance;
     rp.N = N;
     rp.num_exp = num_exp;
@@ -27,7 +27,7 @@ function [bn_opt, runparams, options] = init_compute_roc_scores(network, arity, 
     rp.save_flag = save_flag;
     rp.f_sel = f_sel;
     
-    bn_opt = struct('network', network, 'arity', 1, 'type', type, 'variance', variance, 'moralize', false);
+    bn_opt = struct('network', network, 'arity', 1, 'data_gen', data_gen, 'variance', variance, 'moralize', false);
     
     runparams = rp;
     options = get_classifier_options(rp);

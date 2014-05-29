@@ -1,0 +1,206 @@
+-----------------------------
+Mens X Machina Common Toolbox
+Release Notes
+-----------------------------
+
+
+-------------
+Version 0.9.3
+-------------
+
+------------------------
+New Features and Changes
+------------------------
+
+This version is a complete rewrite of the previous one. There are a lot of new features and changes, the most important ones being the following. You can use CTRL+F to find the changes affecting a specific function, script, or class.
+
+Name
+----
+
+The name of the toolbox has been changed from "Commons Toolbox" to "Common Toolbox".
+
+Input parsing
+-------------
+
+- Function org.mensxmachina.commons.getargs has been removed.
+- Functions org.mensxmachina.commons.is* have been removed.
+
+Compatibility Considerations:
+- Calls to org.mensxmachina.commons.getargs must be replaced by appropriate code. Consider using class inputParser.
+- Calls to org.mensxmachina.commons.is* must be replaced by appropriate code. Consider using function validateattributes.
+
+Classification performance
+--------------------------
+
+- Functions org.mensxmachina.commons.stats.auc and org.mensxmachina.commons.stats.plotroc have been removed.
+- Function org.mensxmachina.commons.stats.roc function has been moved to package org.mensxmachina.classification.performance.
+
+Compatibility Considerations:
+- Calls to org.mensxmachina.commons.stats.auc and org.mensxmachina.commons.stats.roc must be replaced by calls to org.mensxmachina.classification.performance.roc.
+- Calls to org.mensxmachina.commons.stats.plotroc must be replaced by calls to org.mensxmachina.classification.performance.roc, followed by an appropriate call to plot. 
+
+Array manipulation
+------------------
+
+- Functions org.mensxmachina.array.isorder (determine whether input is an order vector), org.mensxmachina.array.issize (determine whether input is a size vector), org.mensxmachina.array.makeorder (make order vector) and org.mensxmachina.array.makesize (make size vector) have been added.
+- Functions org.mensxmachina.commons.column and org.mensxmachina.commons.row have been removed.
+
+Graph manipulation
+------------------
+
+- Functions org.mensxmachina.graph.isdsep (detect nodes d-separated from a given set of nodes by another), org.mensxmachina.graph.moralize (moralize graph), org.mensxmachina.graph.prim (Prim's algorithm for graphs with multiple weights per edge), org.mensxmachina.graph.triangulate (triangulate graph) and org.mensxmachina.graph.ancestormatrix (ancestor matrix) have been added.
+- Function org.mensxmachina.graph.biograph.closeallbiographviewers (close all biograph viewers) has been added.
+- Package org.mensxmachina.commons.graph has been renamed to org.mensxmachina.graph.
+- Functions org.mensxmachina.commons.graph.children, org.mensxmachina.commons.graph.parents, org.mensxmachina.commons.graph.pc, org.mensxmachina.commons.graph.skeleton, org.mensxmachina.commons.graph.skeleton2vectorind and org.mensxmachina.commons.graph.vector2skeletonind have been removed.
+- Function org.mensxmachina.commons.graph.skeleton2vector has been renamed to org.mensxmachina.graph.undigraphmat2vec.
+- Function org.mensxmachina.commons.graph.vector2skeleton has been renamed to org.mensxmachina.graph.undigraphvec2mat.
+- Function org.mensxmachina.graph.undigraphmat2vec no longer accepts inputs other than a sparse matrix.
+- Function org.mensxmachina.graph.undigraphvec2mat no longer accepts inputs other than a sparse vector.
+
+Compatibility Considerations:
+- Calls to org.mensxmachina.commons.graph.ancestors must be replaced by calls to org.mensxmachina.graph.ancestors.
+- Syntax "org.mensxmachina.commons.graph.children(G, j)" must be replaced by "find(G(j, :))".
+- Syntax "org.mensxmachina.commons.graph.parents(G, j)" must be replaced by "find(G(:, j))".
+- Syntax "org.mensxmachina.commons.graph.pc(G, j)" must be replaced by "find(G(j, :))".
+- Syntax "org.mensxmachina.commons.graph.skeleton(G)" must be replaced by "tril(G + G')";
+- Syntax "org.mensxmachina.commons.graph.skeleton2vectorind(m, row, col)" must be replaced by "(col-1).*(m - col/2) + row - col".
+- Syntax "[row col] = org.mensxmachina.commons.graph.vector2skeletonind(l, ind)" must be replaced by appropriate code.
+- Syntax "org.mensxmachina.commons.graph.skeleton2vector(skeleton)", when skeleton is full, must be replaced by "skeleton(tril(true(size(skeleton)), -1))".
+- Syntax "org.mensxmachina.commons.graph.vector2skeleton(vector)", when vector is full, must be replaced by appropriate code.
+
+Statistics
+----------
+
+- Package org.mensxmachina.commons.stats has been renamed to org.mensxmachina.stats.
+
+Statistical array manipulation
+------------------------------
+
+- Functions org.mensxmachina.stats.array.datasetvarnvalues (number of possible values of each dataset-array variable) and org.mensxmachina.stats.datasetvarvalues (possible values of each dataset-array variable) have been added.
+- Function org.mensxmachina.stats.array.io.latex.latextablewrite (write LaTeX table) has been added.
+- Functions org.mensxmachina.commons.stats.dataset*, org.mensxmachina.commons.stats.grpstatplot, org.mensxmachina.commons.stats.ismissing, org.mensxmachina.commons.stats.isnlevels, and org.mensxmachina.commons.stats.nlevels have been removed.
+
+Compatibility Considerations:
+- Calls to org.mensxmachina.commons.stats.dataset*, org.mensxmachina.commons.stats.grpstatplot, org.mensxmachina.commons.stats.ismissing and org.mensxmachina.commons.stats.isnlevels must be replaced by appropriate code.
+- Calls to org.mensxmachina.commons.stats.nlevels must be replaced by appropriate code.
+- Calls to org.mensxmachina.commons.stats.grpstatplot must be replaced by calls to org.mensxmachina.stats.array.datasetvarnvalues, taking the slight difference in semantics between the two functions into consideration.
+
+Conditional probability distributions
+-------------------------------------
+
+- Classes org.mensxmachina.stats.cpd.potential (potential),  org.mensxmachina.stats.cpd.cpdvartype (type of conditional-probability-distribution variable), and org.mensxmachina.stats.cpd.cpd (conditional probability distribution) have been added to support potentials and conditional probability distributions.
+- Classes org.mensxmachina.stats.cpd.tabular.tabpotential (tabular potential) and org.mensxmachina.stats.cpd.tabular.tabcpd (tabular conditional probability distribution) have been added to support tabular potentials and conditional probability distributions, respectively.
+- Class org.mensxmachina.stats.cpd.lg.lingausscpd (linear Gaussian conditional probability distribution) has been added to support linear Gaussian conditional probability distributions.
+- Classes org.mensxmachina.stats.cpd.inference.infengine (inference engine), org.mensxmachina.stats.cpd.inference.jointinfengine (joint inference engine) and org.mensxmachina.stats.cpd.inference.softinfengine (soft inference engine) have been added to support probabilistic inference.
+- Function org.mensxmachina.commons.stats.categoricalrnd has been removed.
+
+Multiple testing
+----------------
+
+- Class org.mensxmachina.stats.mt.error.errorestimator (multiple-testing-error estimator) has been added to support multiple-testing error estimation.
+- Classes org.mensxmachina.stats.mt.error.fdr.fdrestimator (FDR estimator) and org.mensxmachina.stats.mt.error.fdr.lambda.lambdafdrestimator (FDR estimator with parameter lambda) has been added to support FDR estimation.
+- Function org.mensxmachina.commons.stats.stepup have been replaced by new class org.mensxmachina.stats.mt.mtp.error.errormtpapplier (error-estimating-multiple-testing-procedure applier).
+- Function org.mensxmachina.commons.stats.stepupstats has been removed.
+- Classes org.mensxmachina.stats.mt.mtp.mtpapplier (multiple-testing-procedure applier) and org.mensxmachina.stats.mt.mtp.fixedthresholdapplier (fixed-threshold applier) have been added to support multiple-testing procedures.
+- Function org.mensxmachina.commons.stats.nfp has been renamed to org.mensxmachina.commons.stats.mt.quantities.ntype1errors and previously optional t argument is now required.
+- Function org.mensxmachina.commons.stats.np has been renamed to org.mensxmachina.stats.mt.quantities.ndiscoveries and previously optional t argument is now required.
+- Functions org.mensxmachina.commons.stats.rlzd* have been removed.
+- Function org.mensxmachina.commons.stats.mt.quantities.ntype2errors (number of type II errors) has been added.
+- Function org.mensxmachina.commons.stats.fdr have been replaced by new classes org.mensxmachina.stats.mt.error.fdr.by2001.by2001fdrestimator (Benjamini and Yekutieli (2001) FDR estimator), 
+org.mensxmachina.stats.mt.error.fdr.lambda.st2001.st2001fdrestimator (Storey and Tibshirani (2001) FDR estimator), org.mensxmachina.stats.mt.error.fdr.lambda.storey2002.storey2002fdrestimator, (Storey (2002) FDR estimator), org.mensxmachina.stats.mt.error.fdr.lambda.storey2002.storey2002pfdrestimator, (Storey (2002) pFDR estimator), and org.mensxmachina.stats.mt.error.fdr.lambda.sts2004.sts2004fdrestimator (Storey, Taylor and Siegmund (2004) FDR estimator).
+
+Compatibility Considerations:
+- Calls to org.mensxmachina.commons.stats.fdr must be replaced by code using org.mensxmachina.stats.mt.error.fdr.by2001.by2001fdrestimator, org.mensxmachina.stats.mt.error.fdr.lambda.st2001.st2001fdrestimator, org.mensxmachina.stats.mt.error.fdr.lambda.storey2002.storey2002fdrestimator, org.mensxmachina.stats.mt.error.fdr.lambda.storey2002.storey2002pfdrestimator, or org.mensxmachina.stats.mt.error.fdr.lambda.sts2004.sts2004fdrestimator.
+- Calls to org.mensxmachina.commons.stats.stepup must be replaced by code using org.mensxmachina.stats.mt.mtp.error.errormtpapplier.
+- Calls to org.mensxmachina.commons.stats.stepupstats must be replaced with appropriate code.
+- Calls to org.mensxmachina.commons.stats.nfp must be replaced by calls to org.mensxmachina.commons.stats.mt.quantities.ntype1errors and t must be always supplied.
+- Calls to org.mensxmachina.commons.stats.np must be replaced by calls to org.mensxmachina.commons.stats.mt.quantities.ndiscoveries and t must be always supplied.
+- Calls to org.mensxmachina.commons.stats.rlzd* must be replaced with appropriate calls to org.mensxmachina.commons.stats.mt.quantities.*.
+
+Hypothesis tests
+----------------
+
+- Classes org.mensxmachina.stats.tests.ci.citpvalueestimator (conditional-independence-test-p-value estimator), org.mensxmachina.stats.tests.ci.citrcapplier (conditional-independence-test-reliability-criterion applier), and org.mensxmachina.stats.tests.ci.citrcminnobsbounder (conditional-independence-test-reliability-criterion minimal-sample-size bounder) have been added to support hypothesis tests of conditional independence.
+- Class org.mensxmachina.stats.tests.ci.dummycitrcapplier (dummy-conditional-independence-test-reliability-criterion applier) has been added to support the dummy reliability criterion.
+- Class org.mensxmachina.stats.tests.ci.chi2.chi2citpvalueestimator (Chi-square-test-of-conditional-independence-p-value estimator) has been added to support the Chi-square test of conditional independence.
+- Classes org.mensxmachina.stats.tests.ci.chi2.heuristic.heuristicapplier (heuristic-power-rule applier) and org.mensxmachina.stats.tests.ci.chi2.heuristic.heuristicminnobsbounder (heuristic-power-rule minimal-sample-size bounder) have been added to support the heuristic power rule reliability criterion.
+- Class org.mensxmachina.stats.tests.ci.chi2.power.powerapplier (POWER applier) has been added to support the POWER correction reliability criterion.
+- Class org.mensxmachina.stats.tests.ci.chi2.thumb.thumbapplier (rule-of-thumb applier) has been added to support the rule of thumb reliability criterion.
+- Function org.mensxmachina.stats.tests.utils.comparepvalues (compare p-values) has been added.
+- Functions org.mensxmachina.commons.stats.chi2indtest(opt) have been replaced by new classes org.mensxmachina.stats.tests.ci.chi2.pearsonschi2testpvalueestimator (Pearson's-Chi-square-test-of-conditional-independence p-value estimator) and org.mensxmachina.stats.tests.ci.chi2.gtestpvalueestimator (G-test-p-value estimator).
+- Functions org.mensxmachina.commons.stats.fisherzindtest(opt) have been replaced by new class org.mensxmachina.stats.tests.ci.fishersz.fishersztestpvalueestimator (Fisher's-Z-test-of-conditional-independence-p-value estimator).
+- Function org.mensxmachina.commons.stats.indtest(opt) has been removed.
+
+Compatibility Considerations:
+- Calls to org.mensxmachina.commons.stats.chi2indtest(opt) must be replaced by calls to org.mensxmachina.stats.tests.ci.chi2.pearsonschi2testpvalueestimator/citpvalue or org.mensxmachina.stats.tests.ci.chi2.gtestpvalueestimator/citpvalue.
+- Calls to org.mensxmachina.commons.stats.fisherzindtest(opt) must be replaced by calls to org.mensxmachina.stats.tests.ci.fishersz.fishersztestpvalueestimator/citpvalue.
+- Calls to org.mensxmachina.commons.stats.indtest(opt) must be replaced by appropriate calls to org.mensxmachina.stats.tests.ci.chi2.pearsonschi2testpvalueestimator/citpvalue, org.mensxmachina.stats.tests.ci.chi2.gtestpvalueestimator/citpvalue, and org.mensxmachina.stats.tests.ci.fishersz.fishersztestpvalueestimator/citpvalue.
+
+String manipulation
+-------------------
+
+- Function org.mensxmachina.commons.string.strjoin (join strings) has been added.
+- Function org.mensxmachina.commons.firstupper was renamed to org.mensxmachina.commons.string.strfirstupper.
+
+Compatibility Considerations:
+- Calls to org.mensxmachina.commons.firstupper must be replaced by calls to org.mensxmachina.commons.string.strfirstupper.
+
+
+
+
+
+-------------
+Version 0.9.2
+-------------
+
+------------------------
+New Features and Changes
+------------------------
+
+General Functions (org.mensxmachina.commons.*)
+----------------------------------------------
+
+- The new isnumericrealvector and isnumericrealmatrix functions determine if their input is a numeric real vector and matrix respectively.
+- The new issquarematrix function determines if its input is a square matrix.
+- The new row and column functions convert a vector to row and column vector respectively.
+
+Graph Functions (org.mensxmachina.commons.graph.*)
+--------------------------------------------------
+
+- The new ancestors and children functions find the ancestors and the children respectively of a node in a directed graph.
+- The new skeleton2vectorind (vector2skeletonind) function convert from (to) row and column indices in the lower triangular part of the matrix representation of an undirected graph (skeleton) to (from) linear indices in the vector representation of the graph.
+
+Compatibility Considerations:
+
+- The vector2skeleton and skeleton2vector functions no longer accept cell arrays as input. Use cellfun instead.
+
+Statistics Functions (org.mensxmachina.commons.stats.*)
+-------------------------------------------------------
+
+- The new ismissing function detects missing (undefined or NaN) dataset elements.
+- The new stepup function finds the p-value cutoff indices corresponding to thresholds on a multiple testing error.
+- The new stepupstats function computes summary statistics, among several runs, of a multiple testing measure corresponding to thresholds on a multiple testing error.
+- The new rlzdfdr, rlzdfpr, rlzdpwr functions calculate the realized False Discovery Rate (FDR), False Positive Rate (FPR) and power for each p-value  or p-value threshold of a multiple testing procedure given the ground truth.
+- The new np and nfp functions calculate the number of rejected null hypotheses (positives) and the number of rejected true null hypotheses (false positives) respectively for each p-value or p-value threshold of a multiple testing procedure given the ground truth.
+
+Compatibility Considerations:
+
+- The isacell function was removed. Use isa with cellfun instead.
+- The chi2testmaxk function and its optimized version chi2testmaxkopt have been removed.
+- The indtestmaxk function and its optimized version indtestmaxkopt have been removed.
+- The datasetvarind function was renamed to datasetind.
+- The chi2test function and its optimized version chi2testopt have been renamed to chi2indtest and chi2indtestopt respectively. Their specifications have been changed too; see M-file help for details.
+- The fizherztest function and its optimized version fizherztestopt have been renamed to fisherzindtest and fisherzindtestopt respectively. Their specifications have been changed too; see M-file help for details.
+- The specifications of the indtest function and its optimized version indtestopt have been changed; see M-file help for details.
+- The auc, roc and plotroc functions no longer accept cell arrays as input. Use cellfun instead.
+
+-----------------------------
+Fixed Bugs and Known Problems
+-----------------------------
+
+Statistics Functions (org.mensxmachina.commons.stats.*)
+-------------------------------------------------------
+
+In the documentation of the grpstatplot function is written that the 'errorstat' parameter can also be a function name, but in the previous versions the parameter would fail validation if this was the case. This has been fixed in the current version.
+
+In the documentation of the categoricalrnd function is written that if any row of the prob input argument does not sum to one, the corresponding element of the r output argument is NaN, but in the previous versions the corresponding element would be the number of columns of prob. This has been fixed in the current version.

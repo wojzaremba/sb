@@ -1,4 +1,4 @@
-function [y1, y2, y3, x, a] = plot_empirical_pvals(z, ind, edge, plot_flag)
+function [y1, y2, y3, x] = plot_empirical_pvals(z, ind, edge, plot_flag)
 % always plot full empirical distribution and the true (empirical) null,
 % but choose whether the third plot is the approximated null or the true
 % distribution from dependent pairs
@@ -49,9 +49,13 @@ opt.x = x;
 [y2] = plot_dist(zind, method, opt);
 
 % direct dep
-opt.color = 'b-';
+opt.color = third_color;
 opt.scale = edge_prop;
 y3 = plot_dist(z_edge, method, opt);
+
+opt.color = [third_color '-'];
+opt.scale = 1 - edge_prop;
+y4 = plot_dist(z_no_edge, method, opt);
 
 % if indirect_prop ~= 0
 %     opt.color = 'm-';
@@ -59,7 +63,9 @@ y3 = plot_dist(z_edge, method, opt);
 %     y4 = plot_dist(z_indirect, method, opt);
 % end
 
-legend('full', 'indep', 'edge'); %, 'indirect dep');
+if plot_flag
+    legend('full', 'indep', 'edge', 'no edge'); %, 'indirect dep');
+end
 
 
 % opt.scale = edge_prop;

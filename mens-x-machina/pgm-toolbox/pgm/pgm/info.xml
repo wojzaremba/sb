@@ -1,0 +1,27 @@
+<productinfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="optional">
+    <?xml-stylesheet type="text/xsl"href="optional"?>
+    <!-- info.xml file for Mens X Machina Probabilistic Graphical Model Toolbox -->
+    <!-- Version 0.9.3 -->
+    <!-- Copyright 2010-12 Mens X Machina.-->
+    
+    <matlabrelease>2011b</matlabrelease>
+    <name>Probabilistic Graphical Model</name>
+    <type>toolbox</type>
+    <icon>mxmicon.gif</icon>
+    
+    <!-- - - - - - - - - - - - -  Start menu - - - - - - - - - - - - - - - -->
+    <list>
+        <listitem>
+            <label>Demos</label>
+            <callback>demo toolbox 'Probabilistic Graphical Model'</callback>
+            <icon>$toolbox/matlab/icons/demoicon.gif</icon>
+        </listitem>
+        <listitem>
+           <label>Product Page (Web)</label>
+            <callback>web http://www.mensxmachina.org/pgm-toolbox -browser;</callback>
+            <icon>$docroot/techdoc/matlab_env/examples/webicon.gif</icon>
+        </listitem>
+    </list>
+    <!-- - - - - - - - - - - - -  Start menu - - - - - - - - - - - - - - - -->
+</productinfo>
