@@ -1,93 +1,51 @@
-function [z, ind, edge, rho, set_size, k] = network_pvals(network, data_gen, variance, N, ...
-    maxS, pval, save_flag)
+function out = network_pvals(network, data_gen, variance, N, maxS, save_flag)
 
+tic;
 bnet = make_bnet(struct('network', network, 'moralize', false, ...
     'arity', 1, 'data_gen', data_gen, 'variance', variance));
-kci_opt = struct( 'pval', pval, 'kernel', GaussKernel());
+kci_opt = struct( 'pval', true, 'kernel', GaussKernel());
 triples = gen_triples(size(bnet.dag, 1), 0:maxS);
 data = normalize_data(samples(bnet, N));
 pre = kci_prealloc(data, kci_opt);
+num_tests = length(triples)*length(triples{1}.cond_set);
+[out.p, out.sta, out.edge, out.ind, out.set_size] = ...
+    deal(ones(num_tests, 1) * NaN);
 
-tic;
-p = ones(size(bnet.dag, 1)) * Inf;
-ind = ones(size(bnet.dag, 1)) * Inf;
-rho = ones(size(bnet.dag, 1)) * Inf;
-set_size = ones(size(bnet.dag, 1)) * Inf;
-edge = bnet.dag;
-for t = 1 : length(triples)
+idx = 1;
+for t = 1:length(triples)
     i = triples{t}.i;
     j = triples{t}.j;
-    [p(i, j), info] = classifier_wrapper(data, triples{t}, @kci_classifier, kci_opt, pre); 
-    rho(i,j) = info.rho;
-    ind(i, j) = dsep(i, j, info.cond_set, bnet.dag);
-    set_size(i,j) = length(info.cond_set);
-    printf(2, 'DONE WITH %d %d\n', i, j);
+    for c = 1:length(triples{t}.cond_set)
+        trip = [i, j, triples{t}.cond_set{c}];
+        [~, info] = kci_classifier(data, trip, kci_opt, pre);
+        out.p(idx) = 1 - info.pval;
+        out.sta(idx) = info.Sta;
+        out.edge(idx) = (bnet.dag(i,j) || bnet.dag(j,i));
+        out.ind(idx) = dsep(i, j, triples{t}.cond_set{c}, bnet.dag);
+        out.set_size(idx) = length(triples{t}.cond_set{c});
+        idx = idx + 1;
+    end
+    fprintf('  done with %d %d\n', i, j);
 end
+
+clear pre;
+save_to_mat(save_flag, network, N);
 printf(2, 'total time = %f sec.\n', toc);
 
-% note that the p-values returned by kci are really 1 - p, but this will
-% also be uniformly distributed under the null, hence z should still be
-% N(0,1)
-z = norminv(p); 
-ind = logical(ind(~isnan(z)));
-edge = edge(~isnan(z));
-rho = rho(~isnan(z));
-set_size = set_size(~isnan(z));
-z = z(~isnan(z));
-k = length(triples{1}.cond_set);
-
-if save_flag
-    clear pre
-    if pval
-        pstr = 'pval';
-    else
-        pstr = 'rho';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function save_to_mat(save_flag, network, N)
+    if save_flag
+        datestr = get_date();
+        dir_name = sprintf('edge_scores/pval_mats/%s', datestr);
+        system(['mkdir -p ' dir_name]);
+        command = sprintf('save(''%s/%s_%d_pvals'', ''out'')', dir_name, network, N);
+        eval(command);
     end
-    datestr = get_date();
-    dir_name = sprintf('edge_scores/pval_mats/%s', datestr);
-    system(['mkdir -p ' dir_name]); 
-    command = sprintf('save %s/%s_%d_%s', dir_name, network, N, pstr);
-    eval(command);
 end
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% function [D, pre] = preallocate(data, kci_opt)
-% 
-% boot_flag = false;
-% 
-% if boot_flag
-%     assert(0);
-%     printf(2, 'bootstrapping..\n');
-%     D = cell(nboot, 1);
-%     pre = cell(nboot, 1);
-%     N = size(data, 2);    
-%     for b = 1 : nboot
-%         y = randsample(N, N, true); 
-%         D{b} = data(:, y);
-%         pre{b} = kci_prealloc(D{b}, kci_opt);
-%     end
-% else
-%     printf(2, 'not bootstrapping.\n');
-%     D{1} = data;
-%     pre{1} = kci_prealloc(D{1}, kci_opt);
-% end
-% 
-% end
-% 
-% function [p, info] = compute_p(D, trip, opt, pre)
-% 
-% info = {};
-% for b = 1 : length(D)
-%    [p(b), info{b}] = kci_classifier(D{b}, trip, opt, pre{b}); 
-% end
-% if length(p) > 1
-%     z = norminv(p);
-%     [~, p] = kstest(z);
-% end
-% 
-% end
+
 
 

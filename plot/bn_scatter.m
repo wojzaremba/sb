@@ -13,7 +13,7 @@ for i = 1:K
         elseif strcmpi(method, 'hist')
             hist3(data([i j], :)');
         end
-        s = repmat(' (edge)',dag(i,j));
+        s = repmat(' EDGE',dag(i,j));
         title(sprintf('%d and %d %s', i, j, s));
     end
 end

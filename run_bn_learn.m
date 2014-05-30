@@ -3,7 +3,7 @@
 network = 'asia';
 data_gen = 'quadratic_ggm';
 variance = 0.05;
-nvars = [];
+nvars = 8;
 maxpa = 2;          % max number of parents to allow in learned network
 max_condset = 2;    % max conditioning set size
 

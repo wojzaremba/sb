@@ -18,6 +18,7 @@ for b = 1:rp.num_bnet
             n = rp.nvec(ni);
             emp{b, r, ni} = normalize_data(samples(bnet{b}, n));
             data = emp{b, r, ni};
+            figure(2); bn_scatter(data, bnet{b}.dag);
             for t = 1:length(learn_opt)
                 opt = learn_opt{t};
                 fprintf('bn %d, N=%d, %s...\n', b, n, opt.name);
@@ -73,13 +74,11 @@ for c = 1 : length(learn_opt)
     
     subplot(1, 2, 1); hold on
     ham = SHD{c}(1:b, 1:r, :);
-    ham
     h1(end+1) = plot(rp.nvec, squeeze(mean(mean(ham, 1), 2)), ...
         learn_opt{c}.color, 'linewidth', 2);
     
     subplot(1, 2, 2); hold on
     tt = T{c}(1:b, 1:r, :);
-    tt
     h2(end+1) = plot(rp.nvec, squeeze(mean(mean(tt, 1), 2)), ...
         learn_opt{c}.color, 'linewidth', 2);
 end
@@ -152,11 +151,6 @@ rp.plot_flag = plot_flag;
 rp.save_flag = save_flag;
 rp.f_sel = f_sel;
 
-bn_opt = struct('network', network, 'arity', 1, 'data_gen', data_gen, ...
-    'variance', v, 'moralize', false, 'n', nvars);
-
-rp.true_pdag = dag_to_cpdag(get_dag(bn_opt));
-
 full_opt = {
     struct('method', 'mmhc', 'arity', 3, 'edge', false, ...
     'color', 'g-'), ...
@@ -170,7 +164,7 @@ full_opt = {
     'edge', true, 'prune_max', rp.prune_max, 'color', 'r-'), ...
     struct('method', 'bic','classifier', @sb_classifier, ...
     'params', struct('eta', 0.01, 'alpha', 1.0), ...
-    'prealloc', @dummy_prealloc, 'arity', 3, ...
+    'prealloc', @dummy_prealloc, 'arity', 4, ...
     'edge', false, 'color','b-')};
 learn_opt = full_opt(f_sel);
 
@@ -200,6 +194,16 @@ if rp.save_flag
     system(['mkdir -p ' dir_name]);
     rp.matfile = sprintf('%s/%s_%s.mat', dir_name, rp.network, func2str(rp.nfunc));
 end
+
+if strcmpi(data_gen, 'random')
+    a = full_opt{4}.arity;
+else
+    a = 1;
+end
+fprintf('WARNING: moralizing network\n');
+bn_opt = struct('network', network, 'arity', a, 'data_gen', data_gen, ...
+    'variance', v, 'moralize', true, 'n', nvars);
+rp.true_pdag = dag_to_cpdag(get_dag(bn_opt));
 
 end
 

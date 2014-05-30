@@ -13,14 +13,6 @@ end
 base_color = 'k-';
 ind_color = 'r-';
 third_color = 'b-';
-    
-% throw out infinite values
-if ~isempty(find(isinf(z), 1))
-    printf(2, '  throwing out %d inf values\n', length(find(isinf(z))));
-    ind = ind(~isinf(z));
-    edge = edge(~isinf(z));
-    z = z(~isinf(z));
-end
 
 % subset z
 zind = z(ind);
