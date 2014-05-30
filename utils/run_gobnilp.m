@@ -7,7 +7,7 @@ check_dir();
 for i = 1:length(S)
     for j = 1:length(S{i})
         if isinf(S{i}{j}.score)
-           a = 2+2; 
+           assert(0); 
         end
     end
 end

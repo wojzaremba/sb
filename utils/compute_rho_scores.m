@@ -23,7 +23,7 @@ for i = 1:si
                 continue;
             end
             K = pre.Kyz(:, :, i, j, k);
-            D(i, j, k) = norm(K(:));   %<- the only important line of code in this whole function
+            D(i, j, k) = norm(K(:))^2;   %<- the only important line of code in this whole function
             D(i, k, j) = D(i, j, k);  
             if (j == k)
                 sum1 = sum1 + D(i, j, k);
