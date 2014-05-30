@@ -8,4 +8,6 @@ function ret = gobnilp()
     else
         ret = '/web/hodos/code/gobnilp/gobnilp1.3/bin/gobnilp';
     end
+    ret = '/web/hodos/code/gobnilp/gobnilp1.3/bin/gobnilp';
+    fprintf('warning: overriding gobnilp code pointing to executable\n');
 end

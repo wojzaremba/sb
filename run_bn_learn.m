@@ -11,7 +11,7 @@ max_condset = 2;    % max conditioning set size
 nvec = 100*(1:10);
 num_bnet = 4;
 num_nrep = 4;
-plot_flag = true;
+plot_flag = false;
 save_flag = true;
 f_sel = 2; 
 
