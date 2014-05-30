@@ -22,7 +22,7 @@ if (isfield(opt, 'pval') && opt.pval)
     zz = norminv(R); 
     z = zz(~isnan(zz) & ~isinf(zz));
     if length(z > 5)
-        gmix = fitgmdist(z, 2, 'Regularize', 0.01);
+        gmix = gmdistribution.fit(z, 2, 'Regularize', 0.01);
         plot_fit(gmix, z);
         P = posterior(gmix, z);
         [~, idx] = max(gmix.mu);

@@ -8,5 +8,4 @@ function ret = gobnilp()
     else
         ret = '/web/hodos/code/gobnilp/gobnilp1.3/bin/gobnilp';
     end
-    %assert(0); % because code on crunchy needs to be fixed here.
 end
