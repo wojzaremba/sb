@@ -1,7 +1,6 @@
 disp('test_fit_f0...');
 
-randn('seed', 1);
-
+seed_rand(1);
 plot_flag = false;
 cv_flag = false;
 

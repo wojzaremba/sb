@@ -1,8 +1,7 @@
 disp('test_discretize_data...');
 
 bnet = mk_asia_linear_gauss(0.05);
-randn('seed',1);
-
+seed_rand(1);
 s = samples(bnet,1000);
 s = discretize_data(s,10);
 

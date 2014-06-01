@@ -1,5 +1,6 @@
     disp('test_cc_classifier...');
-    rand('seed',1); % seed random number generator
+    
+    seed_rand(1);
     samples_size = 100000;
     emp_indep = randi(2, 3, samples_size);
     opt_min = struct('arity', 2, 'rho_range', [0 1], 'aggregation', 'min');

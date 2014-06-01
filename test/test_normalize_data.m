@@ -1,8 +1,9 @@
+disp('test_normalize_data...')
 
 opt = struct('variance', 10, 'network', 'asia', 'arity', 1, 'data_gen', 'linear_ggm','moralize', false);
 
 bnet = make_bnet(opt);
-rand('seed', 1);
+seed_rand(1);
 s = samples(bnet,500);
 
 s = normalize_data(s);

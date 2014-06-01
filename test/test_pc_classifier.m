@@ -1,8 +1,5 @@
-
     disp('test_pc_classifier...');
-    rand('seed',1);
-    randn('seed',1);
-    
+   seed_rand(1); 
     sample_size = 10000;
     opt = struct('thresholds',[0.01,1.01]);
         

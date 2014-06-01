@@ -14,6 +14,7 @@ test_enumerate_assignments();
 test_allocate_tensor();
 test_threshold();
 test_gen_triples();
+test_flatten_triples();
 test_get_marginal_dist();
 test_emp_to_dist();
 test_condition_emp();

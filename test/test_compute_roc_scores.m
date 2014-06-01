@@ -1,7 +1,6 @@
 disp('test_compute_roc_scores...')
 
-randn('seed',1);
-rand('seed',1);
+seed_rand(1);
 
 % run experiments with linear data
 network = 'asia';

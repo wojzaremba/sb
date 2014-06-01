@@ -1,7 +1,6 @@
 disp('test_sb_classifier...');
 
-rand('seed',1);
-
+seed_rand(1);
 samples_size = 1000;
 emp_indep = [randi(2, 1, samples_size); randi(2, 1, samples_size)];
 opt = struct('arity', 2,'rho_range', [0 1], 'params',struct('eta',0.01,'alpha',1));

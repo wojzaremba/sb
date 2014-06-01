@@ -1,7 +1,6 @@
 disp('test_bn_learn...(warning- not testing sb3)')
 
-randn('seed', 1);
-rand('seed', 1);
+seed_rand(1);
 
 % network parameters
 network = 'chain';

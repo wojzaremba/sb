@@ -1,4 +1,5 @@
-parpool(2);      % Call to open the distributed processing
+
+parpool(get_config('maxpool'));      % Call to open the distributed processing
 x = zeros(100,10);          % Initialize the main variable
 parfor i = 1:100            % Parallel loop
      y = zeros(1,10);       % Initialize the secondary variable

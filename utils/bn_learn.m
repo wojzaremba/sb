@@ -18,7 +18,7 @@ for b = 1:rp.num_bnet
             n = rp.nvec(ni);
             emp{b, r, ni} = normalize_data(samples(bnet{b}, n));
             data = emp{b, r, ni};
-            figure(2); bn_scatter(data, bnet{b}.dag);
+            %figure(2); bn_scatter(data, bnet{b}.dag);
             for t = 1:length(learn_opt)
                 opt = learn_opt{t};
                 fprintf('bn %d, N=%d, %s...\n', b, n, opt.name);

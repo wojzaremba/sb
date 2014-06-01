@@ -1,6 +1,6 @@
 disp('test_mi_classifier...');
 
-rand('seed',1);
+seed_rand(1);
 samples_size = 10000;
 
 small = 3e-4;

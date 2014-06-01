@@ -1,5 +1,6 @@
 disp('test_empir_vs_dists...');
-rand('seed',1);
+
+seed_rand(1);
 bnet = mk_bnet3();
 K = length(bnet.dag);
 arity = get_arity(bnet);

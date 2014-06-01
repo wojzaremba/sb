@@ -1,7 +1,6 @@
 function test_sb_expectation()
 disp('test_sb_expectation...');
-rand('seed', 1);
-randn('seed', 1);
+seed_rand(1);
 arity = 3;
 P = rand_dist_linear(arity);
 

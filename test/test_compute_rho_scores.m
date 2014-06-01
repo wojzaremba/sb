@@ -1,7 +1,6 @@
 disp('test_compute_rho_scores...');
 
-randn('seed', 1);
-rand('seed', 1);
+seed_rand(1);
 
 N = 100;
 maxK = 10;

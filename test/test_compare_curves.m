@@ -1,7 +1,6 @@
 disp('test_compare_curves...');
 
-rand('seed', 1);
-
+seed_rand(1);
 x1 = rand(1,50);
 x1 = sort(x1);
 y1 = sqrt(x1);

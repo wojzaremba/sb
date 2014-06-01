@@ -17,3 +17,4 @@ results/
 gobnilp/in/*
 gobnilp/out/*
 refs/*
+config/*
