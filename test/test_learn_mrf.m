@@ -1,8 +1,6 @@
 disp('test_learn_mrf...');
 
-randn('seed', 1);
-rand('seed', 1);
-
+seed_rand(1);
 nvec = [5 10];
 thresholds = 0:1e-3:1;
 AUC = NaN*zeros(1, length(nvec));

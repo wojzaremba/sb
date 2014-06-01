@@ -1,8 +1,6 @@
 disp('test_plot_empirical_pvals...')
 
-randn('seed', 1);
-rand('seed', 1);
-
+seed_rand(1);
 x = randn(500, 1);
 y = rand(200, 1);
 

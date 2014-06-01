@@ -1,6 +1,6 @@
+disp('mk_random_cpd...')
 
-randn('seed', 1);
-
+seed_rand(1);
 arity = 3;
 dim = 4;
 cpd = mk_random_cpd(arity,dim);

@@ -1,8 +1,6 @@
 disp('test_run_gobnilp...');
 
-
-randn('seed',1);
-rand('seed',1);
+seed_rand(1);
 arity = 3;
 opt = struct('network', 'Y', 'arity', arity, 'data_gen', 'random', 'moralize', false);
 [bnet, opt] = make_bnet(opt);

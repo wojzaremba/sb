@@ -17,9 +17,9 @@ gobnilp_in_file = sprintf('gobnilp/in/gobnilp-%s', strrep(strrep(datestr(clock),
 gobnilp_out_file = strrep(gobnilp_in_file, 'in', 'out');
 set_file = [gobnilp_in_file, '.set'];
 adj_file = [gobnilp_out_file, '.adj'];
-dot_file = ''; %[gobnilp_out_file, '.dot'];
-time_file = ''; %[gobnilp_out_file, '.time'];
-stats_file = ''; %[gobnilp_out_file, '.stats'];
+dot_file = ''; 
+time_file = '';
+stats_file = '';
 score_file = [gobnilp_in_file, '.score'];
 out_file = [gobnilp_out_file, '.out'];
 
@@ -48,7 +48,7 @@ write_gobnilp_scores(fid,S);
 fclose(fid);
 
 % call gobnilp
-command = sprintf('%s -g%s %s > %s', gobnilp(), set_file, score_file, out_file);
+command = sprintf('%s -g%s %s > %s', get_config('GOB'), set_file, score_file, out_file);
 [status, cmdout] = system(command);
 
 % ~~~ get information from gobnilp

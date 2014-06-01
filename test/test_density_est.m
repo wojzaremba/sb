@@ -1,6 +1,6 @@
 disp('test_density_est...')
 
-randn('seed', 1);
+seed_rand(1);
 z = 2*randn(1000, 1) + 3;
 
 opt = struct('plot_flag', false);

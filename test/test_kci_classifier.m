@@ -1,7 +1,6 @@
 disp('test_kci_classifier...');
 
-rand('seed', 1);
-randn('seed',1);
+seed_rand(1);
 samples_size = 500;
 emp_indep = [randi(2, 1, samples_size); randi(2, 1, samples_size)];
 emp_indep = normalize_data(emp_indep);
