@@ -15,6 +15,9 @@ fclose(fid);
 if ischar(tline)
     C = strsplit(tline, '=');
     ret = strtrim(C{2});
+    if strcmpi(varname, 'maxpool')
+      ret = str2num(ret);
+    end
 else
     error('Could not get %s', varname);
 end

@@ -10,6 +10,7 @@ data = normalize_data(samples(bnet, N));
 pre = kci_prealloc(data, kci_opt);
 [p, sta, edge, ind, set_size] = deal(ones(length(triples), 1) * NaN);
 
+tic;
 if run_parallel
     parpool(get_config('maxpool'));
     parfor t = 1:length(triples)
@@ -41,6 +42,7 @@ else
         fprintf('finished %d %d %s\n', i, j, num2str(tr.cond_set));
     end
 end
+fprintf('for loop took %f seconds\n', toc);
 
 [out.p, out.sta, out.edge, out.ind, out.set_size] = ...
     deal(p, sta, edge, ind, set_size);
