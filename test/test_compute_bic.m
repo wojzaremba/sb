@@ -11,7 +11,7 @@ arity = 2;
 S = compute_bic(data, arity, 2);
 S = prune_scores(S);
 
-my_file = 'gobnilp/in/test_bic.score';
+my_file = 'thirdparty/gobnilp/in/test_bic.score';
 fid = fopen(my_file, 'w');
 write_gobnilp_scores(fid,S);
 fclose(fid);

@@ -12,7 +12,6 @@ pre = kci_prealloc(data, kci_opt);
 
 tic;
 if run_parallel
-    parpool(get_config('maxpool'));
     parfor t = 1:length(triples)
         tr = triples{t};
         i = tr.i;
@@ -26,7 +25,6 @@ if run_parallel
         set_size(t) = length(tr.cond_set);
         fprintf('finished %d %d %s\n', i, j, num2str(tr.cond_set));
     end
-    delete(gcp);
 else
     for t = 1:length(triples)
         tr = triples{t};
@@ -60,6 +58,7 @@ printf(2, 'total time = %f sec.\n', toc);
             eval(command);
         end
     end
+
 
 end
 

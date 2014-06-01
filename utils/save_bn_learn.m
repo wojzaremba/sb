@@ -1,25 +1,36 @@
 function out = bn_learn(in)
 
-[bn_opt, rp, learn_opt, SHD, T] = init(in);
-loop = flatten_loop(rp.num_bnet,rp.num_nrep);
-[bnet, bn] = generate_bnets(bn_opt, loop, rp.num_bnet, rp.data_gen);
-[s, ti] = deal(zeros(length(loop), 1));
+[bn_opt, rp, learn_opt] = init(in);
+[bnet{1}, bn_opt] = make_bnet(bn_opt);
+SHD = cell(length(learn_opt), 1); % hamming distance
+T = cell(length(learn_opt), 1); % runtime
+emp = cell(rp.num_bnet, rp.num_nrep, length(rp.nvec));
 
-for t = 1:length(learn_opt)
-    opt = learn_opt{t};
-    for ni = 1:length(rp.nvec)
-        n = rp.nvec(ni);
-        parfor l = 1:length(loop)
-            data = normalize_data(samples(bnet{l}, n));
-            [s(l), ti(l)] = learn_structure(data, opt, rp, n);  
-            printf(2, 'bnet=%d, nrep=%d, shd=%d\n', loop{l}.i, loop{l}.j, s(l));
+
+for b = 1:rp.num_bnet       
+    for r = 1:rp.num_nrep
+        for ni = 1:length(rp.nvec)
+            n = rp.nvec(ni);
+            emp{b, r, ni} = normalize_data(samples(bnet{b}, n));
+            data = emp{b, r, ni};
+            for t = 1:length(learn_opt)
+                opt = learn_opt{t};
+                fprintf('bn %d, N=%d, %s...\n', b, n, opt.name);
+                [SHD{t}(b, r, ni), T{t}(b, r, ni)] = ...
+                    learn_structure(data, opt, rp, n);
+            end     
+        end  
+        if rp.plot_flag
+            update_plot(b, r, rp, learn_opt, SHD, T);
         end
-        [SHD{t}, T{t}] = populate_ST(SHD{t}, T{t}, rp, s, ti, ni);
     end
+    bnet{b+1} = make_bnet(bn_opt);
 end
+assert(isequal(numel(SHD{1}), rp.num_bnet*rp.num_nrep*length(rp.nvec)));
+bnet = bnet{1:end-1};
 
-[out.SHD, out.T, out.bn_opt, out.rp, out.learn_opt, out.bnet] ...
-    = deal(SHD, T, bn_opt, rp, learn_opt, bn);
+[out.SHD, out.T, out.bn_opt, out.rp, out.learn_opt, out.bnet, out.emp] ...
+    = deal(SHD, T, bn_opt, rp, learn_opt, bnet, emp);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -115,41 +126,7 @@ T = toc;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [bnet, bn] = generate_bnets(bn_opt, loop, num_bnet, data_gen)
-
-    bn = {};
-    bnet = {};
-    
-    for i = 1:num_bnet
-        bn{i} = make_bnet(bn_opt);
-    end
-    
-    if num_bnet > 1
-        if strcmpi(data_gen, 'random')
-            field = 'cpt';
-        else
-            field = 'weights';
-        end
-        assert(~isequal(get_field(bn{1}.CPD{end}, field), ...
-            get_field(bn{end}.CPD{end}, field)));
-    end
-    
-    for l = 1:length(loop)
-        bnet{l} = bn{loop{l}.i};
-    end
-    
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [S,T] = populate_ST(S, T, rp, s, t, ni)
-    s = reshape(s, rp.num_nrep, rp.num_bnet)';
-    t = reshape(t, rp.num_nrep, rp.num_bnet)';
-    S(:, :, ni) = s;
-    T(:, :, ni) = t;
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [bn_opt, rp, learn_opt, SHD, T] = init(in)
+function [bn_opt, rp, learn_opt] = init(in)
 
 check_dir();
 rp = in;
@@ -175,9 +152,6 @@ if rp.plot_flag
     figure
 end
 
-SHD = cell(length(learn_opt), 1);
-T = cell(length(learn_opt), 1); 
-
 for c = 1:length(learn_opt)
     o = learn_opt{c};
     if o.arity == 1
@@ -192,9 +166,6 @@ for c = 1:length(learn_opt)
         str = [str sprintf(', %s pval', repmat('no', ~o.pval))];
     end
     learn_opt{c}.name = sprintf('%s%s', o.method, str);
-    
-    SHD{c} = NaN*ones(rp.num_bnet, rp.num_nrep, length(rp.nvec));
-    T{c} = NaN*ones(rp.num_bnet, rp.num_nrep, length(rp.nvec));
 end
 
 if rp.save_flag
@@ -216,6 +187,7 @@ bn_opt = struct('network', in.network, 'arity', a, ...
 rp.true_pdag = dag_to_cpdag(get_dag(bn_opt));
 
 end
+
     
 
 

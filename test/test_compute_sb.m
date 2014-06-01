@@ -54,6 +54,6 @@ end
 % title('Independent');
 % the distribution is independent, so rho should decrease to 1 with N
 for i = 1:5
-    assert(sb_mean(end-5+i) < sb_mean(i))
+    assert(sb_mean(end-5+i) < sb_mean(i));
 end
 
