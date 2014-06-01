@@ -2,8 +2,7 @@ function test_edge_scores()
 
 disp('test_edge_scores... (need to test add_edge_scores)')
 
-%seed_rand(1);
-randn('seed', 1);
+seed_rand(2);
 
 % vstruct network
 bn_opt = struct('variance', 0.05, 'network', 'vstruct', 'arity', 1, ...

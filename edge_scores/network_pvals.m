@@ -14,10 +14,8 @@ tic;
 if run_parallel
     parfor t = 1:length(triples)
         tr = triples{t};
-        i = tr.i;
-        j = tr.j;
-        trip = [i, j, tr.cond_set];
-        [~, info] = kci_classifier(data, trip, kci_opt, pre);
+        [i, j] = deal(tr.i, tr.j);
+        [~, info] = kci_classifier(data, [i, j, tr.cond_set], kci_opt, pre);
         p(t) = 1 - info.pval;
         sta(t) = info.Sta;
         edge(t) = (bnet.dag(i,j) || bnet.dag(j,i));
@@ -28,10 +26,8 @@ if run_parallel
 else
     for t = 1:length(triples)
         tr = triples{t};
-        i = tr.i;
-        j = tr.j;
-        trip = [i, j, tr.cond_set];
-        [~, info] = kci_classifier(data, trip, kci_opt, pre);
+        [i, j] = deal(tr.i, tr.j);
+        [~, info] = kci_classifier(data, [i, j, tr.cond_set], kci_opt, pre);
         p(t) = 1 - info.pval;
         sta(t) = info.Sta;
         edge(t) = (bnet.dag(i,j) || bnet.dag(j,i));

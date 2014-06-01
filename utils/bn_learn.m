@@ -10,6 +10,7 @@ for t = 1:length(learn_opt)
     for ni = 1:length(rp.nvec)
         n = rp.nvec(ni);
         parfor l = 1:length(loop)
+            rng(l, 'twister');
             data = normalize_data(samples(bnet{l}, n));
             [s(l), ti(l)] = learn_structure(data, opt, rp, n);  
             printf(2, 'bnet=%d, nrep=%d, shd=%d\n', loop{l}.i, loop{l}.j, s(l));
@@ -34,14 +35,14 @@ elseif strcmpi(opt.method, 'mmhc')
 else
     error('unexpected opt.method');
 end
-SHD = compute_shd(G, rp.true_pdag);
+SHD = compute_shd(G, rp.true_pdag, false);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function SHD = compute_shd(G, true_pdag)
+function SHD = compute_shd(G, true_pdag, print_flag)
 pred_Pdag = dag_to_cpdag(G);
 SHD = shd(true_pdag,pred_Pdag);
-if ~isequal(true_pdag, pred_Pdag)
+if ( ~isequal(true_pdag, pred_Pdag) && print_flag )
     fprintf('predicted G:\n');
     disp(G);
     fprintf('predicted PDAG:\n');
