@@ -5,10 +5,10 @@ debug = 0;
 dbstop if error
 check_dir();
 
-%end2end
+% end-to-end
 test_compute_roc_scores();
+test_bn_learn_synthetic();
 %test_learn_mrf();
-test_bn_learn();
 
 % utils
 test_enumerate_assignments();
@@ -36,11 +36,12 @@ test_compute_rho_scores();
 test_dsep_cond_sets();
 test_flatten_loop();
 
-% edge scores
+% scores
 test_network_pvals();
 test_edge_scores();
 test_fit_f();
 test_fit_f0();
+test_compute_bic();
 
 % plot
 test_density_est();
@@ -69,7 +70,6 @@ test_cc_classifier();
 
 % structure learning
 test_run_gobnilp();
-test_compute_bic();
 test_mmhc();
 
 

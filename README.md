@@ -13,6 +13,7 @@ TODO
 - Remember to mention Joris Mooij paper, emphasize that I am using only observational data, maybe discuss how to incorporate interventional data into our approach.
 - Reiterate in the paper that minimizing the pseudo-likelihood term is exactly equivalent to maximizing the likelihood, under the assumption that the data are drawn from y ~ A phi(x) + eps.
 - Plot edge scores' beta function.
+- Compare results on Sachs data using fancy discretization with normal discretization.
 
 SCALING
 - Tried dividing norm(K(:)) by total mean, mean of each conditioning set size, n, sqrt(n), log(n).  sqrt(n) seemed to do the best, but still didn't seem to be converging.

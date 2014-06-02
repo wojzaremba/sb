@@ -10,7 +10,6 @@ data = normalize_data(samples(bnet, N));
 pre = kci_prealloc(data, kci_opt);
 [p, sta, edge, ind, set_size] = deal(ones(length(triples), 1) * NaN);
 
-tic;
 if run_parallel
     parfor t = 1:length(triples)
         tr = triples{t};
@@ -38,8 +37,8 @@ else
 end
 fprintf('for loop took %f seconds\n', toc);
 
-[out.p, out.sta, out.edge, out.ind, out.set_size] = ...
-    deal(p, sta, edge, ind, set_size);
+[out.p, out.sta, out.edge, out.ind, out.set_size, out.data] = ...
+    deal(p, sta, edge, ind, set_size, data);
 clear pre p sta edge ind set_size
 save_to_mat(save_flag, network, N);
 printf(2, 'total time = %f sec.\n', toc);
