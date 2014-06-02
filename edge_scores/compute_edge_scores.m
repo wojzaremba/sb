@@ -49,12 +49,11 @@ E(find(tril(E))) = -Inf;
     function plot_fit(gmix, z)
         plot_flag = false;
         if plot_flag
+            figure
+            hold on
             x = linspace(min(z), max(z));
             y = pdf(gmix, x');
             [y2, x2] = ksdensity(z);
-            figure(2);
-            clf
-            hold on;
             plot(x2, y2, 'k-', 'linewidth', 2);
             plot(x, y, 'b-', 'linewidth', 2);
             legend('KDE', 'Gauss mixture model');

@@ -45,7 +45,7 @@
 \newtheorem{lem}[thm]{Lemma}
 %\newtheorem{definition}{Definition}
 
-\title{Nonparametric Bayesian Network Structure Learning Over Continuous Variables}
+\title{Kernel Sparsity Boost: Nonparametric \\ Bayesian Network Structure Learning \\ Over Arbitrary Variable Types}
 
 \author{
 Rachel Hodos
@@ -80,7 +80,7 @@ Computer Science, NYU \\
 
 \begin{abstract}
 
-Most approaches in Bayesian network structure learning either require discrete variables or assume that relationships between variables are linear.  Here we propose a novel scoring function which can handle discrete or continuous variables directly, and which does not make any parametric assumptions.  The scoring function is based on kernelized regression and the kernel conditional independence (KCI) test presented in \cite{zhang2012kernel}.  On synthetic data, we compare MAP structures learned from our score vs. the BIC score, and also to the MMHC algorithm using the KCI test.  We also show results on real data from three different domains, and compare results to the previously mentioned baselines as well as a state-of-the-art approach in parametric Copula BN learning.
+Most approaches in Bayesian network structure learning either require discrete variables or assume that relationships between continuous variables are linear.  Here we propose a novel scoring function which can handle discrete or continuous data directly, and which allows for arbitrary nonlinear relationships.  The scoring function is based on kernelized regression and the kernel conditional independence (KCI) test, \cite{zhang2012kernel}.  On synthetic data, we compare our approach to the MMHC algorithm with the KCI test incorporated.  We also show results on real data from three very different domains.
 
 \end{abstract}
 
@@ -142,6 +142,11 @@ There are also many approaches that do not use kernels.  \cite{imoto2001estimati
 There is also some interesting work using copulas, e.g. {\bf just list the canonical paper introducing copula BNs}  \cite{hanea2006hybrid}, \cite{hanea2008mixed}, and \cite{hanea2010mining}, but these papers focus on statistical inference and parameter estimation.  In terms of model selection, \cite{elidan2010copula} uses a standard score-and-search approach using the BIC score.  \cite{bauer2012pair} extend the popular constraint-based PC algorithm to use a conditional independence test fitting for their model, using parametric estimation of conditional distributions based on vine copula models.  \cite{elidan2012lightning} and \cite{tenzer2013speedy} leverage a one-to-one relationship between Spearmen's rho correlation and the log-likelihood term for an edge addition (asymptotically true for tree-structured networks) in order to learn copula networks efficiently.  In the first paper, they use a heuristic to extend the method to non-tree structured networks.  In the second paper, they only considered tree-structured BNs, but allowed each copula to have a different parameteric form, whereas in the first paper all copulas were restricted to the same parametric family.  In both works they optimize using the BIC score. {\bf verify my description with Gal Elidan.}
 
 We are proposing a method which uses continuous data but does not estimate the conditional distributions- i.e. we are decoupling the problem of structure learning with parameter learning.  The work of \cite{margaritis2005distribution} also falls into this category, although they take a constraint-based approach, applying the PC algorithm to continuous data via a non-parametric, discretization-based independence test.
+
+\section{The Kernel Sparsity Boost Score (KSB)}
+In the section we describe our new scoring function, but first, we introduce some notation.  For each $X_i \in \mathcal{X}$, let Pa$_G(X_i)$ denote the parents of $X_i$ in the DAG G.   Throughout the paper, capital letters will denote random variables, e.g. $X_i, Pa(X_i)$, and lower case letters will denote instantiations, e.g. $x_i^n$ and $pa^n(x_i)$.  The n superscript denotes the $n^{th}$ data point.   When the context is clear we will drop the subscript G.  
+
+Like most scoring functions for Bayesian network structure learning, our score decomposes into a sum of scores for each family, i.e. a variable and its candidate parents.  Hence the KSB score for G given dataset D can be written as \begin{equation} KSB(G;D) = \sum_{X_i \in \mathcal{X}} ksb(X_i, Pa_G(X_i); D), \end{equation} where $ksb$ are the family scores, defined as \begin{equation} ksb(X_i, Pa_G(X_i); D) = \sum_{n \in 1, \ldots, N} \left(\mathbf{w}^T\Phi(pa^n(x_i)) - x_i^n \right)^2 + \sum_{X_j \in Pa(X_i)} \max_{C \in \Omega{ij}} sb(X_i, X_j|C; D) \end{equation}  The first term is the sum of squares of residuals after performing kernel ridge regression of $X_i$ onto its parents in G.  $\Phi$ is the feature mapping corresponding to the kernel used in the regression\footnote{We use a Gaussian kernel throughout the paper for both regression and kernel conditional independence tests.} .The second term is a data-dependent regularization term, called the "Sparsity Boost" term following the framework presented in \cite{brenner2013sparsityboost}.  The idea of this term is to search for conditional independencies between pairs of variables in $\mathcal{X}$, and when there is strong evidence, to boost the scores of any graph which does not contain the corresponding edge.  The original presentation in \cite{brenner2013sparsityboost} was only applicable to binary variables, whereas here present an approach that can handle arbitrary continuous or discrete variables. 
 
 \section{Independence testing} 
 {\bf Notation} 

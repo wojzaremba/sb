@@ -65,22 +65,5 @@ function total = sum_S(S)
         end
     end
 end
-% idea: make fully connected graph, so that each 
 
-% ~~~~
-% compare directly with SB scores from c++ code
-% 
-% data = load('test/asia1000/asia1000.dat');
-% data = data';
-% data(data == 0) = 2;
-% arity = 2;
-% 
-% [E0, info0] = compute_edge_scores(data, opt, 0);
-% B0 = -load('test/asia1000/asia1000_sb_min_edge_scores.0');
-% 
-% [E1, info1] = compute_edge_scores(data, opt, 1);
-% B1 = -load('test/asia1000/asia1000_sb_min_edge_scores.1');
-% 
-% [E2, info2] = compute_edge_scores(data, opt, 2);
-% B2 = -load('test/asia1000/asia1000_sb_min_edge_scores.2');
 

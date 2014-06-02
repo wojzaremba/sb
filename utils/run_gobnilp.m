@@ -13,7 +13,7 @@ for i = 1:length(S)
 end
 
 % define file names
-gobnilp_in_file = sprintf('gobnilp/in/gobnilp-%s', strrep(strrep(datestr(clock), ' ', '_'), ':', '_'));
+gobnilp_in_file = sprintf('thirdparty/gobnilp/in/gobnilp-%s', time_string());
 gobnilp_out_file = strrep(gobnilp_in_file, 'in', 'out');
 set_file = [gobnilp_in_file, '.set'];
 adj_file = [gobnilp_out_file, '.adj'];
@@ -22,6 +22,8 @@ time_file = '';
 stats_file = '';
 score_file = [gobnilp_in_file, '.score'];
 out_file = [gobnilp_out_file, '.out'];
+
+assert(~exist(set_file,'file'));
 
 % read settings file
 fid = fopen('gobnilp/gobnilp.set', 'r');
@@ -44,7 +46,7 @@ fclose(fid);
 
 % write score file
 fid = fopen(score_file, 'w');
-write_gobnilp_scores(fid,S);
+write_gobnilp_scores(fid, S);
 fclose(fid);
 
 % call gobnilp
@@ -58,13 +60,20 @@ G = load(adj_file);
 % runtime
 [status, solving_str] = system(sprintf('grep "Solving Time (sec)" %s', out_file));
 solving_str_split = regexp(solving_str, ' : ', 'split');
-solving_time = str2num(solving_str_split{2});
+solving_time = str2double(solving_str_split{2});
 
 % check that it converged
 [status, cvg_str] = system(sprintf('grep "SCIP Status" %s', out_file));
 cvg_str_split = regexp(cvg_str, ' : ', 'split');
 assert(strcmp(strtrim(cvg_str_split{end}),'problem is solved [optimal solution found]'));
 
-% delete output files
-command = sprintf('rm %s %s %s %s', adj_file, score_file, out_file, set_file);
+% delete output files (set_file last to be extra cautious that two threads
+% don't write to the same files)
+command = sprintf('rm %s %s %s', adj_file, score_file, out_file);
 system(command);
+command = sprintf('rm %s', set_file);
+system(command);
+
+
+end
+

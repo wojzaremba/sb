@@ -4,9 +4,6 @@ function [edge_rhos, indep_rhos, dag, mdag] = learn_mrf(network, n, N, plot_flag
 
 v = 0.05;
 
-global debug;
-debug = 0;
-
 if ~exist('plot_flag', 'var')
     plot_flag = true;
 end

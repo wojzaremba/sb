@@ -3,10 +3,11 @@ addpath(genpath('.'));
 global debug
 debug = 0;
 dbstop if error
+check_dir();
 
 %end2end
 test_compute_roc_scores();
-test_learn_mrf();
+%test_learn_mrf();
 test_bn_learn();
 
 % utils
@@ -33,6 +34,7 @@ test_count_ind_cond_sets();
 test_normcdf_min();
 test_compute_rho_scores();
 test_dsep_cond_sets();
+test_flatten_loop();
 
 % edge scores
 test_network_pvals();

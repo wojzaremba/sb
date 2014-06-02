@@ -35,9 +35,7 @@ for i = 1:si
         end
     end
 end
-fprintf('Dividing rho scores by %s(n)\n', func2str(nfunc));
 D = D ./ nfunc(n); %<- okay this one is important too.
-
 
 % divide by mean over all conditioning set sizes
 % E = D(D ~= Inf);
