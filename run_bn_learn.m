@@ -12,11 +12,11 @@ in.max_condset = 2;    % max conditioning set size
 
 % bn_learn parameters
 in.nvec = 100;
-in.num_bnet = 1;
-in.num_nrep = 1;
+in.num_bnet = 10;
+in.num_nrep = 10;
 in.plot_flag = false;
 in.save_flag = false;
-in.f_sel = 3; 
+in.f_sel = [1 3 4]; 
 
 % score parameters
 in.prune_max = 20;     % number of scores to keep in pruning

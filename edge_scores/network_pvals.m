@@ -38,8 +38,8 @@ else
 end
 fprintf('for loop took %f seconds\n', toc);
 
-[out.p, out.sta, out.edge, out.ind, out.set_size] = ...
-    deal(p, sta, edge, ind, set_size);
+[out.p, out.sta, out.edge, out.ind, out.set_size, out.data] = ...
+    deal(p, sta, edge, ind, set_size, data);
 clear pre p sta edge ind set_size
 save_to_mat(save_flag, network, N);
 printf(2, 'total time = %f sec.\n', toc);
@@ -50,7 +50,7 @@ printf(2, 'total time = %f sec.\n', toc);
             datestr = get_date();
             dir_name = sprintf('edge_scores/pval_mats/%s', datestr);
             system(['mkdir -p ' dir_name]);
-            command = sprintf('save(''%s/%s_%d_pvals'', ''out'')', dir_name, network, N);
+            command = sprintf('save(''%s/%s_%d_reg_eps'', ''out'')', dir_name, network, N);
             eval(command);
         end
     end
