@@ -9,10 +9,11 @@ for t = 1:length(learn_opt)
     opt = learn_opt{t};
     for ni = 1:length(rp.nvec)
         n = rp.nvec(ni);
-        parfor l = 1:length(loop)
+        for l = 1:length(loop)
             rng(l, 'twister'); % seed random numbers
-            data = normalize_data(samples(bnet{l}, n));
-            [s(l), ti(l)] = learn_structure(data, opt, rp, n);  
+            data = samples(bnet{l}, n);
+            [G, ti(l)] = learn_structure(data, opt, rp, n);  
+            s(l) = compute_shd(G, rp.true_pdag, false);
             printf(2, 'bnet=%d, nrep=%d, shd=%d\n', ...
                 loop{l}.i, loop{l}.j, s(l));
         end
@@ -62,8 +63,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [bnet, bn] = generate_bnets(bn_opt, loop, num_bnet, data_gen)
-    bn = {};
-    bnet = {};
+    [bnet, bn] = deal({});
     for i = 1:num_bnet
         bn{i} = make_bnet(bn_opt);
     end

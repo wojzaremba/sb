@@ -2,8 +2,8 @@ Sparsity Boost
 ==============
 
 TODO
+- Rethink whether/where I should normalize and discretize.
 - Consider caching Tr(Ky(:)).  Then, if I don't use the pvalues, I can use the that H is idempotent to compute Tr(HAH HBH) = Tr(AHBH), i.e. I only need to compute KxH, etc. 
-- Take out unnecessary calculations in computing KCI p-value when performing unconditional test.
 - Remove print statements from c++ code.
 - Improve discretization- use method which maximizes mutual information.
 - Regenerate ROC curves with outliers removed.

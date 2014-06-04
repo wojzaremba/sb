@@ -189,7 +189,7 @@ elseif strcmpi(opt.network,'vstruct')
     end
 
 elseif strcmpi(opt.network, 'Y')
-    opt = init_n(opt, 4);
+    opt.n = 4;
     dag = zeros(opt.n);
     dag(1,3) = 1;
     dag(2,3) = 1;
@@ -214,9 +214,12 @@ else
     error('Unexpected network name');
 end
 
+if isfield(opt, 'tile')
+    dag = tile_dag(dag, opt.tile);
+end
+
 if opt.moralize
     dag = moralize_dag(dag);
-    %assert(isequal(dag, moralize_dag(dag)));
     assert(is_topol_sorted(dag));
 end
 

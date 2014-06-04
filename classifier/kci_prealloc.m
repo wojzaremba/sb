@@ -5,9 +5,9 @@ if ~isfield(options, 'pval')
     options.pval = true;
 end
 
-lambda = 1E-3;
+[lambda, ~, eig_frac] = kci_constants();
 T = size(emp, 2);
-num_eig = floor(T/4);
+num_eig = floor(T * eig_frac);
 num_vars = size(emp, 1); 
 H =  eye(T) - ones(T, T) / T;
 K = zeros(T, T, num_vars);

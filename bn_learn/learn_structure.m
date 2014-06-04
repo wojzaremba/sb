@@ -1,6 +1,11 @@
-function [SHD, t] = learn_structure(data, opt, rp, n)
-    if (strcmpi(opt.method, 'sb3') || strcmpi(opt.method, 'bic'))
+function [G, t] = learn_structure(data, opt, rp, n)
+    if opt.normalize
+       data = normalize_data(data); 
+    end
+    if opt.discretize
         data = discretize_data(data, opt.arity);
+    end
+    if (strcmpi(opt.method, 'ksb') || strcmpi(opt.method, 'bic'))
         [S, t1] = compute_score(data, opt, rp, n);
         [G, t2] = run_gobnilp(S);
         t = t1 + t2;
@@ -9,5 +14,4 @@ function [SHD, t] = learn_structure(data, opt, rp, n)
     else
         error('unexpected opt.method');
     end
-    SHD = compute_shd(G, rp.true_pdag, false);
 end

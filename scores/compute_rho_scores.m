@@ -23,7 +23,7 @@ for i = 1:si
                 continue;
             end
             K = pre.Kyz(:, :, i, j, k);
-            D(i, j, k) = norm(K(:))^2;   %<- the only important line of code in this whole function
+            D(i, j, k) = norm(K(:))^2;   %<- the most important line of code in this whole function
             D(i, k, j) = D(i, j, k);  
             if (j == k)
                 sum1 = sum1 + D(i, j, k);
@@ -60,13 +60,12 @@ D = D ./ nfunc(n); %<- okay this one is important too.
 %     end
 % end
 
-
 % save to structure
 S = cell(si, 1);
 for i = 1:si
     S{i} = {};
     %no parents
-    S{i}{end + 1} = struct('score', -D(i, i, i), 'parents', []);      
+    S{i}{end + 1} = struct('score', -D(i, i, i), 'parents', []); 
     
     % one parent
     for j = 1:si

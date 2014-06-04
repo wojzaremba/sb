@@ -3,7 +3,7 @@ function s = discretize_data(s, num_bins, method)
 if num_bins ~= 1 %if num_bins == 1, just return continuous data
     
     if ~exist('method', 'var')
-        fprintf('using uniform discretization\n');
+        printf(2, 'using uniform discretization\n');
         method = 'uniform';
     end
     

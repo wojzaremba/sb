@@ -9,7 +9,7 @@ for i = 1:K
     for j = i+1:K
         subplot(K-1, K-1, (K-1)*(i-1) + j-1)
         if strcmpi(method, 'scatter')
-            scatter(data(i, :), data(j, :));
+            scatter(data(i, :), data(j, :),'b.');
         elseif strcmpi(method, 'hist')
             hist3(data([i j], :)');
         end

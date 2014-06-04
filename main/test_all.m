@@ -42,6 +42,7 @@ test_edge_scores();
 test_fit_f();
 test_fit_f0();
 test_compute_bic();
+test_kernel_ridge_likelihood();
 
 % plot
 test_density_est();

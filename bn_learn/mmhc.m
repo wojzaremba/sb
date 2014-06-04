@@ -1,13 +1,8 @@
-function [G, T] = mmhc(data, nstates_or_arity)
+function [G, T] = mmhc(data, arity)
 
 tic; 
 nvars = size(data, 2);
-if length(nstates_or_arity) > 1
-    nstates = nstates_or_arity;
-else
-    arity = nstates_or_arity;
-    nstates = arity*ones(1, nvars);
-end
+nstates = arity * ones(1, nvars);
 
 import org.mensxmachina.stats.tests.ci.kci.kcipvalueestimator;
 import org.mensxmachina.stats.tests.ci.dummycitrcapplier; 
@@ -40,7 +35,7 @@ skeleton = MMLGLearner.learnskeleton();
 import org.mensxmachina.pgm.bn.learning.structure.sns.local.bdeu.bdeulocalscorer;
 import org.mensxmachina.pgm.bn.learning.structure.sns.local.hc.hillclimber;
 
-if exist('arity', 'var')
+if ~is_discrete(data, arity)
     data = discretize_data(data, arity);
 end
 

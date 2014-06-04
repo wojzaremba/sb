@@ -10,7 +10,7 @@ function [S, T] = compute_score(data, opt, rp, n)
     % compute base scores
     if strcmpi(opt.method, 'bic')
         S = compute_bic(data, opt.arity, rp.maxpa);
-    elseif strcmpi(opt.method, 'sb3')
+    elseif strcmpi(opt.method, 'ksb')
         S = compute_rho_scores(pre, opt.prune_max, rp.nfunc);
     else
         error('unexpected value for score');
@@ -18,7 +18,7 @@ function [S, T] = compute_score(data, opt, rp, n)
     
     if opt.edge
         E = compute_edge_scores(data, opt, rp.max_condset, pre);
-        S = add_edge_scores(S, E, rp.psi, n);
+        S = add_edge_scores(S, E, rp.psi);
     end;
     S = prune_scores(S);
     T = toc;

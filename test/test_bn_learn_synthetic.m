@@ -27,8 +27,11 @@ out = bn_learn_synthetic(in);
 assert(out.SHD{1} == 0);
 
 %% test MMHC
+seed_rand(1);
 in.f_sel = 1;
 in.nvec = 300;
-in.nvars = 4;
+in.arity = 3;
+in.network = 'Y';
+in.data_gen = 'random';
 out = bn_learn_synthetic(in);
 assert(out.SHD{1} == 0);
