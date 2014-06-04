@@ -10,7 +10,6 @@ data = normalize_data(samples(bnet, N));
 pre = kci_prealloc(data, kci_opt);
 [p, sta, edge, ind, set_size] = deal(ones(length(triples), 1) * NaN);
 
-tic;
 if run_parallel
     parfor t = 1:length(triples)
         tr = triples{t};

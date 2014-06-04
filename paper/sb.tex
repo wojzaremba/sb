@@ -10,6 +10,7 @@
 \usepackage{subfigure}
 \usepackage{epstopdf}
 \usepackage{subfig}
+\usepackage{dsfont}
 \newlength{\subfigheight}
 \setlength{\subfigheight}{1in}
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
@@ -49,17 +50,15 @@
 
 \author{
 Rachel Hodos
-Computational Biology, NYU
+Computational Biology and Mathematics, NYU
 \texttt{hodos@cims.nyu.edu}
 \Xnd
 Wojciech Zaremba \\
 Computer Science, NYU \\
-%Xddress \\
 \texttt{woj.zaremba@gmail.com} \\
-\XND
+\Xnd
 David Sontag \\
 Computer Science, NYU \\
-%Xddress \\
 \texttt{dsontag@cs.nyu.edu} \\
 }
 %
@@ -132,8 +131,8 @@ Independence tests used in Bayesian networks
 \cite{margaritis2003learning}
 \end{comment}
 
-\subsection{Bayesian networks over continuous variables}
-The simplest and most widely used Bayesian network models over continuous variables are linear Gaussian models, where each variable is sampled from a linear combination of its parents' states, plus some Gaussian noise.  This restricts the local relationships to be linear, and hence a more general model is desirable in many settings.
+\subsection{Learning Bayesian network structures with continuous variables}
+The simplest and most widely used Bayesian network models over continuous variables are Gaussian Bayesian networks (GBNs), where each variable is sampled from a linear combination of its parents' states, plus some Gaussian noise.  \cite{geiger1994learning} present a principled scoring function to learn such a network.  This is the only score for learning continuous networks in the bnlearn package \cite{scutari2009learning}.  This model, however, restricts the local relationships to be linear, and hence a more general model is desirable in many settings.
 
 One important technique for modeling non-Gaussian continuous BNs is kernel density estimation (KDE).  For example, \cite{john1995estimating} introduced the {\it Flexible Bayes} model, using KDE to enable the Naive Bayes classifier to use non-Gaussian continuous features.  \cite{perez2009bayesian} extends this framework to more generally structured classifiers beyond Naive Bayes.  Both of these methods assume that the conditioning variable is discrete, and hence conditioning is performed in the straightforward way.  Other techniques must be applied when the conditioning variables are continuous.  \cite{hofmann1996discovering} use KDE to model the CPDs by estimating the joint distribution over parents and child, and dividing by an estimate of the parents' distribution.  They performed a greedy hill-climbing procedure, optimizing cross-validated log-likelihood regularized by an edge penalty.  \cite{hansen2004nonparametric} describes a conditional KDE procedure that has the same flavor as the KCI test used in this work, where the conditional density is estimated by regressing on the conditioning variable and then using kernels to estimate the density over the residuals.  In all of these techniques, the choice of kernel width is key to getting a good estimate, and many techniques have been proposed to make such a choice.  \cite{john1995estimating} propose a heuristic kernel width $\sigma = \frac{1}{\sqrt n}$, i.e. the density estimation becomes more local as the number of data points increases.  Alternatively, \cite{holmes2012fast}, propose cross-validation of the log-likelihood.  Another issue with these techniques is that the nonparametric density estimates incur a computational cost at the time of classification, since all data points used for training must be stored in order to compute the likelihood of a new data point.  However there are ways to address this, e.g. \cite{gurwicz2004rapid} use splines to approximate and evaluate the densities much more efficiently.  One final kernel-based approach worth mentioning is that of \cite{bach2002learning}, where kernels are used to learn hybrid Bayesian networks (i.e. variables can be either continuous or discrete), where all variables are treated as Gaussian in feature space.  They demonstrate how one could use this approach within a greedy hill-climbing procedure, as well as in a constraint-based approach.
 
@@ -144,9 +143,13 @@ There is also some interesting work using copulas, e.g. {\bf just list the canon
 We are proposing a method which uses continuous data but does not estimate the conditional distributions- i.e. we are decoupling the problem of structure learning with parameter learning.  The work of \cite{margaritis2005distribution} also falls into this category, although they take a constraint-based approach, applying the PC algorithm to continuous data via a non-parametric, discretization-based independence test.
 
 \section{The Kernel Sparsity Boost Score (KSB)}
-In the section we describe our new scoring function, but first, we introduce some notation.  For each $X_i \in \mathcal{X}$, let Pa$_G(X_i)$ denote the parents of $X_i$ in the DAG G.   Throughout the paper, capital letters will denote random variables, e.g. $X_i, Pa(X_i)$, and lower case letters will denote instantiations, e.g. $x_i^n$ and $pa^n(x_i)$.  The n superscript denotes the $n^{th}$ data point.   When the context is clear we will drop the subscript G.  
+In the section we describe our new scoring function, but first, we introduce some notation.  For each $X_i \in \mathcal{X}$, let Pa$_G(X_i)$ denote the parents of $X_i$ in the DAG G.   Throughout the paper, capital letters will denote random variables, e.g. $X_i, Pa(X_i)$, and lower case letters will denote instantiations, e.g. $x_i^n$ and $pa^n(x_i)$.  The n superscript denotes the $n^{th}$ data point.   When the context is clear we will drop the subscript G.  Finally, let $G^*$ denote the true network.
 
-Like most scoring functions for Bayesian network structure learning, our score decomposes into a sum of scores for each family, i.e. a variable and its candidate parents.  Hence the KSB score for G given dataset D can be written as \begin{equation} KSB(G;D) = \sum_{X_i \in \mathcal{X}} ksb(X_i, Pa_G(X_i); D), \end{equation} where $ksb$ are the family scores, defined as \begin{equation} ksb(X_i, Pa_G(X_i); D) = \sum_{n \in 1, \ldots, N} \left(\mathbf{w}^T\Phi(pa^n(x_i)) - x_i^n \right)^2 + \sum_{X_j \in Pa(X_i)} \max_{C \in \Omega{ij}} sb(X_i, X_j|C; D) \end{equation}  The first term is the sum of squares of residuals after performing kernel ridge regression of $X_i$ onto its parents in G.  $\Phi$ is the feature mapping corresponding to the kernel used in the regression\footnote{We use a Gaussian kernel throughout the paper for both regression and kernel conditional independence tests.} .The second term is a data-dependent regularization term, called the "Sparsity Boost" term following the framework presented in \cite{brenner2013sparsityboost}.  The idea of this term is to search for conditional independencies between pairs of variables in $\mathcal{X}$, and when there is strong evidence, to boost the scores of any graph which does not contain the corresponding edge.  The original presentation in \cite{brenner2013sparsityboost} was only applicable to binary variables, whereas here present an approach that can handle arbitrary continuous or discrete variables. 
+Like most scoring functions for Bayesian network structure learning, our score decomposes into a sum of scores for each family, i.e. a variable and its candidate parents.  Hence the KSB score for G given dataset D can be written as \begin{equation} KSB(G;D) = \sum_{X_i \in \mathcal{X}} ksb(X_i, Pa_G(X_i); D), \end{equation} where $ksb$ are the family scores, defined as \begin{equation} ksb(X_i, Pa_G(X_i); D) = \sum_{n \in 1, \ldots, N} \left(\mathbf{w}^T\Phi(pa^n(x_i)) - x_i^n \right)^2 + \sum_{X_j \in Pa(X_i)} \max_{C \in \Omega{ij}} sb(X_i, X_j|C; D) \end{equation}  
+
+The first term is the sum of squares of residuals after performing kernel ridge regression of $X_i$ onto its parents in G.  $\Phi$ is the feature mapping corresponding to the kernel used in the regression\footnote{We use a Gaussian kernel throughout the paper for both regression and kernel conditional independence tests.}.  Recall from ordinary least squares regresion that minimizing the sum of squares of the residuals is exactly equivalent to maximizing the likelihood of the data under the assumption that the expectation of $X_i$ is drawn from a linear model plus some Gaussian noise with constant variance $\sigma^2$.  In the same way, the term presented here corresponds to the likelihood of the data given the chosen weight vector w.  Note that we wouldn't want to choose w using ML estimation, since this can lead to over-fitting, especially in the case of $\Phi(Pa(X_i))$ being infinite dimensional, such as when using a Gaussian kernel.  Hence the first term is a likelihood term.  Hence we perform kernel ridge regression, which adds the regularization penalty $\lambda \| w\|^2$ to the objective, improving the generalizability of the learned model.  {\bf David says that the risk we are minimizing is log-loss.  I guess I'm not sure what this means.}
+
+The second term is a data-dependent regularization term, called the "Sparsity Boost" term following the framework presented in \cite{brenner2013sparsityboost}.  The idea of this term is to search for conditional independencies between pairs of variables in $\mathcal{X}$, and when there is strong evidence, to boost the scores of any graph which does not contain the corresponding edge.  The original presentation in \cite{brenner2013sparsityboost} was only applicable to binary variables, whereas here present an approach that can handle arbitrary continuous or discrete variables. 
 
 \section{Independence testing} 
 {\bf Notation} 
@@ -185,8 +188,7 @@ in following sections.
 \end{figure}
 
 \subsection{Prior}\label{sec:prior}
-Set $(X, Y, Z, t=\text{independent})$ has measure zero for uniform
-distribution over CPDs of $X, Y, Z$. For such distribution
+Set $(X, Y, Z, t=\text{independent})$ has measure zero for uniform distribution over CPDs of $X, Y, Z$. For such distribution
 best possible predictor $f$ would always predict ``dependence''. 
 This shows that a prior coming from any natural parametrization
 of CPDs would force $f$ to be constant. This indicate that, we should
@@ -378,16 +380,21 @@ There is in fact some notion of a gold standard network for the T-cell dataset. 
 \section{Discussion}
 
 \appendix
-\section{Computing confidence of independence}
-We want the SparsityBoost term in the scoring function to emphasize the cases where there is strong evidence that an edge should not be present (i.e. conditional independence), while effectively disregarding cases with evidence of dependence between pairs of variables.  This is because we do not search over all possible conditioning sets, and hence just because we have evidence that $X_i$ and $X_j$ are dependent for a particular conditioning set does not prove that edge $E_{ij} \in G^*$.  Hence we define the SparsityBoost term for edge $E_{ij}$ and conditioning set C to be $$sb(E_{ij} | C; D) = -\log(1 - p(H_0)),$$ where $H_0$ is the null hypothesis of independence.  This satisfies our requirements, since when $p(H_0)$ is large, $sb$ is large, and vice versa.
+\section{Unsupervised Multitask Learning to Interpret Independence Tests}
+We want the SparsityBoost term in the scoring function to emphasize the cases where there is strong evidence that an edge should not be present (i.e. conditional independence), while effectively disregarding cases with evidence of dependence between pairs of variables.  This is because we do not search over all possible conditioning sets, and hence just because we have evidence that $X_i$ and $X_j$ are dependent for a particular conditioning set does not prove that edge $E_{ij} \in G^*$.  Hence we define the SparsityBoost term for edge $E_{ij}$ and conditioning set C to be $$sb(E_{ij} | C; D) = -\log(P(H_1)),$$ where $H_1$ is the alternative hypothesis of dependence.  This satisfies our requirements, since when $P(H_0)$ is large, $sb$ is large, and vice versa.  In an attempt to avoid confusion, we will use a lower-case p to denote 
 
 Note that it is not straightforward to use an independence test to claim with confidence that $H_0$ is true.  Any test with a null hypothesis of independendence allows one to reject the independence model with some degree of confidence given a small enough p-value, but on the other hand, a large p-value does not mean that one can be confident that the model is actually independent.  For example, a large p-value could just mean that the test is underpowered to detect any alternative models.  To address this, we follow \cite{efron2004large} and compute $p(H_0)$ as follows.
 
-Suppose that we perform K conditional independence tests with null hypotheses $H_0^1, H_0^2, \ldots, H_0^K$, giving the statistics $T_1, T_2, \ldots, T_K$ and corresponding p-values, $P_1, P_2, \ldots P_K$, where $P_i = P(T_i \geq t_i | H_0^i)$.  Then is it well-known that $Z_i = \Phi^{-1}(P_i) ~ N(0,1),$ where $\Phi$ is the cumulative distribution function for a standard normal variate.  Now if we assume that 
+Suppose that we perform m conditional independence tests with null hypotheses $H_0^1, H_0^2, \ldots, H_0^m$, giving the statistics $T_1, T_2, \ldots, T_m$ and corresponding p-values, $P_1, P_2, \ldots P_m$, where $P_i = P(T_i \geq t_i | H_0^i)$.  Then under the null hypothesis, $H_0^i$, it is well known that $P_i$ follows a uniform distribution over [0, 1], whereas under the alternative hypothesis $H_1^i$, $P_i$ will tend to 0 as the amount of data increases.  Hence we can use the fact that we are performing many conditional independence tests to construct an empirical distribution over the resulting p-values, and then further represent this distribution as a mixture over $H_0$ and $H_1$, i.e. $$f(p) = f_0(p)p_0 + f_1(p)(1 - p_0).$$  The distributions of p-values are generated by considering all pairs of variables in the network conditioned on all possible sets of size k, for k up to some maximum size (here we use 2).  We fit separate distributions for each k, since larger conditioning sets correspond generally to a decrease in the power of the statistical test.  We let $f_0$ be uniform\footnote{It turns out that, due to the fact that we are computing the p-value from the KCI test using some approximations, namely matching the first two moments of the asymptotic null distribution to a Gamma distribution, the p-values corresponding to independence are not perfectly uniform, but rather are shifted towards 0, a phenomenon mentioned in \cite{zhang2012kernel}.  This leads to an underestimate of $p_0$, which corresponds to a conservative SparsityBoost term.  We argue that this is acceptable, since qualitatively speaking, Type II errors (falsely accepting the null hypothesis) are more detrimental to the score than Type I errors (falsely rejecting the null hypothesis).}, as theory predicts, and for $f_1$ we use a mixture of a tall, narrow uniform distribution near 0, and an exponential\footnote{In cases where we have many very small p-values, if we don't use the narrow uniform distribution near 0 and only fit an exponential for $f_1$, the small p-values dominate the fit, leading to an overly-steep exponential.}.  Hence we have $$f(p) = p_0\mathds{1}_{[0 \leq p \leq 1]} + (1 - p_0)\left( a \lambda e^{-\lambda p} + (1 - a) \mathds{1}_{[p \leq \delta]}\dfrac{1}{\delta} \right) $$  This distribution has four parameters, which we fit using the following procedure: \begin{enumerate} \item By assuming that no p-values corresponding to dependence lie in the range [0.5, 1], we estimate p0 using the formula: $$\widehat{p_0} = \dfrac{2 \times ( \# \text{ of p-vals} \in [0.5, 1])}{\text{total \# of p-vals}}$$  To make this more robust, we perform 200 bootstrap resamples of the data, and our final estimate is the average of the $p_0$ estimates from each of these bootstrap samples. \item We use MLE to fit the three remaining parameters, $\lambda, \delta$, and $a$, simultaneously. \item For each p-value, we compute the probability of dependence using Bayes' rule: $$P(H_1) = f_1(p)*(1 - p_0) / f(p).$$ \end{enumerate}  
 
-We use the fact that we are performing many conditional independence tests to construct an empirical distribution over the (normalized) test statistic, Z, and then further represent this distribution as a mixture over $H_0$ and $H_1$, i.e. $$f(z) = f_0(z)p_0 + f_1(z)(1 - p_0).$$
+Figure \ref{cite:pvals} shows an example of the result of this procedure.  These results were generated using 200 data points sampled from the child network structure using the quadratic gaussian model described above.  The top row shows the distribution of p-values resulting from applying the KCI test, along with our fit of $f(p)$ and the individual components, $f_0(p)p_0$ and $f_1(p)(1 - p_0)$.  The bottom row shows the resulting functions for $P(H_1).$  As stated above, the SparsityBoost score for each test, $sb(X_i, X_j|C; D)$ is then computed as $-\log P(H_1)$.  Notice that going from left to right in the bottom row, the functions become more shallow, consistent with the decrease in power when conditioning on more variables.
 
-
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\linewidth]{img/child_200_pval_fits.eps}
+\caption{Example of result of our procedure for computing $P(H_1)$, using 200 data points sampled from the child network structure, using the quadratic gaussian model described above. The top row show the distribution of KCI p-values, along with our fit of $f(p)$ and the individual components, $f_0 \cdot p_0$ and $f_1 \cdot (1 - p_0)$.  The bottom row shows the resulting functions for $P(H_1).$}
+\label{fig:pvals}
+\end{figure}
 
 
 \include{appendix}

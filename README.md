@@ -2,8 +2,8 @@ Sparsity Boost
 ==============
 
 TODO
+- Rethink whether/where I should normalize and discretize.
 - Consider caching Tr(Ky(:)).  Then, if I don't use the pvalues, I can use the that H is idempotent to compute Tr(HAH HBH) = Tr(AHBH), i.e. I only need to compute KxH, etc. 
-- Take out unnecessary calculations in computing KCI p-value when performing unconditional test.
 - Remove print statements from c++ code.
 - Improve discretization- use method which maximizes mutual information.
 - Regenerate ROC curves with outliers removed.
@@ -13,6 +13,7 @@ TODO
 - Remember to mention Joris Mooij paper, emphasize that I am using only observational data, maybe discuss how to incorporate interventional data into our approach.
 - Reiterate in the paper that minimizing the pseudo-likelihood term is exactly equivalent to maximizing the likelihood, under the assumption that the data are drawn from y ~ A phi(x) + eps.
 - Plot edge scores' beta function.
+- Compare results on Sachs data using fancy discretization with normal discretization.
 
 SCALING
 - Tried dividing norm(K(:)) by total mean, mean of each conditioning set size, n, sqrt(n), log(n).  sqrt(n) seemed to do the best, but still didn't seem to be converging.

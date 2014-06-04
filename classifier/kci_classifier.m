@@ -1,6 +1,7 @@
 function [rho, info] = kci_classifier(emp, trip, options, prealloc)
 
 T = size(emp, 2);
+[lambda, thresh, eig_frac] = kci_constants();
 
 if ~exist('prealloc', 'var')
     prealloc = [];
@@ -48,7 +49,6 @@ if ~isempty(prealloc)
 else
     x = emp(trip(1), :)';
     y = emp(trip(2), :)';
-    lambda = 1E-3;
     H =  eye(T) - ones(T, T) / T;
     Ky = H * options.kernel.k(y, y) * H;
     
@@ -64,52 +64,57 @@ else
     end
 end
 
-Sta_unnormalized = abs(sum(Kx(:) .* Ky(:)));
+Sta_unnormalized = abs(sum(Kx(:) .* Ky(:))); 
 
 if options.pval
-    Num_eig = floor(T/4); % or T
-    Thresh = 1E-5;
-    
-    % calculate the eigenvalues
-    % Due to numerical issues, Kxz and Kyz may not be symmetric:
-    if isempty(prealloc)
-        [eig_Kx, eivx] = eigdec((Kx + Kx') / 2, Num_eig);
-        [eig_Ky, eivy] = eigdec((Ky + Ky') / 2, Num_eig);
-    end
-    
-    % calculate the product of the square root of the eigvector and the eigen
-    % vector
-    IIx = find(eig_Kx > max(eig_Kx) * Thresh);
-    IIy = find(eig_Ky > max(eig_Ky) * Thresh);
-    eig_Kx = eig_Kx(IIx);
-    eivx = eivx(:,IIx);
-    eig_Ky = eig_Ky(IIy);
-    eivy = eivy(:,IIy);
-    
-    eiv_prodx = eivx * diag(sqrt(eig_Kx));
-    eiv_prody = eivy * diag(sqrt(eig_Ky));
-    clear eivx eig_Kx eivy eig_Ky
-    
-    % calculate their product
-    Num_eigx = size(eiv_prodx, 2);
-    Num_eigy = size(eiv_prody, 2);
-    Size_u = Num_eigx * Num_eigy;
-    uu = zeros(T, Size_u);
-    
-    for i=1:Num_eigx
-        for j=1:Num_eigy
-            uu(:,(i-1)*Num_eigy + j) = eiv_prodx(:,i) .* eiv_prody(:,j);
-        end
-    end
-    
-    if Size_u > T
-        uu_prod = uu * uu';
+    if (length(trip) == 2)
+        mean_appr = trace(Kx) * trace(Ky) / T;
+        var_appr = 2 * trace(Kx * Kx) * trace(Ky * Ky) / (T^2);
     else
-        uu_prod = uu' * uu;
+        Num_eig = floor(T * eig_frac);
+        
+        % calculate the eigenvalues
+        % Due to numerical issues, Kxz and Kyz may not be symmetric:
+        if isempty(prealloc)
+            [eig_Kx, eivx] = eigdec((Kx + Kx') / 2, Num_eig);
+            [eig_Ky, eivy] = eigdec((Ky + Ky') / 2, Num_eig);
+        end
+        
+        % calculate the product of the square root of the eigvector and the eigen
+        % vector
+        IIx = find(eig_Kx > max(eig_Kx) * thresh);
+        IIy = find(eig_Ky > max(eig_Ky) * thresh);
+        eig_Kx = eig_Kx(IIx);
+        eivx = eivx(:,IIx);
+        eig_Ky = eig_Ky(IIy);
+        eivy = eivy(:,IIy);
+        
+        eiv_prodx = eivx * diag(sqrt(eig_Kx));
+        eiv_prody = eivy * diag(sqrt(eig_Ky));
+        clear eivx eig_Kx eivy eig_Ky
+        
+        % calculate their product
+        Num_eigx = size(eiv_prodx, 2);
+        Num_eigy = size(eiv_prody, 2);
+        Size_u = Num_eigx * Num_eigy;
+        uu = zeros(T, Size_u);
+        
+        for i=1:Num_eigx
+            for j=1:Num_eigy
+                uu(:,(i-1)*Num_eigy + j) = eiv_prodx(:,i) .* eiv_prody(:,j);
+            end
+        end
+        
+        if Size_u > T
+            uu_prod = uu * uu';
+        else
+            uu_prod = uu' * uu;
+        end
+        
+        mean_appr = trace(uu_prod);
+        var_appr = 2*trace(uu_prod^2); %% this takes a long time.
     end
     
-    mean_appr = trace(uu_prod);
-    var_appr = 2*trace(uu_prod^2);
     k_appr = mean_appr^2/var_appr;
     theta_appr = var_appr/mean_appr;
     pval = gamcdf(Sta_unnormalized, k_appr, theta_appr);
@@ -119,10 +124,9 @@ end
 
 Sta = sqrt(Sta_unnormalized / (sum(diag(Kx)) * sum(diag(Ky))));
 
-if (isfield(options, 'pval') && options.pval)
+rho = Sta;
+if options.pval
     rho = pval;
-else
-    rho = Sta;
 end
 
 info.Sta = Sta;
