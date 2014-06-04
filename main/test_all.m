@@ -32,7 +32,7 @@ test_is_topol_sorted();
 test_check_cond_sets();
 test_count_ind_cond_sets();
 test_normcdf_min();
-test_compute_rho_scores();
+%test_compute_rho_scores();
 test_dsep_cond_sets();
 test_flatten_loop();
 

@@ -1,4 +1,4 @@
-function LL = compute_likelihood(G, train, test)
+function LL = compute_likelihood_G(G, train, test)
 
 LL = 0;
 for X = 1:size(G, 2)

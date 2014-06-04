@@ -6,7 +6,7 @@ function [G, t] = learn_structure(data, opt, rp, n)
         data = discretize_data(data, opt.arity);
     end
     if (strcmpi(opt.method, 'ksb') || strcmpi(opt.method, 'bic'))
-        [S, t1] = compute_score(data, opt, rp, n);
+        [S, t1] = compute_score(data, opt, rp);
         [G, t2] = run_gobnilp(S);
         t = t1 + t2;
     elseif strcmpi(opt.method, 'mmhc')
