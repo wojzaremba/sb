@@ -9,7 +9,7 @@ for t = 1:length(learn_opt)
     opt = learn_opt{t};
     for ni = 1:length(rp.nvec)
         n = rp.nvec(ni);
-        for l = 1:length(loop)
+        parfor l = 1:length(loop)
             rng(l, 'twister'); % seed random numbers
             data = samples(bnet{l}, n);
             [G, ti(l)] = learn_structure(data, opt, rp, n);  

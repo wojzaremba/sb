@@ -9,12 +9,12 @@ in.variance = 0.05;
 in.nvars = 4;
 
 %% run parameters
-in.nvec = (2:3)*50;
+in.nvec = (1:5)*50;
 in.num_bnet = 2;
 in.num_nrep = 2;
 in.plot_flag = true;
 in.save_flag = false;
-in.f_sel = 2;           % 1=MMHC, 2=KSB, 3=BIC
+in.f_sel = [1 2 3];           % 1=MMHC, 2=KSB, 3=BIC
 
 %% score parameters
 in.maxpa = 2;           % max number of parents to allow in learned network
