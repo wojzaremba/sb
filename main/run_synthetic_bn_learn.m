@@ -1,6 +1,6 @@
 %clear all
 global debug
-debug = 0;
+debug = 2;
 
 %% network parameters
 in.network = 'asia';
@@ -9,12 +9,12 @@ in.variance = 0.05;
 in.nvars = 4;
 
 %% run parameters
-in.nvec = 100;
-in.num_bnet = 1;
-in.num_nrep = 1;
-in.plot_flag = false;
+in.nvec = (2:3)*50;
+in.num_bnet = 2;
+in.num_nrep = 2;
+in.plot_flag = true;
 in.save_flag = false;
-in.f_sel = 3;       % 1=MMHC, 2=KSB no pval, 3=KSB pval, 4 = BIC
+in.f_sel = 2;           % 1=MMHC, 2=KSB, 3=BIC
 
 %% score parameters
 in.maxpa = 2;           % max number of parents to allow in learned network

@@ -10,7 +10,7 @@ in.nvec = 100;
 in.folds = 1;
 in.plot_flag = false;
 in.save_flag = false;
-in.f_sel = [1 3];       % 1=MMHC, 2=KSB no pval, 3=KSB pval, 4 = BIC
+in.f_sel = [1 2];       % 1=MMHC, 2=KSB 3=BIC
 
 %% score parameters
 in.maxpa = 2;           % max number of parents to allow in learned network
