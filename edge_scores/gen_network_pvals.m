@@ -6,8 +6,8 @@ variance = 0.05;
 
 % run params
 maxS = 2;
-save_flag = false;
-run_parallel = false;
+save_flag = true;
+run_parallel = true;
 
 if save_flag
     check_dir();
