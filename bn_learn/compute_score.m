@@ -1,4 +1,4 @@
-function [S, T] = compute_score(data, opt, rp)
+function [S, T] = compute_score(data, opt, rp, N)
     tic;
     if ~opt.edge && isfield(opt, 'pval')
         opt.pval = false;
@@ -19,7 +19,7 @@ function [S, T] = compute_score(data, opt, rp)
     
     if opt.edge
         E = compute_edge_scores(data, opt, rp.max_condset, pre);
-        S = add_edge_scores(S, E, rp.psi);
+        S = add_edge_scores(S, E, rp.psi, N);
     end;
     S = prune_scores(S);
     T = toc;

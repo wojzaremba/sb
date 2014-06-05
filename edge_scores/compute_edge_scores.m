@@ -27,7 +27,7 @@ end
 E = zeros(nvars);
 for k = 0:maxS
     % compute sb scores for conditioning sets of size k
-    [sb, edge_opt{k + 1}] = learn_edge_classifier(p_all(set_size == k), true);
+    [sb, edge_opt{k + 1}] = learn_edge_classifier(p_all(set_size == k), false);
     
     % get max sb score for each edge
     edge = edge_all(set_size == k, :);

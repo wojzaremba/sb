@@ -1,13 +1,18 @@
 clear all;
 addpath(genpath('.'));
 global debug
-debug = 0;
+debug = 2;
 dbstop if error
 check_dir();
 
+test_edge_scores();
 % end-to-end
 test_compute_roc_scores();
 test_bn_learn_synthetic();
+
+% structure learning
+test_run_gobnilp();
+test_mmhc();
 %test_learn_mrf();
 
 % utils
@@ -32,15 +37,11 @@ test_is_topol_sorted();
 test_check_cond_sets();
 test_count_ind_cond_sets();
 test_normcdf_min();
-%test_compute_rho_scores();
 test_dsep_cond_sets();
 test_flatten_loop();
 
 % scores
 test_network_pvals();
-test_edge_scores();
-test_fit_f();
-test_fit_f0();
 test_compute_bic();
 test_kernel_ridge_likelihood();
 
@@ -69,9 +70,6 @@ test_kci_classifier();
 test_sb_classifier();
 test_cc_classifier();
 
-% structure learning
-test_run_gobnilp();
-test_mmhc();
 
 
 disp('Passed all tests!');
