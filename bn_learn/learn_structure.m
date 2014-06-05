@@ -1,4 +1,4 @@
-function [G, t] = learn_structure(data, opt, rp, n)
+function [G, t] = learn_structure(data, opt, rp)
     if opt.normalize
        data = normalize_data(data); 
     end

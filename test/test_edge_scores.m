@@ -34,6 +34,8 @@ function E = test_compute_edge_scores(opt, data, dag, max_condset, pre)
     [E, edge_opt] = compute_edge_scores(data, opt, max_condset, pre);
     triples = gen_triples(nvars, 0:max_condset);
     T = dsep_cond_sets(dag, triples);
+    T
+    E
     assert(isequal(find(E > 1), find(T == 1)));
     assert(isequal(intersect(find(~isinf(T)), find(E < 1)), find(T == 0)));
 end

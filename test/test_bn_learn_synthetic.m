@@ -1,4 +1,4 @@
-disp('test_bn_learn_synthetic... Warning: not testing KSB')
+disp('test_bn_learn_synthetic...')
 
 %% network parameters
 in.network = 'chain';

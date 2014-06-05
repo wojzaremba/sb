@@ -11,7 +11,6 @@ function [S, T] = compute_score(data, opt, rp)
     if strcmpi(opt.method, 'bic')
         S = compute_bic(data, opt.arity, rp.maxpa);
     elseif strcmpi(opt.method, 'ksb')
-        %S = compute_rho_scores(pre, opt.prune_max, rp.nfunc);
         S = compute_likelihood(data, rp.maxpa);
     else
         error('unexpected value for score');

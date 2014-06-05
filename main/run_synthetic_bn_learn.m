@@ -3,15 +3,15 @@ global debug
 debug = 2;
 
 %% network parameters
-in.network = 'asia';
+in.network = 'child';
 in.data_gen = 'quadratic_ggm';
 in.variance = 0.05;
 in.nvars = 4;
 
 %% run parameters
-in.nvec = (1:5)*50;
-in.num_bnet = 2;
-in.num_nrep = 2;
+in.nvec = (1:4)*50;
+in.num_bnet = 1;
+in.num_nrep = 1;
 in.plot_flag = true;
 in.save_flag = false;
 in.f_sel = [1 2 3];           % 1=MMHC, 2=KSB, 3=BIC
@@ -30,6 +30,6 @@ if in.maxpa > 2
 end
 seed_rand(1);
 out = bn_learn_synthetic(in);
-if out.rp.save_flag
-    eval(['save ' out.rp.matfile]);
-end
+%if out.rp.save_flag
+%    eval(['save ' out.rp.matfile]);
+%end
