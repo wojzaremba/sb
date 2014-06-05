@@ -31,17 +31,11 @@ end
 
 function E = test_compute_edge_scores(opt, data, dag, max_condset, pre)
     nvars = size(data, 1);
-    printf(2, 'after nvars\n');
     [E, edge_opt] = compute_edge_scores(data, opt, max_condset, pre);
-    printf(2, 'after compute_edge_scores\n');
     triples = gen_triples(nvars, 0:max_condset);
-    printf(2, 'after gen_triples\n');
     T = dsep_cond_sets(dag, triples);
-    printf(2, 'after dsep_cond_sets\n');
     assert(isequal(find(E > 1), find(T == 1)));
-    printf(2, 'after first assert\n');
     assert(isequal(intersect(find(~isinf(T)), find(E < 1)), find(T == 0)));
-    printf(2, 'after second assert\n');
 end
 
 

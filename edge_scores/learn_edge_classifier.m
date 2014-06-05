@@ -1,4 +1,4 @@
-function [sb_final, opt] = learn_edge_classifier(p, plot_flag)
+function [sb_final, opt] = learn_edge_classifier(p, set_size, plot_flag)
 
 % throw out p=0 cases- we will just assign sb=0 to such cases
 pfull = p;
@@ -7,7 +7,7 @@ p = p(p>0);
 
 % histogram
 if plot_flag
-    figure
+    %figure
     [counts, x] = hist(p, 40);
     width = x(2) - x(1);
     g = counts / (sum(counts) * width);
@@ -58,7 +58,7 @@ if (~exist('plot_flag', 'var') || plot_flag)
     plot(x, f, 'm.-', 'linewidth', 3);
     xlim([0,1]);
     ylim([0 4]);
-    %title(sprintf('Cond sets size %d',set_size), 'fontsize', 16);
+    title(sprintf('Cond sets size %d',set_size), 'fontsize', 16);
     l = legend(h, 'f', 'f0', 'f1');
     set(l, 'fontsize', 16);
     xlabel('p-value', 'fontsize', 16);

@@ -9,6 +9,7 @@ for t = 1:length(learn_opt)
     opt = learn_opt{t};
     for ni = 1:length(rp.nvec)
         n = rp.nvec(ni);
+        if rp.parallel
         parfor l = 1:length(loop)
             rng(l, 'twister'); % seed random numbers
             data = samples(bnet{l}, n);
@@ -17,8 +18,21 @@ for t = 1:length(learn_opt)
             printf(2, 'bnet=%d, nrep=%d, shd=%d\n', ...
                 loop{l}.i, loop{l}.j, s(l));
         end
+      else
+        for l = 1:length(loop)
+            rng(l, 'twister'); % seed random numbers
+            data = samples(bnet{l}, n);
+            [G, ti(l)] = learn_structure(data, opt, rp, n);  
+            s(l) = compute_shd(G, rp.true_pdag, false);
+            printf(2, 'bnet=%d, nrep=%d, shd=%d\n', ...
+                loop{l}.i, loop{l}.j, s(l));
+        end
+      end
         [SHD{t}, T{t}] = populate_SHD_T(SHD{t}, T{t}, rp, s, ti, ni);
         update_plot(SHD, T, t, ni, rp, learn_opt);
+        if rp.save_flag
+            eval(['save ' rp.matfile]);
+        end
     end
 end
 

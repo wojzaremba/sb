@@ -15,6 +15,7 @@ in.num_nrep = 3;
 in.plot_flag = false;
 in.save_flag = true;
 in.f_sel = 1:3;           % 1=MMHC, 2=KSB, 3=BIC
+in.parallel = true;
 
 %% score parameters
 in.maxpa = 2;           % max number of parents to allow in learned network
@@ -30,6 +31,6 @@ if in.maxpa > 2
 end
 seed_rand(1);
 out = bn_learn_synthetic(in);
-if out.rp.save_flag
-    eval(['save ' out.rp.matfile]);
-end
+%if out.rp.save_flag
+%    eval(['save ' out.rp.matfile]);
+%end

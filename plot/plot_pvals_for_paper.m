@@ -20,20 +20,19 @@ hold on
 ylim([0 4]);
 
 for k = 1:3
-    plot_betas(k, set, sb);
+    plot_sb(k, set, sb);
 end
 
 end
 
-function plot_betas(k, set, sb)
+function plot_sb(k, set, sb)
     subplot(2, 3, 3 + k)
     hold on
     [psort, order] = sort(set{k}.p);
-    beta = exp(-sb{k});
-    beta_sort = beta(order);
-    plot(psort, beta_sort, 'b-', 'linewidth', 3);
+    sb_sort = sb{k}(order); 
+    plot(psort, sb_sort, 'b-', 'linewidth', 3);
     xlabel('p-value', 'fontsize', 16);
-    ylabel('P(H1)', 'fontsize', 16);
+    ylabel('sb(p)', 'fontsize', 16);
     title(sprintf('Cond sets size %d', k - 1), 'fontsize', 16);
 end
 

@@ -1,4 +1,4 @@
-disp('test_bn_learn_synthetic... Warning: not testing KSB')
+disp('test_bn_learn_synthetic...')
 
 %% network parameters
 in.network = 'chain';
@@ -13,6 +13,7 @@ in.num_nrep = 1;
 in.plot_flag = false;
 in.save_flag = false;
 in.f_sel = 3;           % 1=MMHC, 2=KSB, 3=BIC
+in.parallel = false;
 
 %% score parameters
 in.maxpa = 2;           % max number of parents to allow in learned network
@@ -23,6 +24,7 @@ in.nfunc = @sqrt;
 
 %% test BIC
 seed_rand(1);
+printf(2, '  testing BIC...\n');
 out = bn_learn_synthetic(in);
 assert(out.SHD{1} == 0);
 
@@ -33,5 +35,6 @@ in.nvec = 300;
 in.arity = 3;
 in.network = 'Y';
 in.data_gen = 'random';
+printf(2, '  testing MMHC...\n');
 out = bn_learn_synthetic(in);
 assert(out.SHD{1} == 0);
