@@ -12,7 +12,7 @@ num_exp = 1;
 maxS = 2;
 plot_flag = false;
 save_flag = false;
-f_sel = 1:4;
+f_sel = 2:5;
 num_classifiers = length(f_sel);
 
 [bn_opt, rp, opt] = init_compute_roc_scores(network, arity, data_gen, variance, N, num_exp, maxS, plot_flag, save_flag, f_sel);

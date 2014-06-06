@@ -5,9 +5,9 @@ debug = 2;
 dbstop if error
 check_dir();
 
-test_edge_scores();
+
 % end-to-end
-%test_compute_roc_scores();
+%test_compute_roc_scores(); %XXX
 test_bn_learn_synthetic();
 
 % structure learning
@@ -31,7 +31,7 @@ test_auc();
 test_dist1();
 test_shd();
 test_extract_vector();
-test_scores_to_tpr();
+% test_scores_to_tpr(); % XXX
 test_compare_curves();
 test_is_topol_sorted();
 test_check_cond_sets();
@@ -44,6 +44,7 @@ test_flatten_loop();
 test_network_pvals();
 test_compute_bic();
 test_kernel_ridge_likelihood();
+test_edge_scores();
 
 % plot
 test_density_est();
