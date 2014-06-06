@@ -7,6 +7,16 @@ for t = 1:length(learn_opt)
     opt = learn_opt{t};
     for ni = 1:length(rp.nvec)
         n = rp.nvec(ni);
+        if rp.parallel
+        parfor fold = 1:rp.folds
+            data = sample_n(D{fold}.train, n);
+            [G{t, fold, ni}, time(fold)] = ...
+                learn_structure(data, opt, rp, n); 
+            ll(fold) = compute_likelihood_G(G{t, fold, ni}, ...
+                D{fold}.train, D{fold}.test); 
+            printf(2, 'fold=%d, LL=%f\n', fold, ll(fold));
+        end
+      else
         for fold = 1:rp.folds
             data = sample_n(D{fold}.train, n);
             [G{t, fold, ni}, time(fold)] = ...
@@ -14,6 +24,11 @@ for t = 1:length(learn_opt)
             ll(fold) = compute_likelihood_G(G{t, fold, ni}, ...
                 D{fold}.train, D{fold}.test); 
             printf(2, 'fold=%d, LL=%f\n', fold, ll(fold));
+        end
+
+      end
+        if rp.save_flag
+            eval(['save ' rp.matfile]);
         end
         [LL{t}, T{t}] = populate_LL_T(LL{t}, T{t}, ll, time, ni);
         update_plot(LL, T, t, ni, rp, learn_opt);
@@ -77,12 +92,12 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [rp, learn_opt, D, LL, T, G] = init(in)
     [rp, learn_opt] = init_bn_learn(in);
-    [D, LL, T, G] = init_real(in.data, learn_opt, rp);
+    [D, LL, T, G, rp] = init_real(in.data, learn_opt, rp);
     assert(in.folds <= 10);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [D, LL, T, G] = init_real(data, learn_opt, rp)
+function [D, LL, T, G, rp] = init_real(data, learn_opt, rp)
     % load data
     DD = load(sprintf('data/real/mats/%s.mat', data), 'D');
     D = DD.D;
@@ -105,4 +120,12 @@ function [D, LL, T, G] = init_real(data, learn_opt, rp)
            end
         end
     end
+
+  
+  if rp.save_flag
+      dir_name = sprintf('results/%s', get_date());
+      system(['mkdir -p ' dir_name]);
+      rp.matfile = sprintf('%s/%s_out.mat', dir_name, rp.data);
+  end
+  
 end

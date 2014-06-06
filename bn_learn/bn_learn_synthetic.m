@@ -15,8 +15,8 @@ for t = 1:length(learn_opt)
             data = samples(bnet{l}, n);
             [G, ti(l)] = learn_structure(data, opt, rp, n);  
             s(l) = compute_shd(G, rp.true_pdag, false);
-            printf(2, 'bnet=%d, nrep=%d, shd=%d\n', ...
-                loop{l}.i, loop{l}.j, s(l));
+            printf(2, '%s: bnet=%d, nrep=%d, shd=%d\n', ...
+                opt.name, loop{l}.i, loop{l}.j, s(l));
         end
       else
         for l = 1:length(loop)
@@ -24,8 +24,8 @@ for t = 1:length(learn_opt)
             data = samples(bnet{l}, n);
             [G, ti(l)] = learn_structure(data, opt, rp, n);  
             s(l) = compute_shd(G, rp.true_pdag, false);
-            printf(2, 'bnet=%d, nrep=%d, shd=%d\n', ...
-                loop{l}.i, loop{l}.j, s(l));
+            printf(2, '%s: bnet=%d, nrep=%d, shd=%d\n', ...
+                opt.name, loop{l}.i, loop{l}.j, s(l));
         end
       end
         [SHD{t}, T{t}] = populate_SHD_T(SHD{t}, T{t}, rp, s, ti, ni);
@@ -127,6 +127,13 @@ function [rp, SHD, T, bn_opt] = init_synthetic(learn_opt, rp, max_arity)
         'data_gen', rp.data_gen, 'variance', rp.variance, ...
         'moralize', false, 'n', rp.nvars);
     rp.true_pdag = dag_to_cpdag(get_dag(bn_opt));
+    
+    if rp.save_flag
+        dir_name = sprintf('results/%s', get_date());
+        system(['mkdir -p ' dir_name]);
+        rp.matfile = sprintf('%s/%s_%s.mat', dir_name, rp.network, func2str(rp.nfunc));
+    end
+    
 end
 
 

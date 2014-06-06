@@ -9,7 +9,7 @@ in.variance = 0.05;
 in.nvars = 4;
 
 %% run parameters
-in.nvec = 100(1:5);
+in.nvec = 100*(1:5);
 in.num_bnet = 3;
 in.num_nrep = 3;
 in.plot_flag = false;

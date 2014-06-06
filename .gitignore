@@ -18,3 +18,4 @@ gobnilp/in/*
 gobnilp/out/*
 refs/*
 config/*
+*.txt

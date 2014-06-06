@@ -25,13 +25,6 @@ function [rp, learn_opt, max_arity] = init_bn_learn(in)
         learn_opt{c}.name = sprintf('%s%s', o.method, str);
     end
     
-    if rp.save_flag
-        check_dir();
-        dir_name = sprintf('results/%s', get_date());
-        system(['mkdir -p ' dir_name]);
-        rp.matfile = sprintf('%s/%s_%s.mat', dir_name, rp.network, func2str(rp.nfunc));
-    end
-    
     if rp.plot_flag
         h = figure(1);
         set(h, 'units', 'inches', 'position', [4 4 12 8]);
