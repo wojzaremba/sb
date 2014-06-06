@@ -5,6 +5,7 @@ in.network = 'chain';
 in.data_gen = 'quadratic_ggm';
 in.variance = 0.05;
 in.nvars = 3;
+in.tile = 1;
 
 %% run parameters
 in.nvec = 150;

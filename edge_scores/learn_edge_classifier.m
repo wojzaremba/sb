@@ -27,6 +27,13 @@ opt.delta = mle_fit(dd, p, @eval_fd, p0);
 
 % now gridsearch over all three parameters
 tic;
+max_p = 10000;
+if length(p) > max_p
+    printf(2, 'subsampling %d out of %d pvals\n', max_p, length(p));
+    pshort = randsample(p, max_p);
+else
+    pshort = p;
+end
 lambdas = 10.^(0:0.05:3); %% may want to make this finer
 deltas = linspace(opt.delta/2, 2*opt.delta, 10);
 aa = linspace(0, 1, 50);
@@ -34,7 +41,7 @@ v = zeros(length(lambdas), length(deltas), length(aa));
 for i = 1:length(lambdas)
     for j = 1:length(deltas)
         for k = 1:length(aa)
-            v(i, j, k) = sum(log(eval_f3(p, p0, lambdas(i), deltas(j), aa(k))));
+            v(i, j, k) = sum(log(eval_f3(pshort, p0, lambdas(i), deltas(j), aa(k))));
         end
     end
     fprintf('finished i = %d\n', i);

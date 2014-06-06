@@ -1,4 +1,4 @@
-function [scores, rp] = compute_roc_scores(rp, options, dag, data)
+function [scores, rp] = compute_roc_scores(rp, options, dag, data, E)
 
 num_classifiers = length(options);
 triples = gen_triples(length(dag), 0:rp.maxS);
@@ -12,17 +12,30 @@ end
 
 for exp = 1 : rp.num_exp
     rp.exp = exp;
-    fprintf('Experiment #%d\n', exp);
+    fprintf('Experiment #%d,\n', exp);
+    
+    s = data{exp};
+    s_disc = discretize_data(s, rp.arity);
 
     for c = 1 : num_classifiers
         tic;
         opt = options{c};
-          
+        opt.arity = rp.arity;
+        if opt.discretize
+            emp = s_disc;
+        else
+            emp = s;
+        end            
         % Apply classifier.
-        pre = opt.prealloc(emp, opt);
-        for t = 1 : length(triples)                
-            % Evaluate classifier at all thresholds in thresholds.
-            rho = classifier_wrapper(emp, triples{t}, opt.classifier, opt, pre);
+        prealloc = opt.prealloc(emp, opt);
+        for t = 1 : length(triples)
+            if strcmpi(opt.name, 'pval dist') % hack cough hack hack 
+                e = E{exp};
+                rho = -e(triples{t}.i, triples{t}.j);
+            else
+                % Evaluate classifier at all thresholds in thresholds.
+                rho = classifier_wrapper(emp, triples{t}, opt.classifier, opt, prealloc);
+            end
             indep_emp = threshold(opt.thresholds, rho);
             indep_emp = reshape(indep_emp, [1 1 size(indep_emp)]);                
             scores{c}(1 + no_edge(t), 1, :) = scores{c}(1 + no_edge(t),1,:) + ~indep_emp;
