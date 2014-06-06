@@ -11,7 +11,7 @@ function [rho, info] = classifier_wrapper(emp, triple, f, opt, prealloc)
 % (i,j), should pass triples{t} from output of gen_triples
 
 rho = Inf;
-printf(2,'i,j = %d,%d\n',triple.i,triple.j);
+printf(2, 'i,j = %d,%d\n',triple.i,triple.j);
 
 for c = 1:length(triple.cond_set)
     trip = [triple.i,triple.j,triple.cond_set{c}];
@@ -25,13 +25,9 @@ for c = 1:length(triple.cond_set)
         info.j = triple.j;
         info.rho = new_rho;
     end
-   
-%     if (rho <= 1e-4) % XXX I think I should take this out when I do structure learning
-%         break
-%     end
     
 end
-%assert(rho >= 0)
+
 
 
 

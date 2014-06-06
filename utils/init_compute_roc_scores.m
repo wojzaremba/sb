@@ -11,7 +11,6 @@ function [bn_opt, runparams, options] = init_compute_roc_scores(network, arity, 
         system( ['mkdir -p ' rp.dir_name]);
         rp.mat_file_command = sprintf('save %s/%s.mat', rp.dir_name, rp.file_name);
         fprintf('Will %s\n', rp.mat_file_command);
-        diary(sprintf('%s/%s.diary', rp.dir_name, rp.file_name));
     else
         rp.mat_file_command = '';
     end
@@ -27,7 +26,8 @@ function [bn_opt, runparams, options] = init_compute_roc_scores(network, arity, 
     rp.save_flag = save_flag;
     rp.f_sel = f_sel;
     
-    bn_opt = struct('network', network, 'arity', 1, 'data_gen', data_gen, 'variance', variance, 'moralize', false);
+    bn_opt = struct('network', network, 'arity', 1, ...
+        'data_gen', data_gen, 'variance', variance, 'moralize', false);
     
     runparams = rp;
     options = get_classifier_options(rp);

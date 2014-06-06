@@ -9,6 +9,7 @@ triples = flatten_triples(gen_triples(size(bnet.dag, 1), 0:maxS));
 data = normalize_data(samples(bnet, N));
 pre = kci_prealloc(data, kci_opt);
 [p, sta, edge, ind, set_size] = deal(ones(length(triples), 1) * NaN);
+ij = ones(length(triples), 2) * NaN;
 
 if run_parallel
     parfor t = 1:length(triples)
@@ -19,6 +20,7 @@ if run_parallel
         sta(t) = info.Sta;
         edge(t) = (bnet.dag(i,j) || bnet.dag(j,i));
         ind(t) = dsep(i, j, tr.cond_set, bnet.dag);
+        ij(t, :) = [i j];
         set_size(t) = length(tr.cond_set);
         fprintf('finished %d %d %s\n', i, j, num2str(tr.cond_set));
     end
@@ -31,14 +33,15 @@ else
         sta(t) = info.Sta;
         edge(t) = (bnet.dag(i,j) || bnet.dag(j,i));
         ind(t) = dsep(i, j, tr.cond_set, bnet.dag);
+        ij(t, :) = [i j];
         set_size(t) = length(tr.cond_set);
         fprintf('finished %d %d %s\n', i, j, num2str(tr.cond_set));
     end
 end
 fprintf('for loop took %f seconds\n', toc);
 
-[out.p, out.sta, out.edge, out.ind, out.set_size, out.data] = ...
-    deal(p, sta, edge, ind, set_size, data);
+[out.p, out.sta, out.edge, out.ind, out.set_size, out.data, out.ij] = ...
+    deal(p, sta, edge, ind, set_size, data, ij);
 clear pre p sta edge ind set_size
 save_to_mat(save_flag, network, N);
 printf(2, 'total time = %f sec.\n', toc);

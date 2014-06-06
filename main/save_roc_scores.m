@@ -1,6 +1,7 @@
-function [scores, rp] = compute_roc_scores(rp, options, dag, data)
+function [scores, rp] = compute_roc_scores(bn_opt, rp, options)
 
 num_classifiers = length(options);
+dag = get_dag(bn_opt);
 triples = gen_triples(length(dag), 0:rp.maxS);
 [no_edge, rp] = get_no_edge(dag, triples, rp);
 time_classifier = zeros(1, num_classifiers);
@@ -12,17 +13,27 @@ end
 
 for exp = 1 : rp.num_exp
     rp.exp = exp;
-    fprintf('Experiment #%d\n', exp);
+    fprintf('Experiment #%d, sampling from bayes net...\n', exp);
+    bnet = make_bnet(bn_opt);
+    s = samples(bnet, rp.N);
+    s = normalize_data(s); 
+    s_disc = discretize_data(s, rp.arity);
+    fprintf('... done.\n');
 
     for c = 1 : num_classifiers
         tic;
         opt = options{c};
-          
+        opt.arity = rp.arity;
+        if opt.discretize
+            emp = s_disc;
+        else
+            emp = s;
+        end            
         % Apply classifier.
-        pre = opt.prealloc(emp, opt);
+        prealloc = opt.prealloc(emp, opt);
         for t = 1 : length(triples)                
             % Evaluate classifier at all thresholds in thresholds.
-            rho = classifier_wrapper(emp, triples{t}, opt.classifier, opt, pre);
+            rho = classifier_wrapper(emp, triples{t}, opt.classifier, opt, prealloc);
             indep_emp = threshold(opt.thresholds, rho);
             indep_emp = reshape(indep_emp, [1 1 size(indep_emp)]);                
             scores{c}(1 + no_edge(t), 1, :) = scores{c}(1 + no_edge(t),1,:) + ~indep_emp;
@@ -44,6 +55,7 @@ for exp = 1 : rp.num_exp
 end
 
 fprintf('Total running time for all experiments is %d seconds.\n',sum(time_classifier));
+diary off;
 end
 
 %%%%%%%%%%%%%%%%%
