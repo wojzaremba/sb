@@ -125,7 +125,7 @@ function [rp, SHD, T, bn_opt] = init_synthetic(learn_opt, rp, max_arity)
     
     bn_opt = struct('network', rp.network, 'arity', a, ...
         'data_gen', rp.data_gen, 'variance', rp.variance, ...
-        'moralize', false, 'n', rp.nvars);
+        'moralize', false, 'n', rp.nvars, 'tile', rp.tile);
     rp.true_pdag = dag_to_cpdag(get_dag(bn_opt));
     
     if rp.save_flag

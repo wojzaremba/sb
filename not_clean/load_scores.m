@@ -1,4 +1,4 @@
-fid = fopen('scores/LL.names', 'r');
+fid = fopen('LL.names', 'r');
 tline = fgets(fid);
 names = {};
 while ischar(tline)
@@ -7,11 +7,16 @@ while ischar(tline)
 end
 fclose(fid);
 
+E = {};
+N = [];
 for i = 1:length(names)
    Ename = ['E' names{i}(3:end)];
-   E{i} = load(Ename);
-   s = strsplit(names{i}, '_');
-   N(i) = str2num(s{2});
+   A = load(Ename);
+   if size(A, 1) == 20
+       E{end+1} = A;
+       s = strsplit(names{i}, '_');
+       N(end+1) = str2num(s{2});
+   end
 end
 
 [N, order] = sort(N);
@@ -25,16 +30,17 @@ m = length(non_edge);
 
 figure
 hold on
+ns  = unique(N);
 
 for i = 1:length(E)
-    sub = ceil(i/4);
+    sub = find(ns == N(i));
     subplot(1, 4, sub)
     hold on
     e = E{i};
     h(1) = scatter(rand(n, 1), e(edge), 'b.');
     h(2) = scatter(rand(m, 1), e(non_edge), 'r.');
-    ylim([0 800]);
-    title(sprintf('N = %d', 50*sub));
+    %ylim([0 800]);
+    title(sprintf('N = %d', 100*sub));
 end
 
 legend(h, 'edge', 'no edge');
