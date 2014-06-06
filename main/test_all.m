@@ -7,7 +7,7 @@ check_dir();
 
 test_edge_scores();
 % end-to-end
-test_compute_roc_scores();
+%test_compute_roc_scores();
 test_bn_learn_synthetic();
 
 % structure learning
