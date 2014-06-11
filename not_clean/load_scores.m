@@ -31,16 +31,19 @@ m = length(non_edge);
 figure
 hold on
 ns  = unique(N);
+h = zeros(2, 1);
 
 for i = 1:length(E)
     sub = find(ns == N(i));
     subplot(1, 4, sub)
     hold on
     e = E{i};
-    h(1) = scatter(rand(n, 1), e(edge), 'b.');
     h(2) = scatter(rand(m, 1), e(non_edge), 'r.');
-    %ylim([0 800]);
-    title(sprintf('N = %d', 100*sub));
+    h(1) = scatter(rand(n, 1), e(edge), 'b.');
+    ylim([0 800]);
+    xlabel('this axis meaningless','fontsize', 14);
+    ylabel('-log P(H1)','fontsize', 14);
+    title(sprintf('N = %d', 100*sub),'fontsize', 16);
 end
 
 legend(h, 'edge', 'no edge');

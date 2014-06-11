@@ -3,18 +3,18 @@ global debug
 debug = 2;
 
 %% network parameters
-in.network = 'chain';
+in.network = 'asia';
 in.data_gen = 'quadratic_ggm';
 in.variance = 0.05;
 in.nvars = 4;
-in.tile = 2;
+in.tile = 1;
 
 %% run parameters
-in.nvec = 50*(1:8);
+in.nvec = 100*(1:4);
 in.num_bnet = 3;
 in.num_nrep = 3;
 in.plot_flag = true;
-in.save_flag = false;
+in.save_flag = true;
 in.f_sel = 1:3;           % 1=MMHC, 2=KSB, 3=BIC
 in.parallel = true;
 

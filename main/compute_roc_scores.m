@@ -1,4 +1,4 @@
-function [scores, rp] = compute_roc_scores(rp, options, dag, data, E)
+function [scores, rp] = compute_roc_scores(rp, options, dag, data, E, P)
 
 num_classifiers = length(options);
 triples = gen_triples(length(dag), 0:rp.maxS);
@@ -29,9 +29,12 @@ for exp = 1 : rp.num_exp
         % Apply classifier.
         prealloc = opt.prealloc(emp, opt);
         for t = 1 : length(triples)
-            if strcmpi(opt.name, 'pval dist') % hack cough hack hack 
+            if strcmpi(opt.name, 'new edge scores') % hack cough hack hack
                 e = E{exp};
                 rho = -e(triples{t}.i, triples{t}.j);
+            elseif strcmpi(opt.name, 'KCI') % hack cough hack hack
+                p = P{exp};
+                rho = p(triples{t}.i, triples{t}.j);
             else
                 % Evaluate classifier at all thresholds in thresholds.
                 rho = classifier_wrapper(emp, triples{t}, opt.classifier, opt, prealloc);
