@@ -7,7 +7,11 @@ p = p(p>0);
 
 % histogram
 if plot_flag
-    %figure
+    if (set_size == 0)
+        figure(2)
+        clf
+    end
+    subplot(2,3,set_size+1);
     [counts, x] = hist(p, 40);
     width = x(2) - x(1);
     g = counts / (sum(counts) * width);
@@ -17,8 +21,8 @@ end
 
 % approximate p0 via bootstrap
 tic;
-p0 = mean(bootstrp(200, @p0_approx, p));
-fprintf('bootstrapping p0 took %f seconds\n', toc);
+p0 = mean(bootstrp(200, @p0_approx, p))
+printf(2, 'bootstrapping p0 took %f seconds\n', toc);
 
 % fit the initial width of the "delta" distribution via MLE
 dd = 10.^(-3:0.01:-1);
@@ -44,7 +48,7 @@ for i = 1:length(lambdas)
             v(i, j, k) = sum(log(eval_f3(pshort, p0, lambdas(i), deltas(j), aa(k))));
         end
     end
-    fprintf('finished i = %d\n', i);
+    printf(2, 'finished i = %d\n', i);
 end
 [~, ind] = max(v(:));
 [i, j, k] = ind2sub(size(v),ind);
@@ -56,9 +60,11 @@ toc;
 
 x = [linspace(0, 1e-1, 10000) linspace(1e-1, 1, 10)];
 [f, f1] = eval_f3_opt(x, opt);
-fprintf('AUC = %f\n', auc(x', f'));
+printf(2, 'AUC = %f\n', auc(x', f'));
 
 if (~exist('plot_flag', 'var') || plot_flag)
+    subplot(2,3,set_size+1)
+    hold on
     h(1) = plot(x, f, 'm.-', 'linewidth', 3);
     h(2) = plot(x, f - (1 - opt.p0)*f1, 'r--', 'linewidth', 3);
     h(3) = plot(x, (1 - opt.p0)*f1, 'b-', 'linewidth', 3);
@@ -70,6 +76,16 @@ if (~exist('plot_flag', 'var') || plot_flag)
     set(l, 'fontsize', 16);
     xlabel('p-value', 'fontsize', 16);
     ylabel('f(p)', 'fontsize', 16);
+    
+    subplot(2,3,set_size+4)
+    xx = linspace(0,1,100);
+    plot(xx, -log(prob_H1(xx, opt)), 'b-', 'linewidth', 2);
+    xlabel('p-value', 'fontsize', 16);
+    ylabel('sb', 'fontsize', 16);
+    ylim([0 20])
+    xlim([0 1])
+    
+    pause(2);
 end
 
 % compute betas on original p-values
@@ -103,7 +119,7 @@ end
 
 function p0 = p0_approx(p)
     ind_counts = length(find(p > 0.5))*2;
-    p0 = ind_counts / length(p);
+    p0 = min(ind_counts / length(p), 1);
 end
 
 function param = mle_fit(paramvec, data, func, p0)

@@ -1,35 +1,47 @@
 function out = bn_learn_synthetic(in)
 
-[rp, learn_opt, bn_opt, SHD, T] = init(in);
+[rp, learn_opt, bn_opt, SHD, S, T] = init(in);
 loop = flatten_loop(rp.num_bnet, rp.num_nrep);
 [bnet, bn] = generate_bnets(bn_opt, loop, rp.num_bnet, rp.data_gen);
 [s, ti] = deal(zeros(length(loop), 1));
 
 for t = 1:length(learn_opt)
     opt = learn_opt{t};
+    disp(sprintf('method=%s', opt.name));
     for ni = 1:length(rp.nvec)
         n = rp.nvec(ni);
+        disp(sprintf('n=%d',n));
         if rp.parallel
             parfor l = 1:length(loop)
+                disp(sprintf('LOOP = %d', l));
                 rng(l, 'twister'); % seed random numbers
                 data = samples(bnet{l}, n);
                 [G, ti(l)] = learn_structure(data, opt, rp, n);
+                fprintf('TRUE PDAG:\n')
+                rp.true_pdag
+                fprintf('Learned PDAG:\n')
+                dag_to_cpdag(G)
                 s(l) = compute_shd(G, rp.true_pdag, false);
                 printf(2, '%s: bnet=%d, nrep=%d, shd=%d\n', ...
                     opt.name, loop{l}.i, loop{l}.j, s(l));
             end
         else
             for l = 1:length(loop)
+                disp(sprintf('LOOP = %d', l));
                 rng(l, 'twister'); % seed random numbers
                 data = samples(bnet{l}, n);
                 [G, ti(l)] = learn_structure(data, opt, rp, n);
+                fprintf('TRUE PDAG:\n')
+                rp.true_pdag
+                fprintf('Learned PDAG:\n')
+                dag_to_cpdag(G)
                 s(l) = compute_shd(G, rp.true_pdag, false);
                 printf(2, '%s: bnet=%d, nrep=%d, shd=%d\n', ...
                     opt.name, loop{l}.i, loop{l}.j, s(l));
             end
         end
-        [SHD{t}, T{t}] = populate_SHD_T(SHD{t}, T{t}, rp, s, ti, ni);
-        update_plot(SHD, T, t, ni, rp, learn_opt);
+        [SHD{t}, S{t}, T{t}] = populate_SHD_ST(SHD{t}, S{t}, T{t}, rp, s, ti, ni);
+        update_plot(S, T, t, ni, rp, learn_opt);
         if rp.save_flag
             eval(['save ' rp.matfile]);
         end
@@ -41,7 +53,7 @@ end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function update_plot(SHD, T, tmax, nmax, rp, learn_opt)
+function update_plot(S, T, tmax, nmax, rp, learn_opt)
     if rp.plot_flag
         figure(1)
         hold on
@@ -51,8 +63,10 @@ function update_plot(SHD, T, tmax, nmax, rp, learn_opt)
         for t = 1:tmax
             subplot(1, 2, 1)
             hold on
-            s = squeeze(mean(mean(SHD{t}, 1), 2));
-            h1(t) = plot(n, s(1:nmax), learn_opt{t}.color, 'linewidth', 2);
+            %s = squeeze(mean(mean(SHD{t}, 1), 2));
+            s = mean(S{t}, 1);
+            e = std(S{t}, 1);
+            h1(t) = errorbar(n, s(1:nmax), e(1:nmax), learn_opt{t}.color, 'linewidth', 2);
             
             subplot(1, 2, 2)
             hold on
@@ -95,7 +109,8 @@ function [bnet, bn] = generate_bnets(bn_opt, loop, num_bnet, data_gen)
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [SHD,T] = populate_SHD_T(SHD, T, rp, s, t, ni)
+function [SHD, S, T] = populate_SHD_ST(SHD, S, T, rp, s, t, ni)
+    S(:, ni) = s;
     s = reshape(s, rp.num_nrep, rp.num_bnet)';
     t = reshape(t, rp.num_nrep, rp.num_bnet)';
     SHD(:, :, ni) = s;
@@ -103,17 +118,19 @@ function [SHD,T] = populate_SHD_T(SHD, T, rp, s, t, ni)
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [rp, learn_opt, bn_opt, SHD, T] = init(in)
+function [rp, learn_opt, bn_opt, SHD, S, T] = init(in)
     [rp, learn_opt, max_arity] = init_bn_learn(in);
-    [rp, SHD, T, bn_opt] = init_synthetic(learn_opt, rp, max_arity);
+    [rp, SHD, S, T, bn_opt] = init_synthetic(learn_opt, rp, max_arity);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [rp, SHD, T, bn_opt] = init_synthetic(learn_opt, rp, max_arity)
+function [rp, SHD, S, T, bn_opt] = init_synthetic(learn_opt, rp, max_arity)
     SHD = cell(length(learn_opt), 1);
+    S = cell(length(learn_opt), 1);
     T = cell(length(learn_opt), 1);
     for c = 1:length(learn_opt)
         SHD{c} = NaN*ones(rp.num_bnet, rp.num_nrep, length(rp.nvec));
+        S{c} = NaN*ones(rp.num_bnet*rp.num_nrep, length(rp.nvec));
         T{c} = NaN*ones(rp.num_bnet, rp.num_nrep, length(rp.nvec));
     end
     

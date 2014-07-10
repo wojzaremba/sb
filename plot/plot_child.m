@@ -1,5 +1,5 @@
 
-load child_my_one
+%load asia_my_one
 nvec = in.nvec;
 
 figure

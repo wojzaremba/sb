@@ -4,7 +4,6 @@ nvars = size(data, 1);
 S = cell(nvars, 1);
 
 for i = 1:nvars
-    %S{i} = {};
     LL = compute_kernel_ridge_likelihood(i, [], data);
     S{i}{end + 1} = struct('score', LL, 'parents', []); 
     set = [1:i-1 i+1:nvars];

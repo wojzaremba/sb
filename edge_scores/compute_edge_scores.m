@@ -1,4 +1,4 @@
-function [E, edge_opt] = compute_edge_scores(emp, opt, maxS, pre)
+function [E, edge_opt, P, K] = compute_edge_scores(emp, opt, maxS, pre)
 
 nvars = size(emp, 1);
 triples = flatten_triples(gen_triples(nvars, 0:maxS));
@@ -23,7 +23,7 @@ for t = 1:length(triples)
     edge_all(t, :) = sort([tr.i, tr.j]);
 end
 
-[E, edge_opt] = p2e(nvars, maxS, p_all, set_size, edge_all);
+[E, edge_opt, P, K] = p2e(nvars, maxS, p_all, set_size, edge_all);
 
 end
 
